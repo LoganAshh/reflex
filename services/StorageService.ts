@@ -1,36 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-export interface UrgeLog {
-  id: string;
-  urge: string;
-  location: string;
-  trigger: string;
-  actedOn: boolean;
-  timestamp: Date;
-  replacementAction?: string;
-  notes?: string;
-}
-
-export interface UserSettings {
-  notificationsEnabled: boolean;
-  dailyReminderTime: string;
-  selectedReplacementActions: string[];
-  streakGoals: StreakGoal[];
-}
-
-export interface StreakGoal {
-  id: string;
-  title: string;
-  targetDays: number;
-  currentStreak: number;
-  category: string;
-}
+import {
+  UrgeLog,
+  UserSettings,
+  StreakGoal,
+  DashboardStats,
+  ReplacementAction,
+  AIInsight,
+  ExportData,
+  STORAGE_KEYS,
+} from "../types";
 
 class StorageService {
   private static instance: StorageService;
-  private readonly URGE_LOGS_KEY = "urge_logs";
-  private readonly USER_SETTINGS_KEY = "user_settings";
-  private readonly STREAKS_KEY = "streaks";
 
   public static getInstance(): StorageService {
     if (!StorageService.instance) {
@@ -39,267 +20,404 @@ class StorageService {
     return StorageService.instance;
   }
 
-  // Urge Logs Management
-  async saveUrgeLog(log: UrgeLog): Promise<void> {
+  // Generic storage methods
+  private async setItem<T>(key: string, value: T): Promise<void> {
     try {
-      const existingLogs = await this.getAllUrgeLogs();
-      const updatedLogs = [log, ...existingLogs];
-      await AsyncStorage.setItem(
-        this.URGE_LOGS_KEY,
-        JSON.stringify(updatedLogs)
-      );
+      await AsyncStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      console.error("Error saving urge log:", error);
-      throw error;
+      console.error(`Error saving ${key}:`, error);
+      throw new Error(`Failed to save ${key}`);
     }
   }
 
-  async getAllUrgeLogs(): Promise<UrgeLog[]> {
+  private async getItem<T>(key: string, defaultValue: T): Promise<T> {
     try {
-      const logs = await AsyncStorage.getItem(this.URGE_LOGS_KEY);
-      if (logs) {
-        const parsedLogs = JSON.parse(logs);
-        // Convert timestamp strings back to Date objects
-        return parsedLogs.map((log: any) => ({
-          ...log,
-          timestamp: new Date(log.timestamp),
-        }));
+      const item = await AsyncStorage.getItem(key);
+      if (item) {
+        const parsed = JSON.parse(item);
+        // Convert timestamp strings back to Date objects for logs
+        if (key === STORAGE_KEYS.URGE_LOGS && Array.isArray(parsed)) {
+          return parsed.map((log: any) => ({
+            ...log,
+            timestamp: new Date(log.timestamp),
+          })) as T;
+        }
+        return parsed;
       }
-      return [];
+      return defaultValue;
     } catch (error) {
-      console.error("Error getting urge logs:", error);
-      return [];
+      console.error(`Error getting ${key}:`, error);
+      return defaultValue;
     }
+  }
+
+  // Urge Logs Management
+  async saveUrgeLog(log: UrgeLog): Promise<void> {
+    const existingLogs = await this.getAllUrgeLogs();
+    const updatedLogs = [log, ...existingLogs];
+    await this.setItem(STORAGE_KEYS.URGE_LOGS, updatedLogs);
+
+    // Update streak data when logging
+    await this.updateStreakProgress(log);
+  }
+
+  async getAllUrgeLogs(): Promise<UrgeLog[]> {
+    return this.getItem<UrgeLog[]>(STORAGE_KEYS.URGE_LOGS, []);
   }
 
   async getUrgeLogsByDateRange(
     startDate: Date,
     endDate: Date
   ): Promise<UrgeLog[]> {
-    try {
-      const allLogs = await this.getAllUrgeLogs();
-      return allLogs.filter(
-        (log) => log.timestamp >= startDate && log.timestamp <= endDate
-      );
-    } catch (error) {
-      console.error("Error getting logs by date range:", error);
-      return [];
+    const allLogs = await this.getAllUrgeLogs();
+    return allLogs.filter(
+      (log) => log.timestamp >= startDate && log.timestamp <= endDate
+    );
+  }
+
+  async updateUrgeLog(updatedLog: UrgeLog): Promise<void> {
+    const logs = await this.getAllUrgeLogs();
+    const index = logs.findIndex((log) => log.id === updatedLog.id);
+    if (index !== -1) {
+      logs[index] = updatedLog;
+      await this.setItem(STORAGE_KEYS.URGE_LOGS, logs);
     }
   }
 
   async deleteUrgeLog(logId: string): Promise<void> {
-    try {
-      const logs = await this.getAllUrgeLogs();
-      const filteredLogs = logs.filter((log) => log.id !== logId);
-      await AsyncStorage.setItem(
-        this.URGE_LOGS_KEY,
-        JSON.stringify(filteredLogs)
-      );
-    } catch (error) {
-      console.error("Error deleting urge log:", error);
-      throw error;
-    }
-  }
-
-  // Analytics and Patterns
-  async getUrgeStatistics(days: number = 30): Promise<{
-    totalUrges: number;
-    urgesResisted: number;
-    successRate: number;
-    commonTriggers: { trigger: string; count: number }[];
-    commonUrges: { urge: string; count: number }[];
-    hourlyDistribution: { hour: number; count: number }[];
-  }> {
-    try {
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - days);
-
-      const logs = await this.getUrgeLogsByDateRange(startDate, endDate);
-
-      const totalUrges = logs.length;
-      const urgesResisted = logs.filter((log) => !log.actedOn).length;
-      const successRate =
-        totalUrges > 0 ? Math.round((urgesResisted / totalUrges) * 100) : 0;
-
-      // Count triggers
-      const triggerCounts: { [key: string]: number } = {};
-      logs.forEach((log) => {
-        if (log.trigger) {
-          triggerCounts[log.trigger] = (triggerCounts[log.trigger] || 0) + 1;
-        }
-      });
-
-      // Count urges
-      const urgeCounts: { [key: string]: number } = {};
-      logs.forEach((log) => {
-        urgeCounts[log.urge] = (urgeCounts[log.urge] || 0) + 1;
-      });
-
-      // Hour distribution
-      const hourCounts: { [key: number]: number } = {};
-      for (let i = 0; i < 24; i++) {
-        hourCounts[i] = 0;
-      }
-      logs.forEach((log) => {
-        const hour = log.timestamp.getHours();
-        hourCounts[hour]++;
-      });
-
-      return {
-        totalUrges,
-        urgesResisted,
-        successRate,
-        commonTriggers: Object.entries(triggerCounts)
-          .map(([trigger, count]) => ({ trigger, count }))
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 10),
-        commonUrges: Object.entries(urgeCounts)
-          .map(([urge, count]) => ({ urge, count }))
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 10),
-        hourlyDistribution: Object.entries(hourCounts).map(([hour, count]) => ({
-          hour: parseInt(hour),
-          count,
-        })),
-      };
-    } catch (error) {
-      console.error("Error calculating statistics:", error);
-      return {
-        totalUrges: 0,
-        urgesResisted: 0,
-        successRate: 0,
-        commonTriggers: [],
-        commonUrges: [],
-        hourlyDistribution: [],
-      };
-    }
+    const logs = await this.getAllUrgeLogs();
+    const filteredLogs = logs.filter((log) => log.id !== logId);
+    await this.setItem(STORAGE_KEYS.URGE_LOGS, filteredLogs);
   }
 
   // User Settings
   async saveUserSettings(settings: UserSettings): Promise<void> {
-    try {
-      await AsyncStorage.setItem(
-        this.USER_SETTINGS_KEY,
-        JSON.stringify(settings)
-      );
-    } catch (error) {
-      console.error("Error saving user settings:", error);
-      throw error;
-    }
+    await this.setItem(STORAGE_KEYS.USER_SETTINGS, settings);
   }
 
   async getUserSettings(): Promise<UserSettings> {
-    try {
-      const settings = await AsyncStorage.getItem(this.USER_SETTINGS_KEY);
-      if (settings) {
-        return JSON.parse(settings);
-      }
-
-      // Default settings
-      return {
-        notificationsEnabled: true,
-        dailyReminderTime: "20:00",
-        selectedReplacementActions: [],
-        streakGoals: [],
-      };
-    } catch (error) {
-      console.error("Error getting user settings:", error);
-      return {
-        notificationsEnabled: true,
-        dailyReminderTime: "20:00",
-        selectedReplacementActions: [],
-        streakGoals: [],
-      };
-    }
+    return this.getItem<UserSettings>(STORAGE_KEYS.USER_SETTINGS, {
+      notificationsEnabled: true,
+      dailyReminderTime: "20:00",
+      selectedReplacementActions: [],
+      streakGoals: this.getDefaultStreakGoals(),
+      onboardingCompleted: false,
+      theme: "system",
+    });
   }
 
-  // Streaks Management
-  async updateStreak(category: string, success: boolean): Promise<void> {
-    try {
+  private getDefaultStreakGoals(): StreakGoal[] {
+    return [
+      {
+        id: "1",
+        title: "No social media scrolling",
+        targetDays: 30,
+        currentStreak: 0,
+        category: "digital_wellness",
+        color: "#3B82F6",
+        isActive: true,
+      },
+      {
+        id: "2",
+        title: "Mindful eating",
+        targetDays: 14,
+        currentStreak: 0,
+        category: "health",
+        color: "#10B981",
+        isActive: true,
+      },
+    ];
+  }
+
+  // Analytics and Statistics
+  async getUrgeStatistics(days: number = 30): Promise<DashboardStats> {
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const logs = await this.getUrgeLogsByDateRange(startDate, endDate);
+
+    const totalUrges = logs.length;
+    const urgesResisted = logs.filter((log) => !log.actedOn).length;
+    const successRate =
+      totalUrges > 0 ? Math.round((urgesResisted / totalUrges) * 100) : 0;
+
+    // Calculate common triggers
+    const triggerCounts: { [key: string]: number } = {};
+    logs.forEach((log) => {
+      if (log.trigger) {
+        triggerCounts[log.trigger] = (triggerCounts[log.trigger] || 0) + 1;
+      }
+    });
+
+    // Calculate common urges
+    const urgeCounts: { [key: string]: number } = {};
+    logs.forEach((log) => {
+      urgeCounts[log.urge] = (urgeCounts[log.urge] || 0) + 1;
+    });
+
+    // Calculate hourly distribution
+    const hourCounts: { [key: number]: number } = {};
+    for (let i = 0; i < 24; i++) {
+      hourCounts[i] = 0;
+    }
+    logs.forEach((log) => {
+      const hour = log.timestamp.getHours();
+      hourCounts[hour]++;
+    });
+
+    // Calculate weekly trend
+    const weeklyTrend = this.calculateWeeklyTrend(logs, startDate, endDate);
+
+    // Calculate streaks
+    const streakData = await this.calculateCurrentStreak();
+
+    return {
+      totalUrges,
+      urgesResisted,
+      successRate,
+      commonTriggers: Object.entries(triggerCounts)
+        .map(([trigger, count]) => ({ trigger, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10),
+      commonUrges: Object.entries(urgeCounts)
+        .map(([urge, count]) => ({ urge, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10),
+      hourlyHeatmap: Object.entries(hourCounts).map(([hour, count]) => ({
+        hour: parseInt(hour),
+        count,
+      })),
+      weeklyTrend,
+      averageUrgesPerDay: totalUrges / Math.max(days, 1),
+      longestStreak: streakData.longest,
+      currentStreak: streakData.current,
+    };
+  }
+
+  private calculateWeeklyTrend(
+    logs: UrgeLog[],
+    startDate: Date,
+    endDate: Date
+  ) {
+    const dailyCounts: { [key: string]: number } = {};
+
+    // Initialize all days in range
+    const currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      const dateString = currentDate.toISOString().split("T")[0];
+      dailyCounts[dateString] = 0;
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Count logs per day
+    logs.forEach((log) => {
+      const dateString = log.timestamp.toISOString().split("T")[0];
+      dailyCounts[dateString] = (dailyCounts[dateString] || 0) + 1;
+    });
+
+    // Get last 7 days
+    const last7Days = Object.entries(dailyCounts)
+      .slice(-7)
+      .map(([date, count]) => {
+        const dayName = new Date(date).toLocaleDateString("en", {
+          weekday: "short",
+        });
+        return { day: dayName, count, date };
+      });
+
+    return last7Days;
+  }
+
+  private async calculateCurrentStreak(): Promise<{
+    current: number;
+    longest: number;
+  }> {
+    const logs = await this.getAllUrgeLogs();
+    const sortedLogs = logs
+      .filter((log) => !log.actedOn) // Only count resisted urges
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
+    let currentStreak = 0;
+    let longestStreak = 0;
+    let tempStreak = 0;
+    let lastDate: Date | null = null;
+
+    sortedLogs.forEach((log) => {
+      const logDate = new Date(log.timestamp.toDateString());
+
+      if (!lastDate) {
+        tempStreak = 1;
+        currentStreak = 1;
+      } else {
+        const daysDiff = Math.floor(
+          (lastDate.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        if (daysDiff === 1) {
+          tempStreak++;
+          if (
+            lastDate.toDateString() === new Date().toDateString() ||
+            lastDate.toDateString() ===
+              new Date(Date.now() - 86400000).toDateString()
+          ) {
+            currentStreak = tempStreak;
+          }
+        } else {
+          tempStreak = 1;
+        }
+      }
+
+      longestStreak = Math.max(longestStreak, tempStreak);
+      lastDate = logDate;
+    });
+
+    return { current: currentStreak, longest: longestStreak };
+  }
+
+  // Streak Management
+  private async updateStreakProgress(log: UrgeLog): Promise<void> {
+    if (!log.actedOn) {
+      // User resisted the urge, potentially extend streak
       const settings = await this.getUserSettings();
-      const streakGoal = settings.streakGoals.find(
-        (goal) => goal.category === category
+      const relevantGoals = settings.streakGoals.filter(
+        (goal) => goal.isActive
       );
 
-      if (streakGoal) {
-        if (success) {
-          streakGoal.currentStreak++;
-        } else {
-          streakGoal.currentStreak = 0;
-        }
+      // Simple streak logic - can be made more sophisticated
+      relevantGoals.forEach((goal) => {
+        goal.currentStreak++;
+      });
 
-        await this.saveUserSettings(settings);
+      await this.saveUserSettings(settings);
+    }
+  }
+
+  // Replacement Actions
+  async getReplacementActions(): Promise<ReplacementAction[]> {
+    return this.getItem<ReplacementAction[]>(
+      STORAGE_KEYS.REPLACEMENT_ACTIONS,
+      this.getDefaultReplacementActions()
+    );
+  }
+
+  async updateReplacementAction(action: ReplacementAction): Promise<void> {
+    const actions = await this.getReplacementActions();
+    const index = actions.findIndex((a) => a.id === action.id);
+    if (index !== -1) {
+      actions[index] = action;
+      await this.setItem(STORAGE_KEYS.REPLACEMENT_ACTIONS, actions);
+    }
+  }
+
+  async recordReplacementActionUsage(
+    actionId: string,
+    effectiveness?: number
+  ): Promise<void> {
+    const actions = await this.getReplacementActions();
+    const action = actions.find((a) => a.id === actionId);
+    if (action) {
+      action.timesUsed++;
+      if (effectiveness) {
+        action.effectiveness = effectiveness;
       }
-    } catch (error) {
-      console.error("Error updating streak:", error);
-      throw error;
+      await this.setItem(STORAGE_KEYS.REPLACEMENT_ACTIONS, actions);
     }
   }
 
-  async getStreakData(): Promise<StreakGoal[]> {
-    try {
-      const settings = await this.getUserSettings();
-      return settings.streakGoals;
-    } catch (error) {
-      console.error("Error getting streak data:", error);
-      return [];
-    }
+  private getDefaultReplacementActions(): ReplacementAction[] {
+    return [
+      {
+        id: "1",
+        title: "Take 5 Deep Breaths",
+        description: "Focus on your breath to reset your mind",
+        duration: "1-2 min",
+        category: "mindful",
+        icon: "🌬️",
+        difficulty: "easy",
+        timesUsed: 0,
+      },
+      {
+        id: "2",
+        title: "Walk Around the Block",
+        description: "Get fresh air and movement to shift energy",
+        duration: "5-10 min",
+        category: "physical",
+        icon: "🚶",
+        difficulty: "easy",
+        timesUsed: 0,
+      },
+      {
+        id: "3",
+        title: "Text Someone Positive",
+        description: "Reach out to a friend or family member",
+        duration: "2-5 min",
+        category: "social",
+        icon: "💬",
+        difficulty: "easy",
+        timesUsed: 0,
+      },
+      // Add more default actions...
+    ];
   }
 
-  // Export data (for backup or analysis)
-  async exportData(): Promise<string> {
-    try {
-      const logs = await this.getAllUrgeLogs();
-      const settings = await this.getUserSettings();
+  // Data Export/Import
+  async exportData(): Promise<ExportData> {
+    const logs = await this.getAllUrgeLogs();
+    const settings = await this.getUserSettings();
+    const replacementActions = await this.getReplacementActions();
+    const stats = await this.getUrgeStatistics(365); // Last year
 
-      const exportData = {
-        logs,
-        settings,
-        exportDate: new Date().toISOString(),
-        version: "1.0",
-      };
-
-      return JSON.stringify(exportData, null, 2);
-    } catch (error) {
-      console.error("Error exporting data:", error);
-      throw error;
-    }
+    return {
+      logs,
+      settings,
+      replacementActions,
+      exportDate: new Date().toISOString(),
+      version: "1.0",
+      totalDays: Math.floor(
+        (Date.now() - Math.min(...logs.map((l) => l.timestamp.getTime()))) /
+          (1000 * 60 * 60 * 24)
+      ),
+      summary: stats,
+    };
   }
 
-  // Clear all data (for testing or reset)
   async clearAllData(): Promise<void> {
-    try {
-      await AsyncStorage.multiRemove([
-        this.URGE_LOGS_KEY,
-        this.USER_SETTINGS_KEY,
-        this.STREAKS_KEY,
-      ]);
-    } catch (error) {
-      console.error("Error clearing data:", error);
-      throw error;
-    }
+    await AsyncStorage.multiRemove(Object.values(STORAGE_KEYS));
   }
 
-  // Get recent successful replacements for motivation
+  // Recent activity
   async getRecentWins(limit: number = 10): Promise<UrgeLog[]> {
-    try {
-      const logs = await this.getAllUrgeLogs();
-      return logs
-        .filter((log) => !log.actedOn && log.replacementAction)
-        .slice(0, limit);
-    } catch (error) {
-      console.error("Error getting recent wins:", error);
-      return [];
-    }
+    const logs = await this.getAllUrgeLogs();
+    return logs.filter((log) => !log.actedOn).slice(0, limit);
+  }
+
+  async getTodaysLogs(): Promise<UrgeLog[]> {
+    const today = new Date();
+    const startOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const endOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      23,
+      59,
+      59
+    );
+
+    return this.getUrgeLogsByDateRange(startOfDay, endOfDay);
   }
 }
 
-// Export singleton instance
+// Export singleton instance and utility functions
 export const storageService = StorageService.getInstance();
 
-// Utility functions for common operations
-export const logUrge = async (urgeData: Omit<UrgeLog, "id" | "timestamp">) => {
+export const logUrge = async (
+  urgeData: Omit<UrgeLog, "id" | "timestamp">
+): Promise<UrgeLog> => {
   const log: UrgeLog = {
     id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
     timestamp: new Date(),
@@ -312,6 +430,6 @@ export const logUrge = async (urgeData: Omit<UrgeLog, "id" | "timestamp">) => {
 
 export const getWeeklyStats = () => storageService.getUrgeStatistics(7);
 export const getMonthlyStats = () => storageService.getUrgeStatistics(30);
-export const getAllTimeStats = () => storageService.getUrgeStatistics(365 * 10); // 10 years
+export const getAllTimeStats = () => storageService.getUrgeStatistics(365);
 
 export default storageService;
