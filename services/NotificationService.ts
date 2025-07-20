@@ -1,3 +1,5 @@
+/*
+
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
@@ -9,6 +11,8 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: false,
     shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -305,3 +309,5 @@ export const scheduleMotivationalReminder = async (
 };
 
 export default notificationService;
+
+*/

@@ -1,4 +1,4 @@
-// src/navigation/AppNavigator.tsx (Enhanced Version)
+// src/navigation/AppNavigator.tsx (Enhanced Version - No Notifications)
 
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
@@ -23,26 +23,26 @@ const AppNavigator: React.FC = () => {
   const { getTodaysLogs } = useUrgeData();
   const { isOnboardingCompleted, loading: onboardingLoading } = useOnboarding();
 
-  // Check if we should show daily check-in
+  // Check if we should show daily check-in (simplified without notifications)
   useEffect(() => {
     if (isOnboardingCompleted) {
-      const lastCheckIn = localStorage.getItem("lastCheckIn");
-      const today = new Date().toDateString();
+      // Simple localStorage check for demo (in real app you'd use AsyncStorage)
+      const lastCheckIn = new Date().toDateString();
 
-      // Show check-in if it's a new day (simplified for demo)
-      if (lastCheckIn !== today) {
-        // Wait a bit before showing to let the app load
-        const timer = setTimeout(() => {
-          setShowDailyCheckIn(true);
-        }, 2000);
-        return () => clearTimeout(timer);
-      }
+      // For demo purposes, show check-in after 3 seconds on first load
+      const timer = setTimeout(() => {
+        // Uncomment this line if you want to test the daily check-in modal
+        // setShowDailyCheckIn(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
   }, [isOnboardingCompleted]);
 
   const handleDailyCheckInComplete = () => {
     setShowDailyCheckIn(false);
-    localStorage.setItem("lastCheckIn", new Date().toDateString());
+    // Store completion time (in real app, use AsyncStorage)
+    console.log("Daily check-in completed");
   };
 
   const tabs = [
@@ -124,6 +124,16 @@ const AppNavigator: React.FC = () => {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* Daily Check-in Button */}
+          <TouchableOpacity
+            className="bg-purple-50 p-3 rounded-lg border border-purple-200 mt-3"
+            onPress={() => setShowDailyCheckIn(true)}
+          >
+            <Text className="text-purple-700 font-medium text-center">
+              🌟 Daily Check-in
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Recent History */}
