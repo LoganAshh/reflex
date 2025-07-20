@@ -1,19 +1,49 @@
-// src/navigation/AppNavigator.tsx
+// src/navigation/AppNavigator.tsx (Enhanced Version)
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import QuickLogScreen from "../screens/QuickLogScreen";
 import PatternDashboard from "../screens/PatternDashboard";
 import ReplacementActions from "../screens/ReplacementActions";
 import StreaksScreen from "../screens/StreaksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import OnboardingScreen from "../screens/OnboardingScreen";
+import FloatingActionButton from "../components/FloatingActionButton";
+import DailyCheckIn from "../components/DailyCheckIn";
+import UrgeHistory from "../components/UrgeHistory";
 import { useUrgeData } from "../hooks/useUrgeData";
+import { useOnboarding } from "../hooks/useOnboarding";
 
 type TabType = "log" | "patterns" | "actions" | "streaks" | "settings";
 
 const AppNavigator: React.FC = () => {
-  const [activeTab, setActiveTab] = React.useState<TabType>("log");
+  const [activeTab, setActiveTab] = useState<TabType>("log");
+  const [showDailyCheckIn, setShowDailyCheckIn] = useState(false);
+
   const { getTodaysLogs } = useUrgeData();
+  const { isOnboardingCompleted, loading: onboardingLoading } = useOnboarding();
+
+  // Check if we should show daily check-in
+  useEffect(() => {
+    if (isOnboardingCompleted) {
+      const lastCheckIn = localStorage.getItem("lastCheckIn");
+      const today = new Date().toDateString();
+
+      // Show check-in if it's a new day (simplified for demo)
+      if (lastCheckIn !== today) {
+        // Wait a bit before showing to let the app load
+        const timer = setTimeout(() => {
+          setShowDailyCheckIn(true);
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isOnboardingCompleted]);
+
+  const handleDailyCheckInComplete = () => {
+    setShowDailyCheckIn(false);
+    localStorage.setItem("lastCheckIn", new Date().toDateString());
+  };
 
   const tabs = [
     { id: "log" as TabType, label: "Log", icon: "📝" },
@@ -22,6 +52,85 @@ const AppNavigator: React.FC = () => {
     { id: "streaks" as TabType, label: "Streaks", icon: "🔥" },
     { id: "settings" as TabType, label: "Settings", icon: "⚙️" },
   ];
+
+  // Enhanced home screen with history
+  const HomeScreen = () => (
+    <View className="flex-1 bg-gray-50">
+      <View className="bg-white px-6 pt-12 pb-4 border-b border-gray-200">
+        <Text className="text-2xl font-bold text-gray-800">
+          Good morning! 👋
+        </Text>
+        <Text className="text-gray-600 mt-1">How are you feeling today?</Text>
+      </View>
+
+      <View className="flex-1 px-6 py-6">
+        {/* Quick Stats */}
+        <View className="bg-white rounded-lg p-4 mb-6 shadow-sm">
+          <Text className="text-lg font-bold text-gray-800 mb-3">
+            Today's Progress
+          </Text>
+
+          <View className="flex-row justify-around">
+            <View className="items-center">
+              <Text className="text-2xl font-bold text-blue-600">
+                {getTodaysLogs().length}
+              </Text>
+              <Text className="text-gray-600 text-sm">Urges Logged</Text>
+            </View>
+            <View className="items-center">
+              <Text className="text-2xl font-bold text-green-600">
+                {getTodaysLogs().filter((log) => !log.actedOn).length}
+              </Text>
+              <Text className="text-gray-600 text-sm">Resisted</Text>
+            </View>
+            <View className="items-center">
+              <Text className="text-2xl font-bold text-purple-600">
+                {getTodaysLogs().length > 0
+                  ? Math.round(
+                      (getTodaysLogs().filter((log) => !log.actedOn).length /
+                        getTodaysLogs().length) *
+                        100
+                    )
+                  : 0}
+                %
+              </Text>
+              <Text className="text-gray-600 text-sm">Success Rate</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Quick Actions */}
+        <View className="bg-white rounded-lg p-4 mb-6 shadow-sm">
+          <Text className="text-lg font-bold text-gray-800 mb-4">
+            Quick Actions
+          </Text>
+
+          <View className="flex-row space-x-3">
+            <TouchableOpacity
+              className="flex-1 bg-blue-50 p-3 rounded-lg border border-blue-200"
+              onPress={() => setActiveTab("log")}
+            >
+              <Text className="text-blue-700 font-medium text-center">
+                📝 Log Urge
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="flex-1 bg-green-50 p-3 rounded-lg border border-green-200"
+              onPress={() => setActiveTab("actions")}
+            >
+              <Text className="text-green-700 font-medium text-center">
+                ⚡ Find Action
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Recent History */}
+        <UrgeHistory limit={5} />
+      </View>
+    </View>
+  );
 
   const renderScreen = () => {
     switch (activeTab) {
@@ -36,17 +145,15 @@ const AppNavigator: React.FC = () => {
       case "settings":
         return <SettingsScreen />;
       default:
-        return <QuickLogScreen />;
+        return <HomeScreen />;
     }
   };
 
   const getBadgeCount = (tabId: TabType) => {
     switch (tabId) {
       case "log":
-        // Show today's log count
         return getTodaysLogs().length;
       case "streaks":
-        // Show today's wins count
         return getTodaysLogs().filter((log) => !log.actedOn).length;
       default:
         return 0;
@@ -65,10 +172,29 @@ const AppNavigator: React.FC = () => {
     );
   };
 
+  // Show onboarding if not completed
+  if (onboardingLoading) {
+    return (
+      <View className="flex-1 bg-white items-center justify-center">
+        <Text className="text-gray-600">Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!isOnboardingCompleted) {
+    return <OnboardingScreen />;
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       {/* Main Content */}
       <View className="flex-1">{renderScreen()}</View>
+
+      {/* Floating Action Button */}
+      <FloatingActionButton
+        visible={activeTab !== "log"}
+        onPress={() => setActiveTab("log")}
+      />
 
       {/* Enhanced Bottom Navigation */}
       <View className="bg-white border-t border-gray-200 px-2 py-1">
@@ -101,6 +227,13 @@ const AppNavigator: React.FC = () => {
           })}
         </View>
       </View>
+
+      {/* Daily Check-in Modal */}
+      <DailyCheckIn
+        visible={showDailyCheckIn}
+        onComplete={handleDailyCheckInComplete}
+        onDismiss={() => setShowDailyCheckIn(false)}
+      />
     </SafeAreaView>
   );
 };
