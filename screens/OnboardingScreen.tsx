@@ -116,36 +116,39 @@ const OnboardingScreen: React.FC = () => {
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
       <View className="items-center px-6 py-8">
         {/* Icon */}
-        <View className="w-24 h-24 bg-blue-50 rounded-full items-center justify-center mb-6">
+        <View className="w-24 h-24 bg-white bg-opacity-20 rounded-full items-center justify-center mb-6">
           <Text className="text-4xl">{step.icon}</Text>
         </View>
 
         {/* Title */}
-        <Text className="text-3xl font-bold text-gray-800 text-center mb-3">
+        <Text className="text-3xl font-bold text-white text-center mb-3">
           {step.title}
         </Text>
 
         {/* Subtitle */}
-        <Text className="text-lg text-blue-600 text-center mb-6 font-medium">
+        <Text className="text-lg text-white text-center mb-6 font-medium opacity-90">
           {step.subtitle}
         </Text>
 
         {/* Description */}
-        <Text className="text-lg text-gray-600 text-center mb-8 leading-7">
+        <Text className="text-lg text-white text-center mb-8 leading-7 opacity-80">
           {step.description}
         </Text>
 
         {/* Tips */}
-        <View className="bg-gray-50 rounded-lg p-6 w-full">
-          <Text className="text-lg font-semibold text-gray-800 mb-4 text-center">
+        <View className="rounded-lg p-6 w-full border border-white border-opacity-30">
+          <Text className="text-lg font-semibold text-white mb-4 text-center">
             Key Features:
           </Text>
           {step.tips.map((tip, index) => (
             <View key={index} className="flex-row items-center mb-3">
-              <View className="w-6 h-6 bg-green-100 rounded-full items-center justify-center mr-3">
-                <Text className="text-green-600 font-bold text-xs">✓</Text>
+              <View
+                className="w-6 h-6 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: "#10B981" }}
+              >
+                <Text className="text-white font-bold text-xs">✓</Text>
               </View>
-              <Text className="text-gray-700 flex-1">{tip}</Text>
+              <Text className="text-white flex-1 opacity-90">{tip}</Text>
             </View>
           ))}
         </View>
@@ -154,24 +157,27 @@ const OnboardingScreen: React.FC = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1" style={{ backgroundColor: "#185e66" }}>
       {/* Header */}
       <View className="px-6 pt-4 pb-2">
         <View className="flex-row justify-between items-center">
           <TouchableOpacity onPress={handleSkip}>
-            <Text className="text-gray-500 text-lg">Skip</Text>
+            <Text className="text-white text-lg opacity-75">Skip</Text>
           </TouchableOpacity>
 
-          <Text className="text-gray-500 text-lg">
+          <Text className="text-white text-lg opacity-75">
             {currentStep + 1} of {steps.length}
           </Text>
         </View>
 
         {/* Progress bar */}
-        <View className="w-full bg-gray-200 rounded-full h-1 mt-4">
+        <View className="w-full bg-white bg-opacity-20 rounded-full h-1 mt-4">
           <View
-            className="bg-blue-500 h-1 rounded-full transition-all duration-300"
-            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            className="h-1 rounded-full transition-all duration-300"
+            style={{
+              width: `${((currentStep + 1) / steps.length) * 100}%`,
+              backgroundColor: "#10B981", // green color for progress
+            }}
           />
         </View>
       </View>
@@ -180,24 +186,28 @@ const OnboardingScreen: React.FC = () => {
       <View className="flex-1">{renderStep(steps[currentStep])}</View>
 
       {/* Bottom Navigation */}
-      <View className="px-6 py-4 bg-white border-t border-gray-100">
+      <View className="px-6 py-4 border-t border-white border-opacity-20">
         <View className="flex-row space-x-3">
           {currentStep > 0 && (
             <TouchableOpacity
-              className="flex-1 bg-gray-100 rounded-lg py-4"
+              className="flex-1 rounded-lg py-4 border border-white border-opacity-50"
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
               onPress={handleBack}
             >
-              <Text className="text-center text-gray-700 font-semibold text-lg">
+              <Text className="text-center text-white font-semibold text-lg">
                 Back
               </Text>
             </TouchableOpacity>
           )}
 
           <TouchableOpacity
-            className="flex-1 bg-blue-500 rounded-lg py-4"
+            className="flex-1 bg-white rounded-lg py-4"
             onPress={handleNext}
           >
-            <Text className="text-center text-white font-semibold text-lg">
+            <Text
+              className="text-center font-semibold text-lg"
+              style={{ color: "#185e66" }}
+            >
               {currentStep === steps.length - 1 ? "Get Started" : "Next"}
             </Text>
           </TouchableOpacity>
