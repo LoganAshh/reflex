@@ -325,7 +325,11 @@ const OnboardingScreen: React.FC = () => {
                 className="text-center font-semibold text-lg"
                 style={{ color: "#185e66" }}
               >
-                {currentStep === steps.length - 1 ? "Get Started" : "Next"}
+                {currentStep === 0
+                  ? "Get Started!"
+                  : currentStep === steps.length - 1
+                    ? "Finish!"
+                    : "Next"}
               </Text>
             </TouchableOpacity>
           </Animated.View>
