@@ -303,7 +303,7 @@ const OnboardingScreen: React.FC = () => {
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
                 onPress={handleBack}
               >
-                <Text className="text-center text-white font-semibold text-lg">
+                <Text className="text-center text-white font-semibold text-2xl">
                   Back
                 </Text>
               </TouchableOpacity>
@@ -322,7 +322,7 @@ const OnboardingScreen: React.FC = () => {
               onPress={handleNext}
             >
               <Text
-                className="text-center font-semibold text-lg"
+                className="text-center font-bold text-2xl"
                 style={{ color: "#185e66" }}
               >
                 {currentStep === 0
