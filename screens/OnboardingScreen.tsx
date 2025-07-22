@@ -8,6 +8,7 @@ import {
   ScrollView,
   SafeAreaView,
   Dimensions,
+  Image,
 } from "react-native";
 import { useOnboarding } from "../hooks/useOnboarding";
 
@@ -29,7 +30,7 @@ const OnboardingScreen: React.FC = () => {
   const steps: OnboardingStep[] = [
     {
       id: "welcome",
-      title: "Welcome to Reflex",
+      title: "Welcome to Reflex!",
       subtitle: "Your mindful urge companion",
       description:
         "Reflex helps you build self-awareness and transform automatic urges into conscious choices.",
@@ -116,8 +117,12 @@ const OnboardingScreen: React.FC = () => {
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
       <View className="items-center px-6 py-8">
         {/* Icon */}
-        <View className="w-24 h-24 bg-white bg-opacity-20 rounded-full items-center justify-center mb-6">
-          <Text className="text-4xl">{step.icon}</Text>
+        <View className="w-24 h-24 items-center justify-center mb-6">
+          <Image
+            source={require("../assets/logo.png")}
+            style={{ width: 128, height: 128 }}
+            resizeMode="contain"
+          />
         </View>
 
         {/* Title */}
