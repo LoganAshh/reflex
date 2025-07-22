@@ -322,7 +322,7 @@ const OnboardingScreen: React.FC = () => {
               onPress={handleNext}
             >
               <Text
-                className="text-center font-bold text-2xl"
+                className="text-center font-semibold text-2xl"
                 style={{ color: "#185e66" }}
               >
                 {currentStep === 0
