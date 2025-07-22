@@ -198,7 +198,7 @@ const OnboardingScreen: React.FC = () => {
       >
         {/* Logo with bounce animation */}
         <Animated.View
-          className="w-24 h-24 items-center justify-center mb-12 mt-12"
+          className="w-24 h-24 items-center justify-center mb-16 mt-16"
           style={{
             transform: [{ scale: scaleAnim }],
           }}
@@ -212,7 +212,7 @@ const OnboardingScreen: React.FC = () => {
 
         {/* Title with staggered animation */}
         <Animated.Text
-          className="text-4xl font-bold text-white text-center mb-12"
+          className="text-4xl font-bold text-white text-center mb-8"
           style={{
             opacity: fadeAnim,
             transform: [{ translateY: slideAnim }],
@@ -223,7 +223,7 @@ const OnboardingScreen: React.FC = () => {
 
         {/* Subtitle with delayed animation */}
         <Animated.Text
-          className="text-2xl text-white text-center mb-24 font-medium opacity-90"
+          className="text-2xl text-white text-center mb-16 font-medium opacity-90"
           style={{
             opacity: fadeAnim,
             transform: [
