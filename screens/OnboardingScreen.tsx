@@ -1,6 +1,6 @@
 // src/screens/OnboardingScreen.tsx
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   SafeAreaView,
   Dimensions,
   Image,
+  Animated,
+  Easing,
 } from "react-native";
 import { useOnboarding } from "../hooks/useOnboarding";
 
@@ -26,6 +28,12 @@ interface OnboardingStep {
 const OnboardingScreen: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const { completeOnboarding } = useOnboarding();
+
+  // Animation values
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const progressAnim = useRef(new Animated.Value(0)).current;
 
   const steps: OnboardingStep[] = [
     {
@@ -87,9 +95,75 @@ const OnboardingScreen: React.FC = () => {
     },
   ];
 
+  // Animate progress bar when step changes
+  useEffect(() => {
+    Animated.timing(progressAnim, {
+      toValue: ((currentStep + 1) / steps.length) * 100,
+      duration: 500,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    }).start();
+  }, [currentStep]);
+
+  // Initial entrance animation
+  useEffect(() => {
+    // Reset animations for new step
+    fadeAnim.setValue(0);
+    slideAnim.setValue(50);
+    scaleAnim.setValue(0.8);
+
+    // Animate in
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 600,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 800,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [currentStep]);
+
+  const animateTransition = (callback: () => void) => {
+    // Animate out
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 300,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: -30,
+        duration: 300,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 0.9,
+        duration: 300,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      callback();
+    });
+  };
+
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+      animateTransition(() => setCurrentStep(currentStep + 1));
     } else {
       handleComplete();
     }
@@ -97,7 +171,7 @@ const OnboardingScreen: React.FC = () => {
 
   const handleBack = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      animateTransition(() => setCurrentStep(currentStep - 1));
     }
   };
 
@@ -115,31 +189,68 @@ const OnboardingScreen: React.FC = () => {
 
   const renderStep = (step: OnboardingStep) => (
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-      <View className="items-center px-6 py-8">
-        {/* Icon */}
-        <View className="w-24 h-24 items-center justify-center mb-12 mt-12">
+      <Animated.View
+        className="items-center px-6 py-8"
+        style={{
+          opacity: fadeAnim,
+          transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
+        }}
+      >
+        {/* Logo with bounce animation */}
+        <Animated.View
+          className="w-24 h-24 items-center justify-center mb-12 mt-12"
+          style={{
+            transform: [{ scale: scaleAnim }],
+          }}
+        >
           <Image
             source={require("../assets/logo2.png")}
             style={{ width: 128, height: 128 }}
             resizeMode="contain"
           />
-        </View>
+        </Animated.View>
 
-        {/* Title */}
-        <Text className="text-4xl font-bold text-white text-center mb-12">
+        {/* Title with staggered animation */}
+        <Animated.Text
+          className="text-4xl font-bold text-white text-center mb-12"
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }}
+        >
           {step.title}
-        </Text>
+        </Animated.Text>
 
-        {/* Subtitle */}
-        <Text className="text-2xl text-white text-center mb-24 font-medium opacity-90">
+        {/* Subtitle with delayed animation */}
+        <Animated.Text
+          className="text-2xl text-white text-center mb-24 font-medium opacity-90"
+          style={{
+            opacity: fadeAnim,
+            transform: [
+              {
+                translateY: Animated.add(slideAnim, 10),
+              },
+            ],
+          }}
+        >
           {step.subtitle}
-        </Text>
+        </Animated.Text>
 
-        {/* Description */}
-        <Text className="text-xl text-white text-center mb-8 leading-7 opacity-80">
+        {/* Description with more delayed animation */}
+        <Animated.Text
+          className="text-xl text-white text-center mb-8 leading-7 opacity-80"
+          style={{
+            opacity: fadeAnim,
+            transform: [
+              {
+                translateY: Animated.add(slideAnim, 20),
+              },
+            ],
+          }}
+        >
           {step.description}
-        </Text>
-      </View>
+        </Animated.Text>
+      </Animated.View>
     </ScrollView>
   );
 
@@ -157,13 +268,17 @@ const OnboardingScreen: React.FC = () => {
           </Text>
         </View>
 
-        {/* Progress bar */}
+        {/* Animated Progress bar */}
         <View className="w-full bg-white bg-opacity-20 rounded-full h-1 mt-4">
-          <View
-            className="h-1 rounded-full transition-all duration-300"
+          <Animated.View
+            className="h-1 rounded-full"
             style={{
-              width: `${((currentStep + 1) / steps.length) * 100}%`,
-              backgroundColor: "#10B981", // green color for progress
+              width: progressAnim.interpolate({
+                inputRange: [0, 100],
+                outputRange: ["0%", "100%"],
+                extrapolate: "clamp",
+              }),
+              backgroundColor: "#10B981",
             }}
           />
         </View>
@@ -172,32 +287,48 @@ const OnboardingScreen: React.FC = () => {
       {/* Content */}
       <View className="flex-1">{renderStep(steps[currentStep])}</View>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation with button animations */}
       <View className="px-6 py-4 border-t border-white border-opacity-20">
         <View className="flex-row space-x-3">
           {currentStep > 0 && (
-            <TouchableOpacity
-              className="flex-1 rounded-lg py-4 border border-white border-opacity-50"
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
-              onPress={handleBack}
+            <Animated.View
+              className="flex-1"
+              style={{
+                opacity: fadeAnim,
+                transform: [{ scale: scaleAnim }],
+              }}
             >
-              <Text className="text-center text-white font-semibold text-lg">
-                Back
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                className="rounded-lg py-4 border border-white border-opacity-50"
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+                onPress={handleBack}
+              >
+                <Text className="text-center text-white font-semibold text-lg">
+                  Back
+                </Text>
+              </TouchableOpacity>
+            </Animated.View>
           )}
 
-          <TouchableOpacity
-            className="flex-1 bg-white rounded-lg py-4"
-            onPress={handleNext}
+          <Animated.View
+            className="flex-1"
+            style={{
+              opacity: fadeAnim,
+              transform: [{ scale: scaleAnim }],
+            }}
           >
-            <Text
-              className="text-center font-semibold text-lg"
-              style={{ color: "#185e66" }}
+            <TouchableOpacity
+              className="bg-white rounded-lg py-4"
+              onPress={handleNext}
             >
-              {currentStep === steps.length - 1 ? "Get Started" : "Next"}
-            </Text>
-          </TouchableOpacity>
+              <Text
+                className="text-center font-semibold text-lg"
+                style={{ color: "#185e66" }}
+              >
+                {currentStep === steps.length - 1 ? "Get Started" : "Next"}
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       </View>
     </SafeAreaView>
