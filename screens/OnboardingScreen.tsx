@@ -117,7 +117,7 @@ const OnboardingScreen: React.FC = () => {
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
       <View className="items-center px-6 py-8">
         {/* Icon */}
-        <View className="w-24 h-24 items-center justify-center mb-6">
+        <View className="w-24 h-24 items-center justify-center mb-12 mt-12">
           <Image
             source={require("../assets/logo.png")}
             style={{ width: 128, height: 128 }}
@@ -126,17 +126,17 @@ const OnboardingScreen: React.FC = () => {
         </View>
 
         {/* Title */}
-        <Text className="text-3xl font-bold text-white text-center mb-3">
+        <Text className="text-4xl font-bold text-white text-center mb-12">
           {step.title}
         </Text>
 
         {/* Subtitle */}
-        <Text className="text-lg text-white text-center mb-6 font-medium opacity-90">
+        <Text className="text-2xl text-white text-center mb-24 font-medium opacity-90">
           {step.subtitle}
         </Text>
 
         {/* Description */}
-        <Text className="text-lg text-white text-center mb-8 leading-7 opacity-80">
+        <Text className="text-xl text-white text-center mb-8 leading-7 opacity-80">
           {step.description}
         </Text>
       </View>
