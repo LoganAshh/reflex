@@ -119,7 +119,7 @@ const OnboardingScreen: React.FC = () => {
         {/* Icon */}
         <View className="w-24 h-24 items-center justify-center mb-12 mt-12">
           <Image
-            source={require("../assets/logo.png")}
+            source={require("../assets/logo2.png")}
             style={{ width: 128, height: 128 }}
             resizeMode="contain"
           />
