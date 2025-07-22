@@ -238,7 +238,7 @@ const OnboardingScreen: React.FC = () => {
 
         {/* Description with more delayed animation */}
         <Animated.Text
-          className="text-xl text-white text-center mb-8 leading-7 opacity-80"
+          className="text-2xl text-white text-center mb-8 leading-7 opacity-80"
           style={{
             opacity: fadeAnim,
             transform: [
