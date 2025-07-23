@@ -106,65 +106,42 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text
-              style={{
-                fontSize: 32,
-                fontWeight: "bold",
-                color: "#ffffff",
-                textAlign: "center",
-                marginBottom: 16,
-              }}
-            >
+            <Text className="text-4xl font-bold text-white text-center mb-4">
               What's the urge?
             </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                color: "rgba(255, 255, 255, 0.9)",
-                textAlign: "center",
-                marginBottom: 32,
-              }}
-            >
+            <Text className="text-xl text-white text-center mb-8 opacity-90">
               Name it to tame it
             </Text>
 
             <TextInput
-              className="border border-white border-opacity-30 rounded-lg p-4 mb-6"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                fontSize: 20,
-                color: "#ffffff",
-              }}
+              className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
               placeholder="Describe your urge..."
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={urge}
               onChangeText={setUrge}
             />
 
-            <Text
-              style={{
-                color: "rgba(255, 255, 255, 0.9)",
-                fontWeight: "500",
-                marginBottom: 16,
-                fontSize: 18,
-              }}
-            >
+            <Text className="text-white font-medium mb-4 text-lg opacity-90">
               Common urges:
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
               {commonUrges.map((commonUrge, index) => (
                 <TouchableOpacity
                   key={index}
-                  className={`p-4 rounded-lg mb-3 ${
-                    urge === commonUrge ? "bg-white" : "bg-white bg-opacity-20"
-                  }`}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      urge === commonUrge
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
                   onPress={() => setUrge(commonUrge)}
                 >
                   <Text
-                    style={{
-                      fontSize: 20,
-                      color: urge === commonUrge ? "#1f2937" : "#ffffff",
-                    }}
+                    className={`text-xl ${
+                      urge === commonUrge ? "text-gray-800" : "text-white"
+                    }`}
                   >
                     {commonUrge}
                   </Text>
@@ -183,68 +160,44 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text
-              style={{
-                fontSize: 32,
-                fontWeight: "bold",
-                color: "#ffffff",
-                textAlign: "center",
-                marginBottom: 16,
-              }}
-            >
+            <Text className="text-4xl font-bold text-white text-center mb-4">
               Where are you?
             </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                color: "rgba(255, 255, 255, 0.9)",
-                textAlign: "center",
-                marginBottom: 32,
-              }}
-            >
+            <Text className="text-xl text-white text-center mb-8 opacity-90">
               Location patterns matter
             </Text>
 
             <TextInput
-              className="border border-white border-opacity-30 rounded-lg p-4 mb-6"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                fontSize: 20,
-                color: "#ffffff",
-              }}
+              className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
               placeholder="Where did this happen?"
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={location}
               onChangeText={setLocation}
             />
 
-            <Text
-              style={{
-                color: "rgba(255, 255, 255, 0.9)",
-                fontWeight: "500",
-                marginBottom: 16,
-                fontSize: 18,
-              }}
-            >
+            <Text className="text-white font-medium mb-4 text-lg opacity-90">
               Common locations:
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
               {commonLocations.map((commonLocation, index) => (
                 <TouchableOpacity
                   key={index}
-                  className={`p-4 rounded-lg mb-3 ${
-                    location === commonLocation
-                      ? "bg-white"
-                      : "bg-white bg-opacity-20"
-                  }`}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      location === commonLocation
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
                   onPress={() => setLocation(commonLocation)}
                 >
                   <Text
-                    style={{
-                      fontSize: 20,
-                      color:
-                        location === commonLocation ? "#1f2937" : "#ffffff",
-                    }}
+                    className={`text-xl ${
+                      location === commonLocation
+                        ? "text-gray-800"
+                        : "text-white"
+                    }`}
                   >
                     {commonLocation}
                   </Text>
@@ -263,67 +216,42 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text
-              style={{
-                fontSize: 32,
-                fontWeight: "bold",
-                color: "#ffffff",
-                textAlign: "center",
-                marginBottom: 16,
-              }}
-            >
+            <Text className="text-4xl font-bold text-white text-center mb-4">
               What triggered it?
             </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                color: "rgba(255, 255, 255, 0.9)",
-                textAlign: "center",
-                marginBottom: 32,
-              }}
-            >
+            <Text className="text-xl text-white text-center mb-8 opacity-90">
               Understanding triggers builds awareness
             </Text>
 
             <TextInput
-              className="border border-white border-opacity-30 rounded-lg p-4 mb-6"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                fontSize: 20,
-                color: "#ffffff",
-              }}
+              className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
               placeholder="What sparked this urge?"
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={trigger}
               onChangeText={setTrigger}
             />
 
-            <Text
-              style={{
-                color: "rgba(255, 255, 255, 0.9)",
-                fontWeight: "500",
-                marginBottom: 16,
-                fontSize: 18,
-              }}
-            >
+            <Text className="text-white font-medium mb-4 text-lg opacity-90">
               Common triggers:
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
               {commonTriggers.map((commonTrigger, index) => (
                 <TouchableOpacity
                   key={index}
-                  className={`p-4 rounded-lg mb-3 ${
-                    trigger === commonTrigger
-                      ? "bg-white"
-                      : "bg-white bg-opacity-20"
-                  }`}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      trigger === commonTrigger
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
                   onPress={() => setTrigger(commonTrigger)}
                 >
                   <Text
-                    style={{
-                      fontSize: 20,
-                      color: trigger === commonTrigger ? "#1f2937" : "#ffffff",
-                    }}
+                    className={`text-xl ${
+                      trigger === commonTrigger ? "text-gray-800" : "text-white"
+                    }`}
                   >
                     {commonTrigger}
                   </Text>
@@ -342,90 +270,57 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text
-              style={{
-                fontSize: 32,
-                fontWeight: "bold",
-                color: "#ffffff",
-                textAlign: "center",
-                marginBottom: 16,
-              }}
-            >
+            <Text className="text-4xl font-bold text-white text-center mb-4">
               Did you act on it?
             </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                color: "rgba(255, 255, 255, 0.9)",
-                textAlign: "center",
-                marginBottom: 32,
-              }}
-            >
+            <Text className="text-xl text-white text-center mb-8 opacity-90">
               No judgment - just awareness
             </Text>
 
             <View className="space-y-6">
               <TouchableOpacity
-                className={`p-6 rounded-lg border-2 ${
-                  actedOn === true
-                    ? "bg-red-500 border-red-400"
-                    : "bg-white bg-opacity-20 border-white border-opacity-30"
-                }`}
+                className="p-6 rounded-lg border-2"
+                style={{
+                  backgroundColor:
+                    actedOn === true ? "#EF4444" : "rgba(255, 255, 255, 0.2)",
+                  borderColor:
+                    actedOn === true ? "#F87171" : "rgba(255, 255, 255, 0.3)",
+                }}
                 onPress={() => setActedOn(true)}
               >
-                <Text
-                  style={{
-                    fontSize: 24,
-                    fontWeight: "500",
-                    textAlign: "center",
-                    color: "#ffffff",
-                  }}
-                >
+                <Text className="text-2xl font-medium text-center text-white">
                   Yes, I acted on it
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                className={`p-6 rounded-lg border-2 ${
-                  actedOn === false
-                    ? "bg-green-500 border-green-400"
-                    : "bg-white bg-opacity-20 border-white border-opacity-30"
-                }`}
+                className="p-6 rounded-lg border-2"
+                style={{
+                  backgroundColor:
+                    actedOn === false ? "#10B981" : "rgba(255, 255, 255, 0.2)",
+                  borderColor:
+                    actedOn === false ? "#34D399" : "rgba(255, 255, 255, 0.3)",
+                }}
                 onPress={() => setActedOn(false)}
               >
-                <Text
-                  style={{
-                    fontSize: 24,
-                    fontWeight: "500",
-                    textAlign: "center",
-                    color: "#ffffff",
-                  }}
-                >
+                <Text className="text-2xl font-medium text-center text-white">
                   No, I resisted
                 </Text>
               </TouchableOpacity>
             </View>
 
             {actedOn === false && (
-              <View className="mt-8 p-6 bg-green-500 bg-opacity-30 rounded-lg border border-green-400 border-opacity-50">
-                <Text
-                  style={{
-                    color: "#ffffff",
-                    fontWeight: "bold",
-                    fontSize: 20,
-                    textAlign: "center",
-                  }}
-                >
+              <View
+                className="mt-8 p-6 rounded-lg border"
+                style={{
+                  backgroundColor: "rgba(16, 185, 129, 0.3)",
+                  borderColor: "rgba(52, 211, 153, 0.5)",
+                }}
+              >
+                <Text className="text-white font-bold text-xl text-center">
                   🎉 Great job resisting!
                 </Text>
-                <Text
-                  style={{
-                    color: "rgba(255, 255, 255, 0.9)",
-                    textAlign: "center",
-                    marginTop: 8,
-                    fontSize: 18,
-                  }}
-                >
+                <Text className="text-white text-center mt-2 text-lg opacity-90">
                   You're building stronger self-awareness
                 </Text>
               </View>
@@ -443,10 +338,8 @@ const QuickLogScreen: React.FC = () => {
       {/* Header */}
       <View className="px-6 pt-4 pb-2">
         <View className="flex-row items-center justify-between">
-          <Text style={{ fontSize: 24, fontWeight: "600", color: "#ffffff" }}>
-            Quick Log
-          </Text>
-          <Text style={{ color: "rgba(255, 255, 255, 0.75)", fontSize: 18 }}>
+          <Text className="text-2xl font-semibold text-white">Quick Log</Text>
+          <Text className="text-white text-lg opacity-75">
             {currentStep} of 4
           </Text>
         </View>
@@ -472,14 +365,7 @@ const QuickLogScreen: React.FC = () => {
               style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
               onPress={handleBack}
             >
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "#ffffff",
-                  fontWeight: "600",
-                  fontSize: 20,
-                }}
-              >
+              <Text className="text-center text-white font-semibold text-xl">
                 Back
               </Text>
             </TouchableOpacity>
@@ -496,12 +382,8 @@ const QuickLogScreen: React.FC = () => {
             }
           >
             <Text
-              style={{
-                textAlign: "center",
-                fontWeight: "600",
-                fontSize: 20,
-                color: "#185e66",
-              }}
+              className="text-center font-semibold text-xl"
+              style={{ color: "#185e66" }}
             >
               {currentStep === 4 ? "Log Urge" : "Next"}
             </Text>
