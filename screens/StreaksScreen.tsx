@@ -16,7 +16,13 @@ const StreaksScreen: React.FC = () => {
 
       <ScrollView className="flex-1 px-6">
         {/* Current Streak */}
-        <View className="bg-white bg-opacity-10 rounded-2xl p-6 mb-6 border border-white border-opacity-20">
+        <View
+          className="rounded-2xl p-6 mb-6 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+          }}
+        >
           <View className="items-center">
             <Text className="text-6xl font-bold text-white mb-2">3</Text>
             <Text className="text-2xl text-white font-semibold mb-1">
@@ -26,7 +32,13 @@ const StreaksScreen: React.FC = () => {
               Days of mindful choices
             </Text>
 
-            <View className="mt-6 p-4 bg-green-500 bg-opacity-30 rounded-lg border border-green-400 border-opacity-50">
+            <View
+              className="mt-6 p-4 rounded-lg border"
+              style={{
+                backgroundColor: "rgba(16, 185, 129, 0.3)",
+                borderColor: "rgba(52, 211, 153, 0.5)",
+              }}
+            >
               <Text className="text-white font-bold text-center text-lg">
                 🔥 You're on fire!
               </Text>
@@ -38,7 +50,13 @@ const StreaksScreen: React.FC = () => {
         </View>
 
         {/* Streak Goals */}
-        <View className="bg-white bg-opacity-10 rounded-2xl p-6 mb-6 border border-white border-opacity-20">
+        <View
+          className="rounded-2xl p-6 mb-6 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+          }}
+        >
           <Text className="text-2xl font-bold text-white mb-6 text-center">
             Streak Goals
           </Text>
@@ -51,7 +69,10 @@ const StreaksScreen: React.FC = () => {
                 </Text>
                 <Text className="text-white opacity-75 text-lg">7/30 days</Text>
               </View>
-              <View className="w-full bg-white bg-opacity-20 rounded-full h-3">
+              <View
+                className="w-full rounded-full h-3"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+              >
                 <View
                   className="bg-blue-400 h-3 rounded-full"
                   style={{ width: "23%" }}
@@ -66,7 +87,10 @@ const StreaksScreen: React.FC = () => {
                 </Text>
                 <Text className="text-white opacity-75 text-lg">3/7 days</Text>
               </View>
-              <View className="w-full bg-white bg-opacity-20 rounded-full h-3">
+              <View
+                className="w-full rounded-full h-3"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+              >
                 <View
                   className="bg-green-400 h-3 rounded-full"
                   style={{ width: "43%" }}
@@ -81,7 +105,10 @@ const StreaksScreen: React.FC = () => {
                 </Text>
                 <Text className="text-white opacity-75 text-lg">5/14 days</Text>
               </View>
-              <View className="w-full bg-white bg-opacity-20 rounded-full h-3">
+              <View
+                className="w-full rounded-full h-3"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+              >
                 <View
                   className="bg-purple-400 h-3 rounded-full"
                   style={{ width: "36%" }}
@@ -92,7 +119,13 @@ const StreaksScreen: React.FC = () => {
         </View>
 
         {/* Motivation */}
-        <View className="bg-white bg-opacity-15 rounded-2xl p-6 mb-8 border border-white border-opacity-30">
+        <View
+          className="rounded-2xl p-6 mb-8 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            borderColor: "rgba(255, 255, 255, 0.3)",
+          }}
+        >
           <Text className="text-white font-bold text-center mb-3 text-xl">
             💪 You're rewiring your brain!
           </Text>
