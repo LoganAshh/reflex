@@ -4,34 +4,47 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
   Switch,
   Alert,
-  Share,
 } from "react-native";
-import { useSettings } from "../hooks/useSettings";
-import { storageService } from "../services/StorageService";
 
 const SettingsScreen: React.FC = () => {
-  const { settings, loading, updateSettings, toggleNotifications } =
-    useSettings();
-  const [exportLoading, setExportLoading] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
-  const handleExportData = async () => {
-    try {
-      setExportLoading(true);
-      const exportData = await storageService.exportData();
-      const jsonString = JSON.stringify(exportData, null, 2);
+  const renderSettingItem = (
+    title: string,
+    subtitle: string,
+    onPress?: () => void,
+    rightComponent?: React.ReactNode,
+    icon?: string
+  ) => (
+    <TouchableOpacity
+      className="bg-white bg-opacity-10 rounded-xl p-4 mb-4 border border-white border-opacity-20"
+      onPress={onPress}
+    >
+      <View className="flex-row items-center justify-between">
+        <View className="flex-1">
+          <View className="flex-row items-center">
+            {icon && <Text className="text-2xl mr-3">{icon}</Text>}
+            <Text className="text-white font-semibold text-lg">{title}</Text>
+          </View>
+          <Text className="text-white opacity-75 mt-1">{subtitle}</Text>
+        </View>
+        {rightComponent}
+      </View>
+    </TouchableOpacity>
+  );
 
-      await Share.share({
-        message: "Reflex App Data Export",
-        title: "Export Data",
-        url: `data:application/json;base64,${btoa(jsonString)}`,
-      });
-    } catch (error) {
-      Alert.alert("Error", "Failed to export data");
-    } finally {
-      setExportLoading(false);
-    }
+  const handleExportData = () => {
+    Alert.alert(
+      "Export Data",
+      "Your data will be exported as a JSON file that you can save or share.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Export", onPress: () => console.log("Exporting data...") },
+      ]
+    );
   };
 
   const handleClearData = () => {
@@ -43,104 +56,57 @@ const SettingsScreen: React.FC = () => {
         {
           text: "Clear Data",
           style: "destructive",
-          onPress: async () => {
-            try {
-              await storageService.clearAllData();
-              Alert.alert("Success", "All data has been cleared");
-            } catch (error) {
-              Alert.alert("Error", "Failed to clear data");
-            }
-          },
+          onPress: () => console.log("Clearing data..."),
         },
       ]
     );
   };
 
   const handleSetReminderTime = () => {
-    // In a real app, you'd show a time picker
     Alert.alert("Daily Reminder", "Set your daily check-in reminder time", [
       { text: "Cancel", style: "cancel" },
-      {
-        text: "8:00 PM",
-        onPress: () => updateSettings({ dailyReminderTime: "20:00" }),
-      },
-      {
-        text: "9:00 PM",
-        onPress: () => updateSettings({ dailyReminderTime: "21:00" }),
-      },
-      {
-        text: "10:00 PM",
-        onPress: () => updateSettings({ dailyReminderTime: "22:00" }),
-      },
+      { text: "8:00 PM", onPress: () => console.log("Set to 8:00 PM") },
+      { text: "9:00 PM", onPress: () => console.log("Set to 9:00 PM") },
+      { text: "10:00 PM", onPress: () => console.log("Set to 10:00 PM") },
     ]);
   };
 
-  const renderSettingItem = (
-    title: string,
-    subtitle: string,
-    onPress?: () => void,
-    rightComponent?: React.ReactNode,
-    icon?: string
-  ) => (
-    <TouchableOpacity
-      className="bg-white p-4 mb-2 rounded-lg shadow-sm flex-row items-center"
-      onPress={onPress}
-      disabled={!onPress}
-    >
-      {icon && <Text className="text-2xl mr-3">{icon}</Text>}
-      <View className="flex-1">
-        <Text className="text-gray-800 font-medium text-lg">{title}</Text>
-        <Text className="text-gray-600 text-sm mt-1">{subtitle}</Text>
-      </View>
-      {rightComponent && <View className="ml-3">{rightComponent}</View>}
-      {onPress && !rightComponent && (
-        <Text className="text-blue-500 text-lg">›</Text>
-      )}
-    </TouchableOpacity>
-  );
-
-  if (loading) {
-    return (
-      <View className="flex-1 bg-gray-50 items-center justify-center">
-        <Text className="text-gray-600">Loading settings...</Text>
-      </View>
-    );
-  }
-
   return (
-    <View className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1" style={{ backgroundColor: "#185e66" }}>
       {/* Header */}
-      <View className="bg-white px-6 pt-12 pb-4 border-b border-gray-200">
-        <Text className="text-2xl font-bold text-gray-800">Settings</Text>
-        <Text className="text-gray-600 mt-1">Customize your experience</Text>
+      <View className="px-6 pt-4 pb-6">
+        <Text className="text-3xl font-bold text-white text-center">
+          Settings
+        </Text>
+        <Text className="text-xl text-white text-center mt-2 opacity-90">
+          Customize your experience
+        </Text>
       </View>
 
-      <ScrollView className="flex-1 px-6 py-6">
-        {/* Notifications Section */}
-        <View className="mb-6">
-          <Text className="text-lg font-bold text-gray-800 mb-3">
+      <ScrollView className="flex-1 px-6">
+        {/* Notifications */}
+        <View className="mb-8">
+          <Text className="text-2xl font-bold text-white mb-4">
             🔔 Notifications
           </Text>
 
           {renderSettingItem(
-            "Push Notifications",
-            "Get reminders and motivational messages",
+            "Daily Reminders",
+            "Get gentle check-in reminders",
             undefined,
             <Switch
-              value={settings?.notificationsEnabled || false}
-              onValueChange={toggleNotifications}
-              trackColor={{ false: "#e5e7eb", true: "#3b82f6" }}
-              thumbColor={
-                settings?.notificationsEnabled ? "#ffffff" : "#ffffff"
-              }
+              value={notificationsEnabled}
+              onValueChange={setNotificationsEnabled}
+              trackColor={{ false: "rgba(255,255,255,0.3)", true: "#10B981" }}
+              thumbColor="#ffffff"
             />,
             "📱"
           )}
 
-          {settings?.notificationsEnabled &&
+          {notificationsEnabled &&
             renderSettingItem(
-              "Daily Reminder",
-              `Check-in reminder at ${settings.dailyReminderTime}`,
+              "Daily Reminder Time",
+              "Check-in reminder at 9:00 PM",
               handleSetReminderTime,
               undefined,
               "⏰"
@@ -148,29 +114,20 @@ const SettingsScreen: React.FC = () => {
         </View>
 
         {/* App Preferences */}
-        <View className="mb-6">
-          <Text className="text-lg font-bold text-gray-800 mb-3">
+        <View className="mb-8">
+          <Text className="text-2xl font-bold text-white mb-4">
             ⚙️ Preferences
           </Text>
 
           {renderSettingItem(
             "Theme",
-            "Choose your preferred appearance",
+            "Currently using system theme",
             () => {
               Alert.alert("Theme", "Choose your preferred theme", [
                 { text: "Cancel", style: "cancel" },
-                {
-                  text: "Light",
-                  onPress: () => updateSettings({ theme: "light" }),
-                },
-                {
-                  text: "Dark",
-                  onPress: () => updateSettings({ theme: "dark" }),
-                },
-                {
-                  text: "System",
-                  onPress: () => updateSettings({ theme: "system" }),
-                },
+                { text: "Light", onPress: () => console.log("Light theme") },
+                { text: "Dark", onPress: () => console.log("Dark theme") },
+                { text: "System", onPress: () => console.log("System theme") },
               ]);
             },
             undefined,
@@ -179,12 +136,11 @@ const SettingsScreen: React.FC = () => {
 
           {renderSettingItem(
             "Quick Actions",
-            `${settings?.selectedReplacementActions.length || 0} favorite replacement actions`,
+            "3 favorite replacement actions",
             () => {
-              // Navigate to replacement actions customization
               Alert.alert(
-                "Info",
-                "This would open replacement actions customization"
+                "Quick Actions",
+                "Customize your favorite replacement actions for quick access."
               );
             },
             undefined,
@@ -193,8 +149,8 @@ const SettingsScreen: React.FC = () => {
         </View>
 
         {/* Data & Privacy */}
-        <View className="mb-6">
-          <Text className="text-lg font-bold text-gray-800 mb-3">
+        <View className="mb-8">
+          <Text className="text-2xl font-bold text-white mb-4">
             🔒 Data & Privacy
           </Text>
 
@@ -202,9 +158,7 @@ const SettingsScreen: React.FC = () => {
             "Export Data",
             "Download all your urge logs and statistics",
             handleExportData,
-            exportLoading ? (
-              <Text className="text-gray-500">Exporting...</Text>
-            ) : undefined,
+            undefined,
             "📤"
           )}
 
@@ -223,16 +177,17 @@ const SettingsScreen: React.FC = () => {
         </View>
 
         {/* Streak Management */}
-        <View className="mb-6">
-          <Text className="text-lg font-bold text-gray-800 mb-3">
-            🔥 Streaks
-          </Text>
+        <View className="mb-8">
+          <Text className="text-2xl font-bold text-white mb-4">🔥 Streaks</Text>
 
           {renderSettingItem(
             "Manage Streak Goals",
-            `${settings?.streakGoals.length || 0} active goals`,
+            "3 active goals",
             () => {
-              Alert.alert("Info", "This would open streak goal management");
+              Alert.alert(
+                "Streak Goals",
+                "Manage your streak goals and targets."
+              );
             },
             undefined,
             "🎯"
@@ -250,18 +205,7 @@ const SettingsScreen: React.FC = () => {
                   {
                     text: "Reset",
                     style: "destructive",
-                    onPress: async () => {
-                      if (settings) {
-                        const updatedGoals = settings.streakGoals.map(
-                          (goal) => ({
-                            ...goal,
-                            currentStreak: 0,
-                          })
-                        );
-                        await updateSettings({ streakGoals: updatedGoals });
-                        Alert.alert("Success", "All streaks have been reset");
-                      }
-                    },
+                    onPress: () => console.log("Resetting streaks..."),
                   },
                 ]
               );
@@ -271,74 +215,50 @@ const SettingsScreen: React.FC = () => {
           )}
         </View>
 
-        {/* Support & Feedback */}
-        <View className="mb-6">
-          <Text className="text-lg font-bold text-gray-800 mb-3">
-            💬 Support
-          </Text>
+        {/* Support */}
+        <View className="mb-8">
+          <Text className="text-2xl font-bold text-white mb-4">💬 Support</Text>
 
           {renderSettingItem(
             "Send Feedback",
             "Help us improve the app",
             () => {
-              Alert.alert("Send Feedback", "What would you like to tell us?", [
-                { text: "Cancel", style: "cancel" },
-                { text: "Report Bug", onPress: () => {} },
-                { text: "Feature Request", onPress: () => {} },
-                { text: "General Feedback", onPress: () => {} },
-              ]);
+              Alert.alert("Send Feedback", "What would you like to tell us?");
             },
             undefined,
             "📝"
           )}
 
           {renderSettingItem(
-            "Rate the App",
-            "Leave a review on the App Store",
+            "About",
+            "Version 1.0.0 - Made with ❤️",
             () => {
               Alert.alert(
-                "Thank you!",
-                "This would open the App Store rating page"
+                "About Reflex",
+                "Reflex v1.0.0\n\nYour mindful urge companion, helping you build self-awareness and transform automatic urges into conscious choices.\n\nMade with ❤️"
               );
             },
             undefined,
-            "⭐"
+            "ℹ️"
           )}
         </View>
 
         {/* Danger Zone */}
         <View className="mb-8">
-          <Text className="text-lg font-bold text-red-600 mb-3">
+          <Text className="text-2xl font-bold text-white mb-4">
             ⚠️ Danger Zone
           </Text>
 
-          <TouchableOpacity
-            className="bg-red-50 p-4 rounded-lg border border-red-200"
-            onPress={handleClearData}
-          >
-            <View className="flex-row items-center">
-              <Text className="text-2xl mr-3">🗑️</Text>
-              <View className="flex-1">
-                <Text className="text-red-800 font-medium text-lg">
-                  Clear All Data
-                </Text>
-                <Text className="text-red-600 text-sm mt-1">
-                  Permanently delete all logs, settings, and streaks
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        {/* App Info */}
-        <View className="items-center mb-8">
-          <Text className="text-gray-500 text-sm">Reflex v1.0.0</Text>
-          <Text className="text-gray-400 text-xs mt-1">
-            Built with ❤️ for mindful living
-          </Text>
+          {renderSettingItem(
+            "Clear All Data",
+            "Permanently delete all app data",
+            handleClearData,
+            undefined,
+            "🗑️"
+          )}
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
