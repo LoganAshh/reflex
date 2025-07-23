@@ -116,11 +116,14 @@ const ReplacementActions: React.FC = () => {
           {categories.map((category) => (
             <TouchableOpacity
               key={category.id}
-              className={`px-6 py-3 rounded-full border border-white border-opacity-30 ${
-                selectedCategory === category.id
-                  ? "bg-white"
-                  : "bg-white bg-opacity-10"
-              }`}
+              className="px-6 py-3 rounded-full border"
+              style={{
+                backgroundColor:
+                  selectedCategory === category.id
+                    ? "#FFFFFF"
+                    : "rgba(255, 255, 255, 0.1)",
+                borderColor: "rgba(255, 255, 255, 0.3)",
+              }}
               onPress={() => setSelectedCategory(category.id)}
             >
               <View className="flex-row items-center">
@@ -146,7 +149,11 @@ const ReplacementActions: React.FC = () => {
           {filteredActions.map((action) => (
             <TouchableOpacity
               key={action.id}
-              className="bg-white bg-opacity-10 rounded-2xl p-6 border border-white border-opacity-20"
+              className="rounded-2xl p-6 border"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                borderColor: "rgba(255, 255, 255, 0.2)",
+              }}
             >
               <View className="flex-row items-start justify-between mb-4">
                 <View className="flex-row items-center flex-1">
@@ -180,7 +187,10 @@ const ReplacementActions: React.FC = () => {
                   </Text>
                 </View>
 
-                <TouchableOpacity className="bg-white bg-opacity-20 px-4 py-2 rounded-lg">
+                <TouchableOpacity
+                  className="px-4 py-2 rounded-lg"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                >
                   <Text className="text-white font-semibold">Try It</Text>
                 </TouchableOpacity>
               </View>
@@ -189,7 +199,13 @@ const ReplacementActions: React.FC = () => {
         </View>
 
         {/* Add Custom Action */}
-        <TouchableOpacity className="bg-white bg-opacity-15 rounded-2xl p-6 mb-8 border border-white border-opacity-30">
+        <TouchableOpacity
+          className="rounded-2xl p-6 mb-8 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            borderColor: "rgba(255, 255, 255, 0.3)",
+          }}
+        >
           <View className="items-center">
             <Text className="text-4xl mb-3">➕</Text>
             <Text className="text-white font-bold text-xl mb-2">
