@@ -41,7 +41,13 @@ const PatternDashboard: React.FC = () => {
 
       <ScrollView className="flex-1 px-6">
         {/* Success Rate Card */}
-        <View className="bg-white bg-opacity-10 rounded-2xl p-6 mb-6 border border-white border-opacity-20">
+        <View
+          className="rounded-2xl p-6 mb-6 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+          }}
+        >
           <Text className="text-2xl font-bold text-white text-center mb-4">
             📊 Your Success Rate
           </Text>
@@ -54,7 +60,10 @@ const PatternDashboard: React.FC = () => {
               resisted
             </Text>
 
-            <View className="w-full bg-white bg-opacity-20 rounded-full h-4 mt-4">
+            <View
+              className="w-full rounded-full h-4 mt-4"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+            >
               <View
                 className="bg-green-400 h-4 rounded-full"
                 style={{ width: `${mockStats.successRate}%` }}
@@ -64,7 +73,13 @@ const PatternDashboard: React.FC = () => {
         </View>
 
         {/* Common Triggers */}
-        <View className="bg-white bg-opacity-10 rounded-2xl p-6 mb-6 border border-white border-opacity-20">
+        <View
+          className="rounded-2xl p-6 mb-6 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+          }}
+        >
           <Text className="text-2xl font-bold text-white mb-4 text-center">
             🎯 Common Triggers
           </Text>
@@ -78,7 +93,10 @@ const PatternDashboard: React.FC = () => {
                   {item.trigger}
                 </Text>
                 <View className="flex-row items-center">
-                  <View className="w-20 bg-white bg-opacity-20 rounded-full h-3 mr-3">
+                  <View
+                    className="w-20 rounded-full h-3 mr-3"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                  >
                     <View
                       className="bg-orange-400 h-3 rounded-full"
                       style={{ width: `${(item.count / 15) * 100}%` }}
@@ -94,7 +112,13 @@ const PatternDashboard: React.FC = () => {
         </View>
 
         {/* Common Urges */}
-        <View className="bg-white bg-opacity-10 rounded-2xl p-6 mb-6 border border-white border-opacity-20">
+        <View
+          className="rounded-2xl p-6 mb-6 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+          }}
+        >
           <Text className="text-2xl font-bold text-white mb-4 text-center">
             📱 Most Frequent Urges
           </Text>
@@ -108,7 +132,10 @@ const PatternDashboard: React.FC = () => {
                   {item.urge}
                 </Text>
                 <View className="flex-row items-center">
-                  <View className="w-20 bg-white bg-opacity-20 rounded-full h-3 mr-3">
+                  <View
+                    className="w-20 rounded-full h-3 mr-3"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                  >
                     <View
                       className="bg-blue-400 h-3 rounded-full"
                       style={{ width: `${(item.count / 18) * 100}%` }}
@@ -124,7 +151,13 @@ const PatternDashboard: React.FC = () => {
         </View>
 
         {/* Weekly Trend */}
-        <View className="bg-white bg-opacity-10 rounded-2xl p-6 mb-6 border border-white border-opacity-20">
+        <View
+          className="rounded-2xl p-6 mb-6 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+          }}
+        >
           <Text className="text-2xl font-bold text-white mb-4 text-center">
             📈 Weekly Trend
           </Text>
@@ -147,7 +180,13 @@ const PatternDashboard: React.FC = () => {
         </View>
 
         {/* Insights */}
-        <View className="bg-white bg-opacity-15 rounded-2xl p-6 mb-8 border border-white border-opacity-30">
+        <View
+          className="rounded-2xl p-6 mb-8 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            borderColor: "rgba(255, 255, 255, 0.3)",
+          }}
+        >
           <Text className="text-white font-bold text-center mb-3 text-xl">
             💡 Key Insight
           </Text>
