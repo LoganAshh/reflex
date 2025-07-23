@@ -20,7 +20,11 @@ const SettingsScreen: React.FC = () => {
     icon?: string
   ) => (
     <TouchableOpacity
-      className="bg-white bg-opacity-10 rounded-xl p-4 mb-4 border border-white border-opacity-20"
+      className="rounded-xl p-4 mb-4 border"
+      style={{
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        borderColor: "rgba(255, 255, 255, 0.2)",
+      }}
       onPress={onPress}
     >
       <View className="flex-row items-center justify-between">
