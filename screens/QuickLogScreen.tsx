@@ -1,4 +1,4 @@
-// screens/QuickLogScreen.tsx - Complete updated version with filtered urges
+// screens/QuickLogScreen.tsx - Updated version with always visible button text
 
 import React, { useState, useEffect } from "react";
 import {
@@ -72,8 +72,24 @@ const QuickLogScreen: React.FC = () => {
     });
   };
 
+  // Check if current step is valid to proceed
+  const isStepValid = () => {
+    switch (currentStep) {
+      case 1:
+        return !!urge;
+      case 2:
+        return !!location;
+      case 3:
+        return !!trigger;
+      case 4:
+        return actedOn !== null;
+      default:
+        return false;
+    }
+  };
+
   const handleNext = () => {
-    if (currentStep < 4) {
+    if (currentStep < 4 && isStepValid()) {
       animateTransition(() => setCurrentStep(currentStep + 1));
     }
   };
@@ -85,6 +101,8 @@ const QuickLogScreen: React.FC = () => {
   };
 
   const handleSubmit = () => {
+    if (!isStepValid()) return;
+
     // Submit logic here
     console.log("Submitting urge log:", {
       urge,
@@ -422,38 +440,20 @@ const QuickLogScreen: React.FC = () => {
 
           <TouchableOpacity
             className={`flex-1 rounded-lg py-4 ${
-              (currentStep === 1 && !urge) ||
-              (currentStep === 2 && !location) ||
-              (currentStep === 3 && !trigger) ||
-              (currentStep === 4 && actedOn === null)
-                ? "bg-gray-400 opacity-50"
-                : "bg-white"
+              !isStepValid() ? "opacity-50" : ""
             }`}
+            style={{
+              backgroundColor: !isStepValid()
+                ? "rgba(255, 255, 255, 0.3)"
+                : "#FFFFFF",
+            }}
             onPress={currentStep === 4 ? handleSubmit : handleNext}
-            disabled={
-              (currentStep === 1 && !urge) ||
-              (currentStep === 2 && !location) ||
-              (currentStep === 3 && !trigger) ||
-              (currentStep === 4 && actedOn === null)
-            }
+            disabled={!isStepValid()}
           >
             <Text
-              className={`text-center font-semibold text-xl ${
-                (currentStep === 1 && !urge) ||
-                (currentStep === 2 && !location) ||
-                (currentStep === 3 && !trigger) ||
-                (currentStep === 4 && actedOn === null)
-                  ? "text-gray-600"
-                  : ""
-              }`}
+              className="text-center font-semibold text-xl"
               style={{
-                color:
-                  (currentStep === 1 && !urge) ||
-                  (currentStep === 2 && !location) ||
-                  (currentStep === 3 && !trigger) ||
-                  (currentStep === 4 && actedOn === null)
-                    ? "#9CA3AF"
-                    : "#185e66",
+                color: !isStepValid() ? "rgba(255, 255, 255, 0.7)" : "#185e66",
               }}
             >
               {currentStep === 4 ? "Save Log" : "Next"}
