@@ -386,20 +386,17 @@ const QuickLogScreen: React.FC = () => {
     <SafeAreaView className="flex-1" style={{ backgroundColor: "#185e66" }}>
       {/* Header */}
       <View className="px-6 pt-4 pb-2">
-        <View className="flex-row justify-between items-center">
-          <TouchableOpacity onPress={() => setCurrentStep(1)}>
-            <Text className="text-white text-lg opacity-75">Cancel</Text>
-          </TouchableOpacity>
-
+        <View className="flex-row items-center justify-between">
+          <Text className="text-2xl font-semibold text-white">Quick Log</Text>
           <Text className="text-white text-lg opacity-75">
-            Step {currentStep} of 4
+            {currentStep} of 4
           </Text>
         </View>
 
         {/* Progress bar */}
-        <View className="w-full bg-white bg-opacity-20 rounded-full h-1 mt-4">
+        <View className="w-full bg-white bg-opacity-20 rounded-full h-2 mt-4">
           <View
-            className="h-1 bg-green-500 rounded-full"
+            className="bg-white h-2 rounded-full transition-all duration-300"
             style={{ width: `${(currentStep / 4) * 100}%` }}
           />
         </View>
