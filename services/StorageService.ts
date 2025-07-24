@@ -103,6 +103,7 @@ class StorageService {
       streakGoals: this.getDefaultStreakGoals(),
       onboardingCompleted: false,
       theme: "system",
+      selectedUrges: [], // Default to empty array - user will select during onboarding
     });
   }
 

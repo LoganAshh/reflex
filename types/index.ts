@@ -11,11 +11,12 @@ export interface UrgeLog {
 
 export interface UserSettings {
   notificationsEnabled: boolean;
-  dailyReminderTime: string;
+  dailyReminderTime: string; // Format: "HH:MM"
   selectedReplacementActions: string[];
   streakGoals: StreakGoal[];
   onboardingCompleted: boolean;
   theme: "light" | "dark" | "system";
+  selectedUrges: string[]; // New field for storing user's selected urges for tracking
 }
 
 export interface StreakGoal {

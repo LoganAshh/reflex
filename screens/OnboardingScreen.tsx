@@ -13,6 +13,8 @@ import {
   Easing,
 } from "react-native";
 import { useOnboarding } from "../hooks/useOnboarding";
+import { COMMON_URGES } from "../types";
+import { storageService } from "../services/StorageService";
 
 const { width } = Dimensions.get("window");
 
@@ -27,6 +29,7 @@ interface OnboardingStep {
 
 const OnboardingScreen: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [selectedUrges, setSelectedUrges] = useState<string[]>([]);
   const { completeOnboarding } = useOnboarding();
 
   // Animation values
@@ -76,6 +79,19 @@ const OnboardingScreen: React.FC = () => {
       ],
     },
     {
+      id: "urge-selection",
+      title: "Choose Your Focus",
+      subtitle: "What urges are you mindful about?",
+      description:
+        "Select the urges you want to track. You can always add or remove urges later in settings.",
+      icon: "🎯",
+      tips: [
+        "Select urges you want to be mindful about",
+        "Your QuickLog will show only these urges",
+        "This helps keep your tracking focused",
+      ],
+    },
+    {
       id: "patterns",
       title: "Discover Patterns",
       subtitle: "Insights from your data",
@@ -91,73 +107,80 @@ const OnboardingScreen: React.FC = () => {
       description:
         "Instead of just resisting urges, replace them with healthy alternatives that make you feel good.",
       icon: "⚡",
-      tips: ["Breathing exercises", "Physical movement", "Social connections"],
+      tips: [
+        "Quick 1-minute actions",
+        "Proven techniques",
+        "Personalized suggestions",
+      ],
+    },
+    {
+      id: "ready",
+      title: "You're All Set!",
+      subtitle: "Start your mindful journey",
+      description:
+        "Ready to build more awareness and intentional choices? Let's begin tracking your urges.",
+      icon: "🚀",
+      tips: [
+        "Every urge logged is progress",
+        "Patterns emerge over time",
+        "Small changes create lasting impact",
+      ],
     },
   ];
 
-  // Animate progress bar when step changes
+  // Update progress animation when step changes
   useEffect(() => {
+    const progress = ((currentStep + 1) / steps.length) * 100;
     Animated.timing(progressAnim, {
-      toValue: ((currentStep + 1) / steps.length) * 100,
-      duration: 500,
-      easing: Easing.out(Easing.cubic),
+      toValue: progress,
+      duration: 300,
+      easing: Easing.out(Easing.quad),
       useNativeDriver: false,
     }).start();
-  }, [currentStep]);
-
-  // Initial entrance animation
-  useEffect(() => {
-    // Reset animations for new step
-    fadeAnim.setValue(0);
-    slideAnim.setValue(50);
-    scaleAnim.setValue(0.8);
-
-    // Animate in
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 600,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 800,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [currentStep]);
+  }, [currentStep, progressAnim, steps.length]);
 
   const animateTransition = (callback: () => void) => {
-    // Animate out
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 300,
-        easing: Easing.in(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: -30,
-        duration: 300,
-        easing: Easing.in(Easing.cubic),
+        duration: 200,
+        easing: Easing.in(Easing.quad),
         useNativeDriver: true,
       }),
       Animated.timing(scaleAnim, {
-        toValue: 0.9,
-        duration: 300,
-        easing: Easing.in(Easing.cubic),
+        toValue: 0.95,
+        duration: 200,
+        easing: Easing.in(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 30,
+        duration: 200,
+        easing: Easing.in(Easing.quad),
         useNativeDriver: true,
       }),
     ]).start(() => {
       callback();
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 300,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]).start();
     });
   };
 
@@ -177,6 +200,11 @@ const OnboardingScreen: React.FC = () => {
 
   const handleComplete = async () => {
     try {
+      // Save selected urges to user settings
+      const settings = await storageService.getUserSettings();
+      settings.selectedUrges = selectedUrges;
+      await storageService.saveUserSettings(settings);
+
       await completeOnboarding();
     } catch (error) {
       console.error("Error completing onboarding:", error);
@@ -187,7 +215,13 @@ const OnboardingScreen: React.FC = () => {
     handleComplete();
   };
 
-  const renderStep = (step: OnboardingStep) => (
+  const toggleUrgeSelection = (urge: string) => {
+    setSelectedUrges((prev) =>
+      prev.includes(urge) ? prev.filter((u) => u !== urge) : [...prev, urge]
+    );
+  };
+
+  const renderUrgeSelectionStep = () => (
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
       <Animated.View
         className="items-center px-6 py-8"
@@ -198,61 +232,192 @@ const OnboardingScreen: React.FC = () => {
       >
         {/* Logo with bounce animation */}
         <Animated.View
-          className="w-24 h-24 items-center justify-center mb-16 mt-16"
+          className="w-24 h-24 items-center justify-center mb-8 mt-8"
           style={{
             transform: [{ scale: scaleAnim }],
           }}
         >
-          <Image
-            source={require("../assets/logo2.png")}
-            style={{ width: 128, height: 128 }}
-            resizeMode="contain"
-          />
+          <Text className="text-6xl">🎯</Text>
         </Animated.View>
 
-        {/* Title with staggered animation */}
+        {/* Title */}
         <Animated.Text
-          className="text-4xl font-bold text-white text-center mb-8"
+          className="text-4xl font-bold text-white text-center mb-4"
           style={{
             opacity: fadeAnim,
             transform: [{ translateY: slideAnim }],
           }}
         >
-          {step.title}
+          Choose Your Focus
         </Animated.Text>
 
-        {/* Subtitle with delayed animation */}
+        {/* Subtitle */}
         <Animated.Text
-          className="text-2xl text-white text-center mb-16 font-medium opacity-90"
+          className="text-2xl text-white text-center mb-8 font-medium opacity-90"
           style={{
             opacity: fadeAnim,
-            transform: [
-              {
-                translateY: Animated.add(slideAnim, 10),
-              },
-            ],
+            transform: [{ translateY: Animated.add(slideAnim, 10) }],
           }}
         >
-          {step.subtitle}
+          What urges are you mindful about?
         </Animated.Text>
 
-        {/* Description with more delayed animation */}
+        {/* Description */}
         <Animated.Text
-          className="text-2xl text-white text-center mb-8 leading-7 opacity-80"
+          className="text-lg text-white text-center mb-8 leading-7 opacity-80"
           style={{
             opacity: fadeAnim,
-            transform: [
-              {
-                translateY: Animated.add(slideAnim, 20),
-              },
-            ],
+            transform: [{ translateY: Animated.add(slideAnim, 20) }],
           }}
         >
-          {step.description}
+          Select the urges you want to track. You can always add or remove urges
+          later in settings.
         </Animated.Text>
+
+        {/* Selection count */}
+        <View className="mb-6 bg-white bg-opacity-20 rounded-lg px-4 py-2">
+          <Text className="text-white font-medium text-center">
+            {selectedUrges.length} urge{selectedUrges.length !== 1 ? "s" : ""}{" "}
+            selected
+          </Text>
+        </View>
+
+        {/* Urge selection grid */}
+        <View className="w-full">
+          {COMMON_URGES.map((urge, index) => {
+            const isSelected = selectedUrges.includes(urge);
+            return (
+              <TouchableOpacity
+                key={index}
+                className="p-4 rounded-lg mb-3 border"
+                style={{
+                  backgroundColor: isSelected
+                    ? "#FFFFFF"
+                    : "rgba(255, 255, 255, 0.1)",
+                  borderColor: isSelected
+                    ? "transparent"
+                    : "rgba(255, 255, 255, 0.3)",
+                }}
+                onPress={() => toggleUrgeSelection(urge)}
+              >
+                <View className="flex-row items-center justify-between">
+                  <Text
+                    className={`text-lg font-medium ${
+                      isSelected ? "text-gray-800" : "text-white"
+                    }`}
+                  >
+                    {urge}
+                  </Text>
+                  <View
+                    className="w-6 h-6 rounded-full border-2 items-center justify-center"
+                    style={{
+                      borderColor: isSelected
+                        ? "#10B981"
+                        : "rgba(255, 255, 255, 0.5)",
+                      backgroundColor: isSelected ? "#10B981" : "transparent",
+                    }}
+                  >
+                    {isSelected && (
+                      <Text className="text-white text-sm font-bold">✓</Text>
+                    )}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* Helper text */}
+        <View className="mt-6 bg-white bg-opacity-10 rounded-lg p-4">
+          <Text className="text-white text-center text-sm opacity-75">
+            💡 Tip: Focus on 3-5 urges to start. You can always adjust your
+            selection later in settings.
+          </Text>
+        </View>
       </Animated.View>
     </ScrollView>
   );
+
+  const renderStep = (step: OnboardingStep) => {
+    if (step.id === "urge-selection") {
+      return renderUrgeSelectionStep();
+    }
+
+    return (
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <Animated.View
+          className="items-center px-6 py-8"
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
+          }}
+        >
+          {/* Logo with bounce animation */}
+          <Animated.View
+            className="w-24 h-24 items-center justify-center mb-16 mt-16"
+            style={{
+              transform: [{ scale: scaleAnim }],
+            }}
+          >
+            <Image
+              source={require("../assets/logo2.png")}
+              style={{ width: 128, height: 128 }}
+              resizeMode="contain"
+            />
+          </Animated.View>
+
+          {/* Title with staggered animation */}
+          <Animated.Text
+            className="text-4xl font-bold text-white text-center mb-8"
+            style={{
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            }}
+          >
+            {step.title}
+          </Animated.Text>
+
+          {/* Subtitle with delayed animation */}
+          <Animated.Text
+            className="text-2xl text-white text-center mb-16 font-medium opacity-90"
+            style={{
+              opacity: fadeAnim,
+              transform: [
+                {
+                  translateY: Animated.add(slideAnim, 10),
+                },
+              ],
+            }}
+          >
+            {step.subtitle}
+          </Animated.Text>
+
+          {/* Description with more delayed animation */}
+          <Animated.Text
+            className="text-2xl text-white text-center mb-8 leading-7 opacity-80"
+            style={{
+              opacity: fadeAnim,
+              transform: [
+                {
+                  translateY: Animated.add(slideAnim, 20),
+                },
+              ],
+            }}
+          >
+            {step.description}
+          </Animated.Text>
+        </Animated.View>
+      </ScrollView>
+    );
+  };
+
+  const isNextDisabled = () => {
+    // For urge selection step, require at least one urge to be selected
+    if (steps[currentStep].id === "urge-selection") {
+      return selectedUrges.length === 0;
+    }
+    return false;
+  };
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: "#185e66" }}>
@@ -318,12 +483,17 @@ const OnboardingScreen: React.FC = () => {
             }}
           >
             <TouchableOpacity
-              className="bg-white rounded-lg py-4"
+              className={`rounded-lg py-4 ${
+                isNextDisabled() ? "bg-gray-400 opacity-50" : "bg-white"
+              }`}
               onPress={handleNext}
+              disabled={isNextDisabled()}
             >
               <Text
-                className="text-center font-semibold text-2xl"
-                style={{ color: "#185e66" }}
+                className={`text-center font-semibold text-2xl ${
+                  isNextDisabled() ? "text-gray-600" : "text-gray-800"
+                }`}
+                style={{ color: isNextDisabled() ? "#9CA3AF" : "#185e66" }}
               >
                 {currentStep === 0
                   ? "Get Started!"

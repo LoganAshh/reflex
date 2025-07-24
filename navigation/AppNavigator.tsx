@@ -236,7 +236,7 @@ const AppNavigator: React.FC = () => {
     );
   }
 
-  if (!isOnboardingCompleted) {
+  if (true) {
     return <OnboardingScreen />;
   }
 
