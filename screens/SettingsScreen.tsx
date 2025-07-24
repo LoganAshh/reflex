@@ -1,3 +1,5 @@
+// screens/SettingsScreen.tsx - Updated with urge selection
+
 import React, { useState } from "react";
 import {
   View,
@@ -6,73 +8,147 @@ import {
   ScrollView,
   SafeAreaView,
   Switch,
-  Alert,
+  Modal,
 } from "react-native";
+import { useSettings } from "../hooks/useSettings";
+import UrgeSelectionSettings from "../components/UrgeSelectionSettings";
 
 const SettingsScreen: React.FC = () => {
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const { settings, updateSettings, toggleNotifications } = useSettings();
+  const [showUrgeSelection, setShowUrgeSelection] = useState(false);
 
-  const renderSettingItem = (
-    title: string,
-    subtitle: string,
-    onPress?: () => void,
-    rightComponent?: React.ReactNode,
-    icon?: string
-  ) => (
-    <TouchableOpacity
-      className="rounded-xl p-4 mb-4 border"
-      style={{
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
-        borderColor: "rgba(255, 255, 255, 0.2)",
-      }}
-      onPress={onPress}
-    >
-      <View className="flex-row items-center justify-between">
-        <View className="flex-1">
-          <View className="flex-row items-center">
-            {icon && <Text className="text-2xl mr-3">{icon}</Text>}
-            <Text className="text-white font-semibold text-lg">{title}</Text>
-          </View>
-          <Text className="text-white opacity-75 mt-1">{subtitle}</Text>
-        </View>
-        {rightComponent}
-      </View>
-    </TouchableOpacity>
-  );
-
-  const handleExportData = () => {
-    Alert.alert(
-      "Export Data",
-      "Your data will be exported as a JSON file that you can save or share.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Export", onPress: () => console.log("Exporting data...") },
-      ]
-    );
-  };
-
-  const handleClearData = () => {
-    Alert.alert(
-      "Clear All Data",
-      "This will permanently delete all your urge logs, settings, and streak data. This action cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
+  const settingSections = [
+    {
+      title: "Tracking",
+      items: [
         {
-          text: "Clear Data",
-          style: "destructive",
-          onPress: () => console.log("Clearing data..."),
+          title: "Selected Urges",
+          subtitle: `${settings?.selectedUrges?.length || 0} urges selected`,
+          icon: "🎯",
+          action: () => setShowUrgeSelection(true),
+          showArrow: true,
         },
-      ]
-    );
-  };
+      ],
+    },
+    {
+      title: "Notifications",
+      items: [
+        {
+          title: "Enable Notifications",
+          subtitle: "Daily check-ins and reminders",
+          icon: "🔔",
+          toggle: true,
+          value: settings?.notificationsEnabled || false,
+          onToggle: toggleNotifications,
+        },
+        {
+          title: "Daily Reminder Time",
+          subtitle: settings?.dailyReminderTime || "20:00",
+          icon: "⏰",
+          action: () => {
+            // Handle time picker
+            console.log("Open time picker");
+          },
+          showArrow: true,
+          disabled: !settings?.notificationsEnabled,
+        },
+      ],
+    },
+    {
+      title: "Data",
+      items: [
+        {
+          title: "Export Data",
+          subtitle: "Download your tracking data",
+          icon: "📤",
+          action: () => {
+            // Handle export
+            console.log("Export data");
+          },
+          showArrow: true,
+        },
+        {
+          title: "Clear All Data",
+          subtitle: "Permanently delete all logs",
+          icon: "🗑️",
+          action: () => {
+            // Handle clear data
+            console.log("Clear data");
+          },
+          showArrow: true,
+          destructive: true,
+        },
+      ],
+    },
+    {
+      title: "Support",
+      items: [
+        {
+          title: "About Reflex",
+          subtitle: "Version 1.0.0",
+          icon: "ℹ️",
+          action: () => {
+            // Handle about
+            console.log("About");
+          },
+          showArrow: true,
+        },
+        {
+          title: "Privacy Policy",
+          subtitle: "How we protect your data",
+          icon: "🔒",
+          action: () => {
+            // Handle privacy policy
+            console.log("Privacy policy");
+          },
+          showArrow: true,
+        },
+      ],
+    },
+  ];
 
-  const handleSetReminderTime = () => {
-    Alert.alert("Daily Reminder", "Set your daily check-in reminder time", [
-      { text: "Cancel", style: "cancel" },
-      { text: "8:00 PM", onPress: () => console.log("Set to 8:00 PM") },
-      { text: "9:00 PM", onPress: () => console.log("Set to 9:00 PM") },
-      { text: "10:00 PM", onPress: () => console.log("Set to 10:00 PM") },
-    ]);
+  const renderSettingItem = (item: any) => {
+    const isDisabled = item.disabled;
+
+    return (
+      <TouchableOpacity
+        key={item.title}
+        className={`p-4 border-b border-gray-100 ${
+          isDisabled ? "opacity-50" : ""
+        }`}
+        onPress={!isDisabled ? item.action : undefined}
+        disabled={isDisabled}
+      >
+        <View className="flex-row items-center">
+          <Text className="text-2xl mr-3">{item.icon}</Text>
+
+          <View className="flex-1">
+            <Text
+              className={`text-lg font-medium ${
+                item.destructive ? "text-red-600" : "text-gray-800"
+              }`}
+            >
+              {item.title}
+            </Text>
+            <Text className="text-gray-500 text-sm mt-1">{item.subtitle}</Text>
+          </View>
+
+          {item.toggle && (
+            <Switch
+              value={item.value}
+              onValueChange={item.onToggle}
+              disabled={isDisabled}
+              trackColor={{ false: "#d1d5db", true: "#10B981" }}
+              thumbColor="#ffffff"
+            />
+          )}
+
+          {item.showArrow && !item.toggle && (
+            <Text className="text-gray-400 text-xl">›</Text>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -87,181 +163,48 @@ const SettingsScreen: React.FC = () => {
         </Text>
       </View>
 
-      <ScrollView className="flex-1 px-6">
-        {/* Notifications */}
-        <View className="mb-8">
-          <Text className="text-2xl font-bold text-white mb-4">
-            🔔 Notifications
-          </Text>
+      {/* Settings Content */}
+      <View className="flex-1 bg-white rounded-t-3xl">
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+          <View className="pt-6">
+            {settingSections.map((section, sectionIndex) => (
+              <View key={section.title} className="mb-8">
+                <Text className="text-lg font-bold text-gray-800 px-6 mb-4">
+                  {section.title}
+                </Text>
 
-          {renderSettingItem(
-            "Daily Reminders",
-            "Get gentle check-in reminders",
-            undefined,
-            <Switch
-              value={notificationsEnabled}
-              onValueChange={setNotificationsEnabled}
-              trackColor={{ false: "rgba(255,255,255,0.3)", true: "#10B981" }}
-              thumbColor="#ffffff"
-            />,
-            "📱"
-          )}
+                <View className="bg-white mx-4 rounded-lg shadow-sm border border-gray-100">
+                  {section.items.map((item, itemIndex) => (
+                    <View key={item.title}>{renderSettingItem(item)}</View>
+                  ))}
+                </View>
+              </View>
+            ))}
+          </View>
 
-          {notificationsEnabled &&
-            renderSettingItem(
-              "Daily Reminder Time",
-              "Check-in reminder at 9:00 PM",
-              handleSetReminderTime,
-              undefined,
-              "⏰"
-            )}
-        </View>
+          {/* App info */}
+          <View className="px-6 py-8 border-t border-gray-100">
+            <Text className="text-center text-gray-500 text-sm">
+              Reflex - Mindful Urge Tracking
+            </Text>
+            <Text className="text-center text-gray-400 text-xs mt-1">
+              Build awareness, create change
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
 
-        {/* App Preferences */}
-        <View className="mb-8">
-          <Text className="text-2xl font-bold text-white mb-4">
-            ⚙️ Preferences
-          </Text>
-
-          {renderSettingItem(
-            "Theme",
-            "Currently using system theme",
-            () => {
-              Alert.alert("Theme", "Choose your preferred theme", [
-                { text: "Cancel", style: "cancel" },
-                { text: "Light", onPress: () => console.log("Light theme") },
-                { text: "Dark", onPress: () => console.log("Dark theme") },
-                { text: "System", onPress: () => console.log("System theme") },
-              ]);
-            },
-            undefined,
-            "🎨"
-          )}
-
-          {renderSettingItem(
-            "Quick Actions",
-            "3 favorite replacement actions",
-            () => {
-              Alert.alert(
-                "Quick Actions",
-                "Customize your favorite replacement actions for quick access."
-              );
-            },
-            undefined,
-            "⚡"
-          )}
-        </View>
-
-        {/* Data & Privacy */}
-        <View className="mb-8">
-          <Text className="text-2xl font-bold text-white mb-4">
-            🔒 Data & Privacy
-          </Text>
-
-          {renderSettingItem(
-            "Export Data",
-            "Download all your urge logs and statistics",
-            handleExportData,
-            undefined,
-            "📤"
-          )}
-
-          {renderSettingItem(
-            "Privacy Policy",
-            "Learn how we protect your data",
-            () => {
-              Alert.alert(
-                "Privacy Policy",
-                "All your data is stored locally on your device. We never collect or share your personal information."
-              );
-            },
-            undefined,
-            "🛡️"
-          )}
-        </View>
-
-        {/* Streak Management */}
-        <View className="mb-8">
-          <Text className="text-2xl font-bold text-white mb-4">🔥 Streaks</Text>
-
-          {renderSettingItem(
-            "Manage Streak Goals",
-            "3 active goals",
-            () => {
-              Alert.alert(
-                "Streak Goals",
-                "Manage your streak goals and targets."
-              );
-            },
-            undefined,
-            "🎯"
-          )}
-
-          {renderSettingItem(
-            "Reset Streaks",
-            "Start fresh with all streak counters",
-            () => {
-              Alert.alert(
-                "Reset Streaks",
-                "This will reset all your streak counters to zero. This action cannot be undone.",
-                [
-                  { text: "Cancel", style: "cancel" },
-                  {
-                    text: "Reset",
-                    style: "destructive",
-                    onPress: () => console.log("Resetting streaks..."),
-                  },
-                ]
-              );
-            },
-            undefined,
-            "🔄"
-          )}
-        </View>
-
-        {/* Support */}
-        <View className="mb-8">
-          <Text className="text-2xl font-bold text-white mb-4">💬 Support</Text>
-
-          {renderSettingItem(
-            "Send Feedback",
-            "Help us improve the app",
-            () => {
-              Alert.alert("Send Feedback", "What would you like to tell us?");
-            },
-            undefined,
-            "📝"
-          )}
-
-          {renderSettingItem(
-            "About",
-            "Version 1.0.0 - Made with ❤️",
-            () => {
-              Alert.alert(
-                "About Reflex",
-                "Reflex v1.0.0\n\nYour mindful urge companion, helping you build self-awareness and transform automatic urges into conscious choices.\n\nMade with ❤️"
-              );
-            },
-            undefined,
-            "ℹ️"
-          )}
-        </View>
-
-        {/* Danger Zone */}
-        <View className="mb-8">
-          <Text className="text-2xl font-bold text-white mb-4">
-            ⚠️ Danger Zone
-          </Text>
-
-          {renderSettingItem(
-            "Clear All Data",
-            "Permanently delete all app data",
-            handleClearData,
-            undefined,
-            "🗑️"
-          )}
-        </View>
-      </ScrollView>
+      {/* Urge Selection Modal */}
+      <Modal
+        visible={showUrgeSelection}
+        animationType="slide"
+        presentationStyle="pageSheet"
+      >
+        <UrgeSelectionSettings
+          onClose={() => setShowUrgeSelection(false)}
+          showHeader={true}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };
