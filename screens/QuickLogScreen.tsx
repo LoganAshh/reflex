@@ -115,7 +115,7 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4">
+            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
               What's the urge?
             </Text>
             <Text className="text-xl text-white text-center mb-8 opacity-90">
