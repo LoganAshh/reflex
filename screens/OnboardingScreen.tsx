@@ -314,7 +314,7 @@ const OnboardingScreen: React.FC = () => {
 
         {/* Selection count */}
         <View className="mb-6 bg-white bg-opacity-20 rounded-lg px-4 py-2">
-          <Text className="text-white font-medium text-center">
+          <Text className="text-black font-bold text-center">
             {selectedUrges.length} urge{selectedUrges.length !== 1 ? "s" : ""}{" "}
             selected
           </Text>
@@ -367,7 +367,7 @@ const OnboardingScreen: React.FC = () => {
 
         {/* Helper text */}
         <View className="mt-6 bg-white bg-opacity-10 rounded-lg p-4">
-          <Text className="text-white text-center text-sm opacity-75">
+          <Text className="text-black text-center text-m font-bold opacity-75">
             💡 Tip: Focus on 3-5 urges to start. You can always adjust your
             selection later in settings.
           </Text>
