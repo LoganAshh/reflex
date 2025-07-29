@@ -12,6 +12,7 @@ import {
   Animated,
   Easing,
 } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 import { useOnboarding } from "../hooks/useOnboarding";
 import { COMMON_URGES } from "../types";
 import { storageService } from "../services/StorageService";
@@ -24,6 +25,7 @@ interface OnboardingStep {
   subtitle: string;
   description: string;
   icon: string;
+  iconName?: keyof typeof Ionicons.glyphMap;
   tips: string[];
 }
 
@@ -45,7 +47,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "Your mindful urge companion",
       description:
         "Reflex helps you build self-awareness and transform automatic urges into conscious choices.",
-      icon: "🧠",
+      icon: "logo", // Special case for logo
       tips: [
         "Track urges without judgment",
         "Discover your patterns",
@@ -59,6 +61,7 @@ const OnboardingScreen: React.FC = () => {
       description:
         "When you feel an urge, quickly log it. Over time, you'll see patterns and build better habits.",
       icon: "📝",
+      iconName: "create-outline",
       tips: [
         "Log urges in under 30 seconds",
         "See patterns in your behavior",
@@ -72,6 +75,7 @@ const OnboardingScreen: React.FC = () => {
       description:
         "See when, where, and why urges happen. Understanding patterns is the first step to change.",
       icon: "📊",
+      iconName: "analytics-outline",
       tips: ["Time-based patterns", "Common triggers", "Success rate tracking"],
     },
     {
@@ -81,6 +85,7 @@ const OnboardingScreen: React.FC = () => {
       description:
         "Instead of just resisting urges, replace them with healthy alternatives that make you feel good.",
       icon: "⚡",
+      iconName: "flash-outline",
       tips: [
         "Quick 1-minute actions",
         "Proven techniques",
@@ -94,6 +99,7 @@ const OnboardingScreen: React.FC = () => {
       description:
         "All your data is stored locally on your phone. We never collect or share your personal information.",
       icon: "🔒",
+      iconName: "lock-closed-outline",
       tips: [
         "No account required",
         "No data sent to servers",
@@ -107,6 +113,7 @@ const OnboardingScreen: React.FC = () => {
       description:
         "Reflex's essential tracking and insights remain completely free. Premium features are optional add-ons to enhance your experience.",
       icon: "💝",
+      iconName: "gift-outline",
       tips: [
         "Core tracking always free",
         "Premium features are optional",
@@ -120,6 +127,7 @@ const OnboardingScreen: React.FC = () => {
       description:
         "Every urge is human. There's no shame in feeling them or even acting on them. Progress comes from awareness, not perfection.",
       icon: "🤗",
+      iconName: "heart-outline",
       tips: [
         "All urges are normal and human",
         "No shame, just awareness",
@@ -133,6 +141,7 @@ const OnboardingScreen: React.FC = () => {
       description:
         "Select the urges you want to track. You can always add or remove urges later in settings.",
       icon: "🎯",
+      iconName: "radio-button-on-outline",
       tips: [
         "Select urges you want to be mindful about",
         "Your QuickLog will show only these urges",
@@ -146,6 +155,7 @@ const OnboardingScreen: React.FC = () => {
       description:
         "Ready to build more awareness and intentional choices? Let's begin tracking your urges.",
       icon: "🚀",
+      iconName: "rocket-outline",
       tips: [
         "Every urge logged is progress",
         "Patterns emerge over time",
@@ -256,14 +266,16 @@ const OnboardingScreen: React.FC = () => {
           transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
         }}
       >
-        {/* Logo with bounce animation */}
+        {/* Icon with bounce animation */}
         <Animated.View
-          className="w-24 h-24 items-center justify-center mb-8 mt-8"
+          className="w-32 h-32 items-center justify-center mb-8 mt-8"
           style={{
             transform: [{ scale: scaleAnim }],
+            paddingHorizontal: 8,
+            paddingVertical: 8,
           }}
         >
-          <Text className="text-6xl">🎯</Text>
+          <Ionicons name="radio-button-on-outline" size={88} color="white" />
         </Animated.View>
 
         {/* Title */}
@@ -378,18 +390,28 @@ const OnboardingScreen: React.FC = () => {
             transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
           }}
         >
-          {/* Logo with bounce animation */}
+          {/* Logo/Icon with bounce animation */}
           <Animated.View
-            className="w-24 h-24 items-center justify-center mb-16 mt-16"
+            className="w-32 h-32 items-center justify-center mb-16 mt-16"
             style={{
               transform: [{ scale: scaleAnim }],
+              paddingHorizontal: 8,
+              paddingVertical: 8,
             }}
           >
-            <Image
-              source={require("../assets/logo2.png")}
-              style={{ width: 128, height: 128 }}
-              resizeMode="contain"
-            />
+            {step.icon === "logo" ? (
+              <Image
+                source={require("../assets/logo2.png")}
+                style={{ width: 128, height: 128 }}
+                resizeMode="contain"
+              />
+            ) : (
+              <Ionicons 
+                name={step.iconName!} 
+                size={88} 
+                color="white" 
+              />
+            )}
           </Animated.View>
 
           {/* Title with staggered animation */}
