@@ -308,7 +308,7 @@ const OnboardingScreen: React.FC = () => {
             transform: [{ translateY: Animated.add(slideAnim, 20) }],
           }}
         >
-          Select the urges you want to track. You can always add or remove urges
+          Select up to 5 urges you want to track. You can always add or remove urges
           later in settings.
         </Animated.Text>
 
@@ -324,6 +324,7 @@ const OnboardingScreen: React.FC = () => {
         <View className="w-full">
           {COMMON_URGES.map((urge, index) => {
             const isSelected = selectedUrges.includes(urge);
+            const isDisabled = !isSelected && selectedUrges.length >= 5;
             return (
               <TouchableOpacity
                 key={index}
@@ -331,17 +332,26 @@ const OnboardingScreen: React.FC = () => {
                 style={{
                   backgroundColor: isSelected
                     ? "#FFFFFF"
+                    : isDisabled
+                    ? "rgba(255, 255, 255, 0.05)"
                     : "rgba(255, 255, 255, 0.1)",
                   borderColor: isSelected
                     ? "transparent"
+                    : isDisabled
+                    ? "rgba(255, 255, 255, 0.15)"
                     : "rgba(255, 255, 255, 0.3)",
                 }}
-                onPress={() => toggleUrgeSelection(urge)}
+                onPress={() => !isDisabled && toggleUrgeSelection(urge)}
+                disabled={isDisabled}
               >
                 <View className="flex-row items-center justify-between">
                   <Text
                     className={`text-lg font-medium ${
-                      isSelected ? "text-gray-800" : "text-white"
+                      isSelected 
+                        ? "text-gray-800" 
+                        : isDisabled
+                        ? "text-white opacity-30"
+                        : "text-white"
                     }`}
                   >
                     {urge}
@@ -351,6 +361,8 @@ const OnboardingScreen: React.FC = () => {
                     style={{
                       borderColor: isSelected
                         ? "#10B981"
+                        : isDisabled
+                        ? "rgba(255, 255, 255, 0.2)"
                         : "rgba(255, 255, 255, 0.5)",
                       backgroundColor: isSelected ? "#10B981" : "transparent",
                     }}
@@ -368,7 +380,7 @@ const OnboardingScreen: React.FC = () => {
         {/* Helper text */}
         <View className="mt-6 bg-white bg-opacity-10 rounded-lg p-4">
           <Text className="text-black text-center text-m font-bold opacity-75">
-            💡 Tip: Focus on 3-5 urges to start. You can always adjust your
+            💡 Select up to 5 urges to focus on. You can always adjust your
             selection later in settings.
           </Text>
         </View>
