@@ -40,6 +40,11 @@ const OnboardingScreen: React.FC = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
 
+  // Preload the logo image
+  useEffect(() => {
+    Image.prefetch(Image.resolveAssetSource(require("../assets/logo3.png")).uri);
+  }, []);
+
   const steps: OnboardingStep[] = [
     {
       id: "welcome",
@@ -47,7 +52,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "Your mindful urge companion",
       description:
         "Reflex helps you build self-awareness and transform automatic urges into conscious choices.",
-      icon: "logo",
+      icon: "logo", // Special case for logo
       tips: [
         "Track urges without judgment",
         "Discover your patterns",
