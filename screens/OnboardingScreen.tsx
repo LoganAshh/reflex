@@ -376,14 +376,6 @@ const OnboardingScreen: React.FC = () => {
             );
           })}
         </View>
-
-        {/* Helper text */}
-        <View className="mt-6 bg-white bg-opacity-10 rounded-lg p-4">
-          <Text className="text-black text-center text-m font-bold opacity-75">
-            💡 Select up to 5 urges to focus on. You can always adjust your
-            selection later in settings.
-          </Text>
-        </View>
       </Animated.View>
     </ScrollView>
   );
