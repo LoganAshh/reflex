@@ -114,6 +114,19 @@ const OnboardingScreen: React.FC = () => {
       ],
     },
     {
+      id: "judgment-free",
+      title: "Zero Judgment Zone",
+      subtitle: "A safe space for honest reflection",
+      description:
+        "Every urge is human. There's no shame in feeling them or even acting on them. Progress comes from awareness, not perfection.",
+      icon: "🤗",
+      tips: [
+        "All urges are normal and human",
+        "No shame, just awareness",
+        "Progress over perfection",
+      ],
+    },
+    {
       id: "urge-selection",
       title: "Choose Your Focus",
       subtitle: "What urges are you mindful about?",
