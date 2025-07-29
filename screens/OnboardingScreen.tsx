@@ -66,32 +66,6 @@ const OnboardingScreen: React.FC = () => {
       ],
     },
     {
-      id: "privacy",
-      title: "Your Privacy Matters",
-      subtitle: "Data stays on your device",
-      description:
-        "All your data is stored locally on your phone. We never collect or share your personal information.",
-      icon: "🔒",
-      tips: [
-        "No account required",
-        "No data sent to servers",
-        "You control your information",
-      ],
-    },
-    {
-      id: "urge-selection",
-      title: "Choose Your Focus",
-      subtitle: "What urges are you mindful about?",
-      description:
-        "Select the urges you want to track. You can always add or remove urges later in settings.",
-      icon: "🎯",
-      tips: [
-        "Select urges you want to be mindful about",
-        "Your QuickLog will show only these urges",
-        "This helps keep your tracking focused",
-      ],
-    },
-    {
       id: "patterns",
       title: "Discover Patterns",
       subtitle: "Insights from your data",
@@ -111,6 +85,45 @@ const OnboardingScreen: React.FC = () => {
         "Quick 1-minute actions",
         "Proven techniques",
         "Personalized suggestions",
+      ],
+    },
+    {
+      id: "privacy",
+      title: "Your Privacy Matters",
+      subtitle: "Data stays on your device",
+      description:
+        "All your data is stored locally on your phone. We never collect or share your personal information.",
+      icon: "🔒",
+      tips: [
+        "No account required",
+        "No data sent to servers",
+        "You control your information",
+      ],
+    },
+    {
+      id: "pricing",
+      title: "Free Forever",
+      subtitle: "Core features always available",
+      description:
+        "Reflex's essential tracking and insights remain completely free. Premium features are optional add-ons to enhance your experience.",
+      icon: "💝",
+      tips: [
+        "Core tracking always free",
+        "Premium features are optional",
+        "No hidden costs or surprises",
+      ],
+    },
+    {
+      id: "urge-selection",
+      title: "Choose Your Focus",
+      subtitle: "What urges are you mindful about?",
+      description:
+        "Select the urges you want to track. You can always add or remove urges later in settings.",
+      icon: "🎯",
+      tips: [
+        "Select urges you want to be mindful about",
+        "Your QuickLog will show only these urges",
+        "This helps keep your tracking focused",
       ],
     },
     {
