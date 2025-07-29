@@ -405,7 +405,7 @@ const OnboardingScreen: React.FC = () => {
           >
             {step.icon === "logo" ? (
               <Image
-                source={require("../assets/logo2.png")}
+                source={require("../assets/logo3.png")}
                 style={{ width: 128, height: 128 }}
                 resizeMode="contain"
               />
