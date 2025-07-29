@@ -47,7 +47,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "Your mindful urge companion",
       description:
         "Reflex helps you build self-awareness and transform automatic urges into conscious choices.",
-      icon: "logo", // Special case for logo
+      icon: "logo",
       tips: [
         "Track urges without judgment",
         "Discover your patterns",
@@ -60,7 +60,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "Simple, powerful tracking",
       description:
         "When you feel an urge, quickly log it. Over time, you'll see patterns and build better habits.",
-      icon: "📝",
+      icon: "",
       iconName: "create-outline",
       tips: [
         "Log urges in under 30 seconds",
@@ -74,7 +74,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "Insights from your data",
       description:
         "See when, where, and why urges happen. Understanding patterns is the first step to change.",
-      icon: "📊",
+      icon: "",
       iconName: "analytics-outline",
       tips: ["Time-based patterns", "Common triggers", "Success rate tracking"],
     },
@@ -84,7 +84,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "Build positive habits",
       description:
         "Instead of just resisting urges, replace them with healthy alternatives that make you feel good.",
-      icon: "⚡",
+      icon: "",
       iconName: "flash-outline",
       tips: [
         "Quick 1-minute actions",
@@ -98,7 +98,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "Data stays on your device",
       description:
         "All your data is stored locally on your phone. We never collect or share your personal information.",
-      icon: "🔒",
+      icon: "",
       iconName: "lock-closed-outline",
       tips: [
         "No account required",
@@ -112,7 +112,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "Core features always available",
       description:
         "Reflex's essential tracking and insights remain completely free. Premium features are optional add-ons to enhance your experience.",
-      icon: "💝",
+      icon: "",
       iconName: "gift-outline",
       tips: [
         "Core tracking always free",
@@ -126,7 +126,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "A safe space for honest reflection",
       description:
         "Every urge is human. There's no shame in feeling them or even acting on them. Progress comes from awareness, not perfection.",
-      icon: "🤗",
+      icon: "",
       iconName: "heart-outline",
       tips: [
         "All urges are normal and human",
@@ -140,7 +140,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "What urges are you mindful about?",
       description:
         "Select the urges you want to track. You can always add or remove urges later in settings.",
-      icon: "🎯",
+      icon: "",
       iconName: "radio-button-on-outline",
       tips: [
         "Select urges you want to be mindful about",
@@ -154,7 +154,7 @@ const OnboardingScreen: React.FC = () => {
       subtitle: "Start your mindful journey",
       description:
         "Ready to build more awareness and intentional choices? Let's begin tracking your urges.",
-      icon: "🚀",
+      icon: "",
       iconName: "rocket-outline",
       tips: [
         "Every urge logged is progress",
