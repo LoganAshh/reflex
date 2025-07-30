@@ -6,7 +6,6 @@ import ReplacementActions from "../screens/ReplacementActions";
 import StreaksScreen from "../screens/StreaksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
-import FloatingActionButton from "../components/FloatingActionButton";
 import DailyCheckIn from "../components/DailyCheckIn";
 import UrgeHistory from "../components/UrgeHistory";
 import { useUrgeData } from "../hooks/useUrgeData";
@@ -236,7 +235,7 @@ const AppNavigator: React.FC = () => {
     );
   }
 
-  if (true) {
+  if (!isOnboardingCompleted) {
     return <OnboardingScreen />;
   }
 
@@ -244,12 +243,6 @@ const AppNavigator: React.FC = () => {
     <SafeAreaView className="flex-1" style={{ backgroundColor: "#185e66" }}>
       {/* Main Screen */}
       <View className="flex-1">{renderScreen()}</View>
-
-      {/* Floating Action Button */}
-      <FloatingActionButton
-        visible={activeTab !== "log"}
-        onPress={() => setActiveTab("log")}
-      />
 
       {/* Enhanced Bottom Navigation with Onboarding Style */}
       <View
