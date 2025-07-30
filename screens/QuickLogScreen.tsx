@@ -1,4 +1,4 @@
-// screens/QuickLogScreen.tsx - Updated version with always visible button text
+// screens/QuickLogScreen.tsx
 
 import React, { useState, useEffect } from "react";
 import {
@@ -359,22 +359,22 @@ const QuickLogScreen: React.FC = () => {
                 className="p-6 rounded-lg border"
                 style={{
                   backgroundColor:
-                    actedOn === true ? "#EF4444" : "rgba(255, 255, 255, 0.2)",
+                    actedOn === true ? "#FFFFFF" : "rgba(255, 255, 255, 0.2)",
                   borderColor:
-                    actedOn === true ? "#EF4444" : "rgba(255, 255, 255, 0.3)",
+                    actedOn === true ? "#FFFFFF" : "rgba(255, 255, 255, 0.3)",
                 }}
                 onPress={() => setActedOn(true)}
               >
                 <Text
                   className={`text-center text-2xl font-semibold ${
-                    actedOn === true ? "text-white" : "text-white"
+                    actedOn === true ? "text-gray-800" : "text-white"
                   }`}
                 >
                   ✅ I acted on it
                 </Text>
                 <Text
                   className={`text-center mt-2 ${
-                    actedOn === true ? "text-white" : "text-white opacity-75"
+                    actedOn === true ? "text-gray-600" : "text-white opacity-75"
                   }`}
                 >
                   That's okay - awareness is progress
