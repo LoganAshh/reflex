@@ -211,7 +211,7 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4">
+            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
               Where are you?
             </Text>
             <Text className="text-xl text-white text-center mb-8 opacity-90">
@@ -267,7 +267,7 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4">
+            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
               What triggered it?
             </Text>
             <Text className="text-xl text-white text-center mb-8 opacity-90">
@@ -321,7 +321,7 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4">
+            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
               Did you act on it?
             </Text>
             <Text className="text-xl text-white text-center mb-8 opacity-90">
