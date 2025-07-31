@@ -270,7 +270,7 @@ const AppNavigator: React.FC = () => {
                 onPress={() => setActiveTab(tab.id)}
               >
                 <View className="relative">
-                  <Ionicons name={tab.icon} size={24} color="white" />
+                  <Ionicons name={tab.icon} size={28} color="white" />
                   {renderTabBadge(badgeCount)}
                 </View>
               </TouchableOpacity>
