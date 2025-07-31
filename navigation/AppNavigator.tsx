@@ -43,9 +43,9 @@ const AppNavigator: React.FC = () => {
   };
 
   const tabs = [
-    { id: "log" as TabType, label: "Log", icon: "📝" },
     { id: "patterns" as TabType, label: "Patterns", icon: "📊" },
     { id: "actions" as TabType, label: "Actions", icon: "⚡" },
+    { id: "log" as TabType, label: "Log", icon: "📝" },
     { id: "streaks" as TabType, label: "Streaks", icon: "🔥" },
     { id: "settings" as TabType, label: "Settings", icon: "⚙️" },
   ];
@@ -235,7 +235,7 @@ const AppNavigator: React.FC = () => {
     );
   }
 
-  if (true) {
+  if (!isOnboardingCompleted) {
     return <OnboardingScreen />;
   }
 
