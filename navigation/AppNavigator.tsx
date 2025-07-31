@@ -262,15 +262,14 @@ const AppNavigator: React.FC = () => {
               <TouchableOpacity
                 key={tab.id}
                 className="flex-1 py-4 items-center relative"
-                style={{
-                  backgroundColor: isActive
-                    ? "rgba(255, 255, 255, 0.2)"
-                    : "transparent",
-                }}
                 onPress={() => setActiveTab(tab.id)}
               >
                 <View className="relative">
-                  <Ionicons name={tab.icon} size={28} color="white" />
+                  <Ionicons 
+                    name={tab.icon} 
+                    size={28} 
+                    color={isActive ? "#10B981" : "white"} 
+                  />
                   {renderTabBadge(badgeCount)}
                 </View>
               </TouchableOpacity>
