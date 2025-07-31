@@ -12,7 +12,7 @@ import {
   Animated,
   Easing,
 } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import { useOnboarding } from "../hooks/useOnboarding";
 import { COMMON_URGES } from "../types";
 import { storageService } from "../services/StorageService";
@@ -42,7 +42,9 @@ const OnboardingScreen: React.FC = () => {
 
   // Preload the logo image
   useEffect(() => {
-    Image.prefetch(Image.resolveAssetSource(require("../assets/logo3.png")).uri);
+    Image.prefetch(
+      Image.resolveAssetSource(require("../assets/logo3.png")).uri
+    );
   }, []);
 
   const steps: OnboardingStep[] = [
@@ -313,8 +315,8 @@ const OnboardingScreen: React.FC = () => {
             transform: [{ translateY: Animated.add(slideAnim, 20) }],
           }}
         >
-          Select up to 5 urges you want to track. You can always add or remove urges
-          later in settings.
+          Select up to 5 urges you want to track. You can always add or remove
+          urges later in settings.
         </Animated.Text>
 
         {/* Selection count */}
@@ -338,13 +340,13 @@ const OnboardingScreen: React.FC = () => {
                   backgroundColor: isSelected
                     ? "#FFFFFF"
                     : isDisabled
-                    ? "rgba(255, 255, 255, 0.05)"
-                    : "rgba(255, 255, 255, 0.1)",
+                      ? "rgba(255, 255, 255, 0.05)"
+                      : "rgba(255, 255, 255, 0.1)",
                   borderColor: isSelected
                     ? "transparent"
                     : isDisabled
-                    ? "rgba(255, 255, 255, 0.15)"
-                    : "rgba(255, 255, 255, 0.3)",
+                      ? "rgba(255, 255, 255, 0.15)"
+                      : "rgba(255, 255, 255, 0.3)",
                 }}
                 onPress={() => !isDisabled && toggleUrgeSelection(urge)}
                 disabled={isDisabled}
@@ -352,11 +354,11 @@ const OnboardingScreen: React.FC = () => {
                 <View className="flex-row items-center justify-between">
                   <Text
                     className={`text-lg font-medium ${
-                      isSelected 
-                        ? "text-gray-800" 
+                      isSelected
+                        ? "text-gray-800"
                         : isDisabled
-                        ? "text-white opacity-30"
-                        : "text-white"
+                          ? "text-white opacity-30"
+                          : "text-white"
                     }`}
                   >
                     {urge}
@@ -367,8 +369,8 @@ const OnboardingScreen: React.FC = () => {
                       borderColor: isSelected
                         ? "#10B981"
                         : isDisabled
-                        ? "rgba(255, 255, 255, 0.2)"
-                        : "rgba(255, 255, 255, 0.5)",
+                          ? "rgba(255, 255, 255, 0.2)"
+                          : "rgba(255, 255, 255, 0.5)",
                       backgroundColor: isSelected ? "#10B981" : "transparent",
                     }}
                   >
@@ -415,11 +417,7 @@ const OnboardingScreen: React.FC = () => {
                 resizeMode="contain"
               />
             ) : (
-              <Ionicons 
-                name={step.iconName!} 
-                size={88} 
-                color="white" 
-              />
+              <Ionicons name={step.iconName!} size={88} color="white" />
             )}
           </Animated.View>
 
@@ -541,17 +539,15 @@ const OnboardingScreen: React.FC = () => {
           >
             <TouchableOpacity
               className={`rounded-lg py-4 ${
-                isNextDisabled() ? "bg-gray-400 opacity-50" : "bg-white"
+                isNextDisabled() ? "bg-gray-400 opacity-50" : ""
               }`}
+              style={{
+                backgroundColor: isNextDisabled() ? "#9CA3AF" : "#10B981",
+              }}
               onPress={handleNext}
               disabled={isNextDisabled()}
             >
-              <Text
-                className={`text-center font-semibold text-2xl ${
-                  isNextDisabled() ? "text-gray-600" : "text-gray-800"
-                }`}
-                style={{ color: isNextDisabled() ? "#9CA3AF" : "#185e66" }}
-              >
+              <Text className="text-center font-semibold text-2xl text-white">
                 {currentStep === 0
                   ? "Get Started!"
                   : currentStep === steps.length - 1
