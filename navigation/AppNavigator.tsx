@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 import QuickLogScreen from "../screens/QuickLogScreen";
 import PatternDashboard from "../screens/PatternDashboard";
 import ReplacementActions from "../screens/ReplacementActions";
@@ -43,11 +44,11 @@ const AppNavigator: React.FC = () => {
   };
 
   const tabs = [
-    { id: "patterns" as TabType, label: "Patterns", icon: "📊" },
-    { id: "actions" as TabType, label: "Actions", icon: "⚡" },
-    { id: "log" as TabType, label: "Log", icon: "📝" },
-    { id: "streaks" as TabType, label: "Streaks", icon: "🔥" },
-    { id: "settings" as TabType, label: "Settings", icon: "⚙️" },
+    { id: "patterns" as TabType, label: "Patterns", icon: "analytics-outline" as keyof typeof Ionicons.glyphMap },
+    { id: "actions" as TabType, label: "Actions", icon: "flash-outline" as keyof typeof Ionicons.glyphMap },
+    { id: "log" as TabType, label: "Log", icon: "create-outline" as keyof typeof Ionicons.glyphMap },
+    { id: "streaks" as TabType, label: "Streaks", icon: "flame-outline" as keyof typeof Ionicons.glyphMap },
+    { id: "settings" as TabType, label: "Settings", icon: "settings-outline" as keyof typeof Ionicons.glyphMap },
   ];
 
   // Enhanced home screen with history (styled to match onboarding)
@@ -260,7 +261,7 @@ const AppNavigator: React.FC = () => {
             return (
               <TouchableOpacity
                 key={tab.id}
-                className="flex-1 py-3 items-center relative"
+                className="flex-1 py-4 items-center relative"
                 style={{
                   backgroundColor: isActive
                     ? "rgba(255, 255, 255, 0.2)"
@@ -269,16 +270,9 @@ const AppNavigator: React.FC = () => {
                 onPress={() => setActiveTab(tab.id)}
               >
                 <View className="relative">
-                  <Text className="text-2xl mb-1">{tab.icon}</Text>
+                  <Ionicons name={tab.icon} size={24} color="white" />
                   {renderTabBadge(badgeCount)}
                 </View>
-                <Text
-                  className={`text-sm font-medium ${
-                    isActive ? "text-white" : "text-white opacity-70"
-                  }`}
-                >
-                  {tab.label}
-                </Text>
               </TouchableOpacity>
             );
           })}
