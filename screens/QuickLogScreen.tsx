@@ -10,10 +10,12 @@ import {
   SafeAreaView,
   Animated,
   Easing,
+  Alert,
 } from "react-native";
 import { COMMON_URGES, COMMON_LOCATIONS, COMMON_TRIGGERS } from "../types";
 import { storageService } from "../services/StorageService";
 import { useSettings } from "../hooks/useSettings";
+import AddUrgeScreen from "./AddUrgeScreen";
 
 const QuickLogScreen: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -23,8 +25,9 @@ const QuickLogScreen: React.FC = () => {
   const [actedOn, setActedOn] = useState<boolean | null>(null);
   const [notes, setNotes] = useState("");
   const [filteredUrges, setFilteredUrges] = useState<string[]>([]);
+  const [showAddUrgeScreen, setShowAddUrgeScreen] = useState(false);
 
-  const { settings } = useSettings();
+  const { settings, updateSettings } = useSettings();
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
   const slideAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -32,9 +35,13 @@ const QuickLogScreen: React.FC = () => {
   useEffect(() => {
     const loadFilteredUrges = () => {
       if (settings?.selectedUrges && settings.selectedUrges.length > 0) {
-        // Show only the urges the user selected during onboarding
-        setFilteredUrges(settings.selectedUrges);
-      } else {
+        // Only update if our local state is empty or different from settings
+        // This prevents overriding immediate updates from AddUrgeScreen
+        if (filteredUrges.length === 0 || 
+            JSON.stringify(filteredUrges.sort()) !== JSON.stringify(settings.selectedUrges.sort())) {
+          setFilteredUrges(settings.selectedUrges);
+        }
+      } else if (filteredUrges.length === 0) {
         // Fallback to all common urges if no selection (for existing users)
         setFilteredUrges([...COMMON_URGES]);
       }
@@ -119,6 +126,41 @@ const QuickLogScreen: React.FC = () => {
     setNotes("");
   };
 
+  const handleAddUrgePress = () => {
+    setShowAddUrgeScreen(true);
+  };
+
+  const handleUrgeSelected = async (selectedUrge: string) => {
+    // Immediately update local state for instant UI response
+    const updatedUrges = [...filteredUrges, selectedUrge];
+    setFilteredUrges(updatedUrges);
+    setUrge(selectedUrge);
+    setShowAddUrgeScreen(false);
+    
+    // Save to settings in the background
+    try {
+      await updateSettings({ selectedUrges: updatedUrges });
+    } catch (error) {
+      console.error("Error saving new urge:", error);
+      // Optionally revert on error, but keep UI updated for now
+    }
+  };
+
+  const handleAddUrgeBack = () => {
+    setShowAddUrgeScreen(false);
+  };
+
+  // If showing add urge screen, render it instead
+  if (showAddUrgeScreen) {
+    return (
+      <AddUrgeScreen
+        onUrgeSelected={handleUrgeSelected}
+        onBack={handleAddUrgeBack}
+        currentSelectedUrges={filteredUrges}
+      />
+    );
+  }
+
   const commonLocations = [...COMMON_LOCATIONS];
   const commonTriggers = [...COMMON_TRIGGERS];
 
@@ -181,10 +223,7 @@ const QuickLogScreen: React.FC = () => {
                 <TouchableOpacity
                   className="p-3 rounded-lg mb-3 border border-white border-opacity-30"
                   style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
-                  onPress={() => {
-                    // Allow custom input by clearing the selection
-                    setUrge("");
-                  }}
+                  onPress={handleAddUrgePress}
                 >
                   <Text className="text-white text-center opacity-75">
                     + Add a different urge
