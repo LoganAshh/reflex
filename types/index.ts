@@ -1,8 +1,11 @@
+// types/index.ts
+
 export interface UrgeLog {
   id: string;
   urge: string;
   location: string;
   trigger: string;
+  emotion?: string; // Added emotion field
   actedOn: boolean;
   timestamp: Date;
   replacementAction?: string;
@@ -47,6 +50,7 @@ export interface DashboardStats {
   successRate: number;
   commonTriggers: { trigger: string; count: number }[];
   commonUrges: { urge: string; count: number }[];
+  commonEmotions: { emotion: string; count: number }[]; // Added emotions to stats
   hourlyHeatmap: { hour: number; count: number }[];
   weeklyTrend: { day: string; count: number; date: string }[];
   averageUrgesPerDay: number;
@@ -124,6 +128,7 @@ export interface LogFormData {
   urge: string;
   location: string;
   trigger: string;
+  emotion?: string;
   actedOn: boolean | null; // null during form completion
   replacementAction?: string;
   notes?: string;
@@ -134,6 +139,7 @@ export interface CompletedLogFormData {
   urge: string;
   location: string;
   trigger: string;
+  emotion?: string;
   actedOn: boolean; // must be boolean when saving
   replacementAction?: string;
   notes?: string;
@@ -149,7 +155,7 @@ export const STORAGE_KEYS = {
   ONBOARDING: "onboarding_completed",
 } as const;
 
-// Common urges, triggers, and locations for quick selection
+// Common urges, triggers, locations, and emotions for quick selection
 export const COMMON_URGES = [
   "Drink caffeine",
   "Scroll social media",
@@ -203,6 +209,28 @@ export const COMMON_LOCATIONS = [
   "Outside",
 ] as const;
 
+export const COMMON_EMOTIONS = [
+  "Anxious",
+  "Stressed",
+  "Bored",
+  "Sad",
+  "Angry",
+  "Lonely",
+  "Frustrated",
+  "Overwhelmed",
+  "Excited",
+  "Happy",
+  "Tired",
+  "Restless",
+  "Guilty",
+  "Ashamed",
+  "Confident",
+  "Insecure",
+  "Content",
+  "Nervous",
+  "Disappointed",
+] as const;
+
 // Color schemes for charts and UI
 export const COLORS = {
   primary: "#3B82F6", // blue-500
@@ -216,3 +244,4 @@ export const COLORS = {
 export type CommonUrge = (typeof COMMON_URGES)[number];
 export type CommonTrigger = (typeof COMMON_TRIGGERS)[number];
 export type CommonLocation = (typeof COMMON_LOCATIONS)[number];
+export type CommonEmotion = (typeof COMMON_EMOTIONS)[number];

@@ -12,7 +12,7 @@ import {
   Easing,
   Alert,
 } from "react-native";
-import { COMMON_URGES, COMMON_LOCATIONS, COMMON_TRIGGERS } from "../types";
+import { COMMON_URGES, COMMON_LOCATIONS, COMMON_TRIGGERS, COMMON_EMOTIONS } from "../types";
 import { storageService } from "../services/StorageService";
 import { useSettings } from "../hooks/useSettings";
 import AddUrgeScreen from "./AddUrgeScreen";
@@ -22,6 +22,7 @@ const QuickLogScreen: React.FC = () => {
   const [urge, setUrge] = useState("");
   const [location, setLocation] = useState("");
   const [trigger, setTrigger] = useState("");
+  const [emotion, setEmotion] = useState("");
   const [actedOn, setActedOn] = useState<boolean | null>(null);
   const [notes, setNotes] = useState("");
   const [filteredUrges, setFilteredUrges] = useState<string[]>([]);
@@ -89,6 +90,8 @@ const QuickLogScreen: React.FC = () => {
       case 3:
         return !!location;
       case 4:
+        return !!emotion;
+      case 5:
         return actedOn !== null;
       default:
         return false;
@@ -96,7 +99,7 @@ const QuickLogScreen: React.FC = () => {
   };
 
   const handleNext = () => {
-    if (currentStep < 4 && isStepValid()) {
+    if (currentStep < 5 && isStepValid()) {
       animateTransition(() => setCurrentStep(currentStep + 1));
     }
   };
@@ -115,6 +118,7 @@ const QuickLogScreen: React.FC = () => {
       urge,
       location,
       trigger,
+      emotion,
       actedOn,
       notes,
     });
@@ -122,6 +126,7 @@ const QuickLogScreen: React.FC = () => {
     setUrge("");
     setLocation("");
     setTrigger("");
+    setEmotion("");
     setActedOn(null);
     setNotes("");
   };
@@ -163,6 +168,7 @@ const QuickLogScreen: React.FC = () => {
 
   const commonLocations = [...COMMON_LOCATIONS];
   const commonTriggers = [...COMMON_TRIGGERS];
+  const commonEmotions = [...COMMON_EMOTIONS];
 
   const renderStep = () => {
     switch (currentStep) {
@@ -361,6 +367,60 @@ const QuickLogScreen: React.FC = () => {
             }}
           >
             <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
+              How were you feeling?
+            </Text>
+            <Text className="text-xl text-white text-center mb-8 opacity-90">
+              Emotions often drive our urges
+            </Text>
+
+            <TextInput
+              className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              placeholder="Describe your emotional state..."
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={emotion}
+              onChangeText={setEmotion}
+            />
+
+            <Text className="text-white font-medium mb-4 text-lg opacity-90">
+              Common emotions:
+            </Text>
+            <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
+              {commonEmotions.map((commonEmotion, index) => (
+                <TouchableOpacity
+                  key={index}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      emotion === commonEmotion
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
+                  onPress={() => setEmotion(commonEmotion)}
+                >
+                  <Text
+                    className={`text-xl ${
+                      emotion === commonEmotion ? "text-gray-800" : "text-white"
+                    }`}
+                  >
+                    {commonEmotion}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </Animated.View>
+        );
+
+      case 5:
+        return (
+          <Animated.View
+            className="flex-1"
+            style={{
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            }}
+          >
+            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
               Did you act on it?
             </Text>
             <Text className="text-xl text-white text-center mb-8 opacity-90">
@@ -446,7 +506,7 @@ const QuickLogScreen: React.FC = () => {
         <View className="flex-row items-center justify-between">
           <Text className="text-2xl font-semibold text-white">Quick Log</Text>
           <Text className="text-white text-lg opacity-75">
-            {currentStep} of 4
+            {currentStep} of 5
           </Text>
         </View>
 
@@ -454,7 +514,7 @@ const QuickLogScreen: React.FC = () => {
         <View className="w-full bg-white bg-opacity-20 rounded-full h-2 mt-4">
           <View
             className="bg-white h-2 rounded-full transition-all duration-300"
-            style={{ width: `${(currentStep / 4) * 100}%` }}
+            style={{ width: `${(currentStep / 5) * 100}%` }}
           />
         </View>
       </View>
@@ -486,7 +546,7 @@ const QuickLogScreen: React.FC = () => {
                 ? "rgba(255, 255, 255, 0.3)"
                 : "#FFFFFF",
             }}
-            onPress={currentStep === 4 ? handleSubmit : handleNext}
+            onPress={currentStep === 5 ? handleSubmit : handleNext}
             disabled={!isStepValid()}
           >
             <Text
@@ -495,7 +555,7 @@ const QuickLogScreen: React.FC = () => {
                 color: !isStepValid() ? "rgba(255, 255, 255, 0.7)" : "#185e66",
               }}
             >
-              {currentStep === 4 ? "Save Log" : "Next"}
+              {currentStep === 5 ? "Save Log" : "Next"}
             </Text>
           </TouchableOpacity>
         </View>
