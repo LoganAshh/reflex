@@ -36,11 +36,21 @@ const QuickLogScreen: React.FC = () => {
   useEffect(() => {
     const loadFilteredUrges = () => {
       if (settings?.selectedUrges && settings.selectedUrges.length > 0) {
-        // Only update if our local state is empty or different from settings
-        // This prevents overriding immediate updates from AddUrgeScreen
-        if (filteredUrges.length === 0 || 
-            JSON.stringify(filteredUrges.sort()) !== JSON.stringify(settings.selectedUrges.sort())) {
+        // Only update if our local state is empty or if settings changed
+        // Don't override if we already have the same urges (to preserve order)
+        if (filteredUrges.length === 0) {
           setFilteredUrges(settings.selectedUrges);
+        } else {
+          // Check if the urges are the same (regardless of order) before updating
+          const currentSet = new Set(filteredUrges);
+          const settingsSet = new Set(settings.selectedUrges);
+          const areSameUrges = currentSet.size === settingsSet.size && 
+                               [...currentSet].every(urge => settingsSet.has(urge));
+          
+          // Only update if the actual urges changed, not just the order
+          if (!areSameUrges) {
+            setFilteredUrges(settings.selectedUrges);
+          }
         }
       } else if (filteredUrges.length === 0) {
         // Fallback to all common urges if no selection (for existing users)
@@ -49,7 +59,7 @@ const QuickLogScreen: React.FC = () => {
     };
 
     loadFilteredUrges();
-  }, [settings]);
+  }, [settings?.selectedUrges]); // Only depend on selectedUrges, not all settings
 
   const animateTransition = (callback: () => void) => {
     Animated.sequence([
@@ -161,6 +171,11 @@ const QuickLogScreen: React.FC = () => {
   // Helper function to move an item to the top of an array
   const moveToTop = (item: string, array: string[]): string[] => {
     if (!item) return array;
+    
+    // If the item is already at the top, don't change anything
+    if (array.length > 0 && array[0] === item) {
+      return array;
+    }
     
     // Remove the item if it exists and add it to the front
     const filtered = array.filter(arrayItem => arrayItem !== item);
