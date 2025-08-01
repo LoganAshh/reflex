@@ -85,9 +85,9 @@ const QuickLogScreen: React.FC = () => {
       case 1:
         return !!urge;
       case 2:
-        return !!location;
-      case 3:
         return !!trigger;
+      case 3:
+        return !!location;
       case 4:
         return actedOn !== null;
       default:
@@ -251,6 +251,60 @@ const QuickLogScreen: React.FC = () => {
             }}
           >
             <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
+              What triggered it?
+            </Text>
+            <Text className="text-xl text-white text-center mb-8 opacity-90">
+              Understanding triggers builds awareness
+            </Text>
+
+            <TextInput
+              className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              placeholder="What sparked this urge?"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={trigger}
+              onChangeText={setTrigger}
+            />
+
+            <Text className="text-white font-medium mb-4 text-lg opacity-90">
+              Common triggers:
+            </Text>
+            <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
+              {commonTriggers.map((commonTrigger, index) => (
+                <TouchableOpacity
+                  key={index}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      trigger === commonTrigger
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
+                  onPress={() => setTrigger(commonTrigger)}
+                >
+                  <Text
+                    className={`text-xl ${
+                      trigger === commonTrigger ? "text-gray-800" : "text-white"
+                    }`}
+                  >
+                    {commonTrigger}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </Animated.View>
+        );
+
+      case 3:
+        return (
+          <Animated.View
+            className="flex-1"
+            style={{
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            }}
+          >
+            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
               Where are you?
             </Text>
             <Text className="text-xl text-white text-center mb-8 opacity-90">
@@ -290,60 +344,6 @@ const QuickLogScreen: React.FC = () => {
                     }`}
                   >
                     {commonLocation}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </Animated.View>
-        );
-
-      case 3:
-        return (
-          <Animated.View
-            className="flex-1"
-            style={{
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            }}
-          >
-            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
-              What triggered it?
-            </Text>
-            <Text className="text-xl text-white text-center mb-8 opacity-90">
-              Understanding triggers builds awareness
-            </Text>
-
-            <TextInput
-              className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
-              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
-              placeholder="What sparked this urge?"
-              placeholderTextColor="rgba(255, 255, 255, 0.7)"
-              value={trigger}
-              onChangeText={setTrigger}
-            />
-
-            <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              Common triggers:
-            </Text>
-            <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {commonTriggers.map((commonTrigger, index) => (
-                <TouchableOpacity
-                  key={index}
-                  className="p-4 rounded-lg mb-3"
-                  style={{
-                    backgroundColor:
-                      trigger === commonTrigger
-                        ? "#FFFFFF"
-                        : "rgba(255, 255, 255, 0.2)",
-                  }}
-                  onPress={() => setTrigger(commonTrigger)}
-                >
-                  <Text
-                    className={`text-xl ${
-                      trigger === commonTrigger ? "text-gray-800" : "text-white"
-                    }`}
-                  >
-                    {commonTrigger}
                   </Text>
                 </TouchableOpacity>
               ))}
