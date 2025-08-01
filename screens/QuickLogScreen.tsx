@@ -32,6 +32,7 @@ const QuickLogScreen: React.FC = () => {
   const [actedOn, setActedOn] = useState<boolean | null>(null);
   const [notes, setNotes] = useState("");
   const [filteredUrges, setFilteredUrges] = useState<string[]>([]);
+  const [customUrgeIcons, setCustomUrgeIcons] = useState<{ [key: string]: string }>({});
   const [showAddUrgeScreen, setShowAddUrgeScreen] = useState(false);
 
   const { settings, updateSettings } = useSettings();
@@ -205,7 +206,15 @@ const QuickLogScreen: React.FC = () => {
     setShowAddUrgeScreen(true);
   };
 
-  const handleUrgeSelected = async (selectedUrge: string) => {
+  const handleUrgeSelected = async (selectedUrge: string, selectedIcon?: string) => {
+    // Store the custom icon if provided
+    if (selectedIcon) {
+      setCustomUrgeIcons(prev => ({
+        ...prev,
+        [selectedUrge]: selectedIcon
+      }));
+    }
+
     // Immediately update local state for instant UI response
     const updatedUrges = [...filteredUrges, selectedUrge];
     setFilteredUrges(updatedUrges);
@@ -260,6 +269,12 @@ const QuickLogScreen: React.FC = () => {
   };
 
   const getIconForUrge = (urgeText: string) => {
+    // First check if we have a custom icon stored for this urge
+    if (customUrgeIcons[urgeText]) {
+      return customUrgeIcons[urgeText];
+    }
+    
+    // Otherwise, look for it in the predefined urges
     const urgeObj = COMMON_URGES.find((u) => u.text === urgeText);
     return urgeObj?.icon || "help-circle-outline";
   };
@@ -311,7 +326,7 @@ const QuickLogScreen: React.FC = () => {
                   >
                     <View className="flex-row items-center">
                       <Ionicons
-                        name={getIconForUrge(filteredUrge)}
+                        name={getIconForUrge(filteredUrge) as any}
                         size={24}
                         color={urge === filteredUrge ? "#374151" : "#FFFFFF"}
                         style={{ marginRight: 12 }}
@@ -392,7 +407,7 @@ const QuickLogScreen: React.FC = () => {
                 >
                   <View className="flex-row items-center">
                     <Ionicons
-                      name={getIconForTrigger(commonTrigger)}
+                      name={getIconForTrigger(commonTrigger) as any}
                       size={24}
                       color={trigger === commonTrigger ? "#374151" : "#FFFFFF"}
                       style={{ marginRight: 12 }}
@@ -456,7 +471,7 @@ const QuickLogScreen: React.FC = () => {
                 >
                   <View className="flex-row items-center">
                     <Ionicons
-                      name={getIconForLocation(commonLocation)}
+                      name={getIconForLocation(commonLocation) as any}
                       size={24}
                       color={
                         location === commonLocation ? "#374151" : "#FFFFFF"
@@ -522,7 +537,7 @@ const QuickLogScreen: React.FC = () => {
                 >
                   <View className="flex-row items-center">
                     <Ionicons
-                      name={getIconForEmotion(commonEmotion)}
+                      name={getIconForEmotion(commonEmotion) as any}
                       size={24}
                       color={emotion === commonEmotion ? "#374151" : "#FFFFFF"}
                       style={{ marginRight: 12 }}
