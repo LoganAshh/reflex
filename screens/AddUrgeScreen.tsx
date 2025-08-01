@@ -9,16 +9,134 @@ import {
   TextInput,
   SafeAreaView,
   Alert,
+  Dimensions,
 } from "react-native";
 import { COMMON_URGES } from "../types";
 import { useSettings } from "../hooks/useSettings";
 import { Ionicons } from "@expo/vector-icons";
 
 interface AddUrgeScreenProps {
-  onUrgeSelected: (urge: string) => void;
+  onUrgeSelected: (urge: string, icon?: string) => void;
   onBack: () => void;
   currentSelectedUrges?: string[];
 }
+
+// Curated list of icons that make sense for urges/behaviors
+// Note: For now, custom icons are only used in the UI and passed via callback
+// To fully persist custom icons, the UserSettings type would need to be extended
+const AVAILABLE_ICONS = [
+  "alert-circle-outline",
+  "cafe-outline",
+  "wine-outline",
+  "restaurant-outline",
+  "fast-food-outline",
+  "ice-cream-outline",
+  "pizza-outline",
+  "beer-outline",
+  "remove-circle-outline",
+  "phone-portrait-outline",
+  "game-controller-outline",
+  "tv-outline",
+  "laptop-outline",
+  "card-outline",
+  "cash-outline",
+  "cart-outline",
+  "bag-outline",
+  "shirt-outline",
+  "car-outline",
+  "fitness-outline",
+  "bed-outline",
+  "time-outline",
+  "chatbubble-outline",
+  "people-outline",
+  "person-outline",
+  "heart-outline",
+  "happy-outline",
+  "sad-outline",
+  "flame-outline",
+  "flash-outline",
+  "warning-outline",
+  "help-circle-outline",
+  "information-circle-outline",
+  "star-outline",
+  "bookmark-outline",
+  "flag-outline",
+  "pin-outline",
+  "home-outline",
+  "business-outline",
+  "school-outline",
+  "library-outline",
+  "medical-outline",
+  "walk-outline",
+  "bicycle-outline",
+  "airplane-outline",
+  "boat-outline",
+  "train-outline",
+  "musical-notes-outline",
+  "headset-outline",
+  "camera-outline",
+  "videocam-outline",
+  "book-outline",
+  "newspaper-outline",
+  "journal-outline",
+  "pencil-outline",
+  "brush-outline",
+  "color-palette-outline",
+  "hammer-outline",
+  "build-outline",
+  "settings-outline",
+  "cog-outline",
+  "refresh-outline",
+  "sync-outline",
+  "download-outline",
+  "cloud-outline",
+  "sunny-outline",
+  "moon-outline",
+  "partly-sunny-outline",
+  "thunderstorm-outline",
+  "snow-outline",
+  "leaf-outline",
+  "flower-outline",
+  "rose-outline",
+  "globe-outline",
+  "location-outline",
+  "map-outline",
+  "compass-outline",
+  "navigate-outline",
+  "rocket-outline",
+  "diamond-outline",
+  "trophy-outline",
+  "medal-outline",
+  "ribbon-outline",
+  "gift-outline",
+  "balloon-outline",
+  "egg-outline",
+  "paw-outline",
+  "bug-outline",
+  "fish-outline",
+  "bonfire-outline",
+  "hardware-chip-outline",
+  "telescope-outline",
+  "magnet-outline",
+  "battery-charging-outline",
+  "bulb-outline",
+  "flashlight-outline",
+  "shield-outline",
+  "lock-closed-outline",
+  "key-outline",
+  "scan-outline",
+  "qr-code-outline",
+  "barcode-outline",
+  "calculator-outline",
+  "stopwatch-outline",
+  "timer-outline",
+  "hourglass-outline",
+  "calendar-outline",
+  "today-outline",
+  "checkmark-circle-outline",
+  "close-circle-outline",
+  "add-circle-outline",
+];
 
 const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
   onUrgeSelected,
@@ -27,6 +145,8 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
 }) => {
   const [customUrge, setCustomUrge] = useState("");
   const [selectedUrge, setSelectedUrge] = useState("");
+  const [selectedIcon, setSelectedIcon] = useState("help-circle-outline");
+  const [showIconPicker, setShowIconPicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { settings, updateSettings } = useSettings();
 
@@ -38,15 +158,20 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
   const handleUrgeSelect = (urgeText: string) => {
     setSelectedUrge(urgeText);
     setCustomUrge("");
+    setShowIconPicker(false);
   };
 
   const handleCustomUrgeChange = (text: string) => {
     setCustomUrge(text);
     setSelectedUrge("");
+    // Show icon picker when user starts typing custom urge
+    if (text.trim().length > 0 && !showIconPicker) {
+      setShowIconPicker(true);
+    }
   };
 
-  const isValidSelection = () => {
-    return customUrge.trim().length > 0 || selectedUrge.length > 0;
+  const handleIconSelect = (iconName: string) => {
+    setSelectedIcon(iconName);
   };
 
   const handleConfirm = async () => {
@@ -54,78 +179,167 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
     if (urgeToAdd) {
       setIsLoading(true);
       try {
+        // For custom urges, we need to store both the text and icon
+        // For predefined urges, we use their existing icon
+        const isCustomUrge = customUrge.trim().length > 0;
+        const iconToUse = isCustomUrge ? selectedIcon : undefined;
+
         // Add the new urge to user's selected urges
         const currentUrges = settings?.selectedUrges || [];
 
         // Check if urge already exists
         if (currentUrges.includes(urgeToAdd)) {
           // Just select it without adding
-          onUrgeSelected(urgeToAdd);
+          onUrgeSelected(urgeToAdd, iconToUse);
           return;
         }
 
-        const updatedUrges = [...currentUrges, urgeToAdd];
+        const newUrgesList = [...currentUrges, urgeToAdd];
 
         await updateSettings({
           ...settings,
-          selectedUrges: updatedUrges,
+          selectedUrges: newUrgesList,
         });
 
         // Call the callback to set this urge in QuickLog
-        onUrgeSelected(urgeToAdd);
+        onUrgeSelected(urgeToAdd, iconToUse);
       } catch (error) {
-        Alert.alert("Error", "Failed to save the urge. Please try again.");
+        Alert.alert("Error", "Failed to save the urge. Please try again.", [
+          { text: "OK" },
+        ]);
       } finally {
         setIsLoading(false);
       }
     }
   };
 
+  const isValidSelection = () => {
+    return (
+      !isLoading && (customUrge.trim().length > 0 || selectedUrge.length > 0)
+    );
+  };
+
+  const getIconForUrge = (urgeText: string) => {
+    const urgeObj = COMMON_URGES.find((u) => u.text === urgeText);
+    return urgeObj?.icon || "help-circle-outline";
+  };
+
+  const renderIconPicker = () => {
+    const screenWidth = Dimensions.get('window').width;
+    const iconSize = 40;
+    const padding = 24; // 12px on each side
+    const gap = 12;
+    const iconsPerRow = Math.floor((screenWidth - padding * 2) / (iconSize + gap));
+
+    return (
+      <View className="mb-6">
+        <View className="flex-row items-center justify-between mb-4">
+          <Text className="text-white font-medium text-lg">Choose an icon:</Text>
+          <TouchableOpacity
+            onPress={() => setShowIconPicker(false)}
+            className="p-2"
+          >
+            <Text className="text-white opacity-75">Hide</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* Selected icon preview */}
+        <View className="items-center mb-4">
+          <View 
+            className="w-16 h-16 rounded-full items-center justify-center border-2"
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              borderColor: "rgba(255, 255, 255, 0.5)",
+            }}
+          >
+            <Ionicons name={selectedIcon as any} size={32} color="#FFFFFF" />
+          </View>
+          <Text className="text-white text-sm mt-2 opacity-75">{selectedIcon}</Text>
+        </View>
+
+        {/* Icon grid */}
+        <ScrollView 
+          className="max-h-64 bg-transparent bg-opacity-10 rounded-lg p-3"
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="flex-row flex-wrap justify-center">
+            {AVAILABLE_ICONS.map((iconName, index) => (
+              <TouchableOpacity
+                key={index}
+                className="p-2 m-1 rounded-lg"
+                style={{
+                  backgroundColor: selectedIcon === iconName 
+                    ? "rgba(255, 255, 255, 0.3)" 
+                    : "transparent",
+                  width: iconSize + 16,
+                  height: iconSize + 16,
+                }}
+                onPress={() => handleIconSelect(iconName)}
+              >
+                <View className="items-center justify-center flex-1">
+                  <Ionicons 
+                    name={iconName as any} 
+                    size={24} 
+                    color={selectedIcon === iconName ? "#FFFFFF" : "rgba(255, 255, 255, 0.7)"} 
+                  />
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: "#185e66" }}>
-      {/* Header */}
-      <View className="px-6 pt-4 pb-2 border-b border-white border-opacity-20">
-        <View className="flex-row items-center justify-between">
+      <View className="px-6 pt-4 pb-6">
+        <View className="flex-row items-center justify-between mb-4">
           <TouchableOpacity onPress={onBack}>
-            <Ionicons name="arrow-back" size={24} color="white" />
+            <Text className="text-white text-lg">← Back</Text>
           </TouchableOpacity>
-          <Text className="text-white text-xl font-semibold">Add Urge</Text>
-          <View style={{ width: 24 }} />
+          <Text className="text-2xl font-semibold text-white">Add Urge</Text>
+          <View style={{ width: 50 }} />
         </View>
       </View>
 
-      <View className="flex-1 px-6 py-6">
-        {/* Custom urge input */}
+      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+        <Text className="text-3xl font-bold text-white text-center mb-4">
+          Choose or create an urge
+        </Text>
+        <Text className="text-lg text-white text-center mb-8 opacity-90">
+          Select from common urges or create your own
+        </Text>
+
         <View className="mb-8">
-          <Text className="text-white font-medium mb-4 text-lg opacity-90">
-            Create a custom urge:
+          <Text className="text-white font-medium mb-3 text-lg">
+            Create custom urge:
           </Text>
           <TextInput
             className="border border-white border-opacity-30 rounded-lg p-4 text-xl text-white"
             style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
-            placeholder="Type your custom urge..."
+            placeholder="Type your own urge..."
             placeholderTextColor="rgba(255, 255, 255, 0.7)"
             value={customUrge}
             onChangeText={handleCustomUrgeChange}
           />
+          
+          {/* Icon picker for custom urges */}
+          {showIconPicker && customUrge.trim().length > 0 && renderIconPicker()}
         </View>
 
-        {/* Separator */}
         <View className="flex-row items-center mb-6">
           <View className="flex-1 h-px bg-white opacity-30" />
-          <Text className="text-white mx-4 opacity-75">
-            or choose from below
-          </Text>
+          <Text className="mx-4 text-white opacity-75">OR</Text>
           <View className="flex-1 h-px bg-white opacity-30" />
         </View>
 
-        {/* Available urges */}
-        <Text className="text-white font-medium mb-4 text-lg opacity-90">
-          Common urges:
+        <Text className="text-white font-medium mb-4 text-lg">
+          Choose from available urges:
         </Text>
 
         {availableUrges.length > 0 ? (
-          <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+          <View className="mb-4">
             {availableUrges.map((urge, index) => (
               <TouchableOpacity
                 key={index}
@@ -140,16 +354,14 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
               >
                 <View className="flex-row items-center">
                   <Ionicons
-                    name={urge.icon}
+                    name={urge.icon as any}
                     size={24}
                     color={selectedUrge === urge.text ? "#374151" : "#FFFFFF"}
                     style={{ marginRight: 12 }}
                   />
                   <Text
                     className={`text-xl ${
-                      selectedUrge === urge.text
-                        ? "text-gray-800"
-                        : "text-white"
+                      selectedUrge === urge.text ? "text-gray-800" : "text-white"
                     }`}
                   >
                     {urge.text}
@@ -157,21 +369,16 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
                 </View>
               </TouchableOpacity>
             ))}
-          </ScrollView>
+          </View>
         ) : (
           <View className="flex-1 justify-center items-center p-6">
-            <Ionicons
-              name="checkmark-circle"
-              size={64}
-              color="rgba(255, 255, 255, 0.5)"
-            />
-            <Text className="text-white text-center opacity-75 text-lg mt-4">
+            <Text className="text-white text-center opacity-75 text-lg">
               All common urges are already in your list. Create a custom urge
               above.
             </Text>
           </View>
         )}
-      </View>
+      </ScrollView>
 
       <View className="px-6 py-4 border-t border-white border-opacity-20">
         <TouchableOpacity
