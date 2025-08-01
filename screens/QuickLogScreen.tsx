@@ -12,10 +12,16 @@ import {
   Easing,
   Alert,
 } from "react-native";
-import { COMMON_URGES, COMMON_LOCATIONS, COMMON_TRIGGERS, COMMON_EMOTIONS } from "../types";
+import {
+  COMMON_URGES,
+  COMMON_LOCATIONS,
+  COMMON_TRIGGERS,
+  COMMON_EMOTIONS,
+} from "../types";
 import { storageService } from "../services/StorageService";
 import { useSettings } from "../hooks/useSettings";
 import AddUrgeScreen from "./AddUrgeScreen";
+import { Ionicons } from "@expo/vector-icons";
 
 const QuickLogScreen: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -44,9 +50,10 @@ const QuickLogScreen: React.FC = () => {
           // Check if the urges are the same (regardless of order) before updating
           const currentSet = new Set(filteredUrges);
           const settingsSet = new Set(settings.selectedUrges);
-          const areSameUrges = currentSet.size === settingsSet.size && 
-                               [...currentSet].every(urge => settingsSet.has(urge));
-          
+          const areSameUrges =
+            currentSet.size === settingsSet.size &&
+            [...currentSet].every((urge) => settingsSet.has(urge));
+
           // Only update if the actual urges changed, not just the order
           if (!areSameUrges) {
             setFilteredUrges(settings.selectedUrges);
@@ -54,7 +61,7 @@ const QuickLogScreen: React.FC = () => {
         }
       } else if (filteredUrges.length === 0) {
         // Fallback to all common urges if no selection (for existing users)
-        setFilteredUrges([...COMMON_URGES]);
+        setFilteredUrges(COMMON_URGES.map((u) => u.text));
       }
     };
 
@@ -149,18 +156,30 @@ const QuickLogScreen: React.FC = () => {
   const updateRecentChoices = async () => {
     try {
       const currentSettings = settings || {};
-      
+
       // Update recent choices in settings
       const updatedSettings = {
         ...currentSettings,
         selectedUrges: moveToTop(urge, filteredUrges), // Move selected urge to top of user's urges
-        recentTriggers: moveToTop(trigger, (currentSettings as any).recentTriggers || [...COMMON_TRIGGERS]),
-        recentLocations: moveToTop(location, (currentSettings as any).recentLocations || [...COMMON_LOCATIONS]),
-        recentEmotions: moveToTop(emotion, (currentSettings as any).recentEmotions || [...COMMON_EMOTIONS]),
+        recentTriggers: moveToTop(
+          trigger,
+          (currentSettings as any).recentTriggers ||
+            COMMON_TRIGGERS.map((t) => t.text)
+        ),
+        recentLocations: moveToTop(
+          location,
+          (currentSettings as any).recentLocations ||
+            COMMON_LOCATIONS.map((l) => l.text)
+        ),
+        recentEmotions: moveToTop(
+          emotion,
+          (currentSettings as any).recentEmotions ||
+            COMMON_EMOTIONS.map((e) => e.text)
+        ),
       };
 
       await updateSettings(updatedSettings);
-      
+
       // Also update local state immediately for better UX
       setFilteredUrges(moveToTop(urge, filteredUrges));
     } catch (error) {
@@ -171,14 +190,14 @@ const QuickLogScreen: React.FC = () => {
   // Helper function to move an item to the top of an array
   const moveToTop = (item: string, array: string[]): string[] => {
     if (!item) return array;
-    
+
     // If the item is already at the top, don't change anything
     if (array.length > 0 && array[0] === item) {
       return array;
     }
-    
+
     // Remove the item if it exists and add it to the front
-    const filtered = array.filter(arrayItem => arrayItem !== item);
+    const filtered = array.filter((arrayItem) => arrayItem !== item);
     return [item, ...filtered];
   };
 
@@ -192,7 +211,7 @@ const QuickLogScreen: React.FC = () => {
     setFilteredUrges(updatedUrges);
     setUrge(selectedUrge);
     setShowAddUrgeScreen(false);
-    
+
     // Save to settings in the background
     try {
       await updateSettings({ selectedUrges: updatedUrges });
@@ -217,9 +236,33 @@ const QuickLogScreen: React.FC = () => {
     );
   }
 
-  const commonLocations = (settings as any)?.recentLocations || [...COMMON_LOCATIONS];
-  const commonTriggers = (settings as any)?.recentTriggers || [...COMMON_TRIGGERS];
-  const commonEmotions = (settings as any)?.recentEmotions || [...COMMON_EMOTIONS];
+  const commonLocations =
+    (settings as any)?.recentLocations || COMMON_LOCATIONS.map((l) => l.text);
+  const commonTriggers =
+    (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+  const commonEmotions =
+    (settings as any)?.recentEmotions || COMMON_EMOTIONS.map((e) => e.text);
+
+  // Helper functions to get icons for items
+  const getIconForTrigger = (triggerText: string) => {
+    const triggerObj = COMMON_TRIGGERS.find((t) => t.text === triggerText);
+    return triggerObj?.icon || "help-circle-outline";
+  };
+
+  const getIconForLocation = (locationText: string) => {
+    const locationObj = COMMON_LOCATIONS.find((l) => l.text === locationText);
+    return locationObj?.icon || "location-outline";
+  };
+
+  const getIconForEmotion = (emotionText: string) => {
+    const emotionObj = COMMON_EMOTIONS.find((e) => e.text === emotionText);
+    return emotionObj?.icon || "happy-outline";
+  };
+
+  const getIconForUrge = (urgeText: string) => {
+    const urgeObj = COMMON_URGES.find((u) => u.text === urgeText);
+    return urgeObj?.icon || "help-circle-outline";
+  };
 
   const renderStep = () => {
     switch (currentStep) {
@@ -254,7 +297,7 @@ const QuickLogScreen: React.FC = () => {
 
             {filteredUrges.length > 0 ? (
               <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-                {filteredUrges.map((filteredUrge, index) => (
+                {filteredUrges.map((filteredUrge: string, index: number) => (
                   <TouchableOpacity
                     key={index}
                     className="p-4 rounded-lg mb-3"
@@ -266,13 +309,21 @@ const QuickLogScreen: React.FC = () => {
                     }}
                     onPress={() => setUrge(filteredUrge)}
                   >
-                    <Text
-                      className={`text-xl ${
-                        urge === filteredUrge ? "text-gray-800" : "text-white"
-                      }`}
-                    >
-                      {filteredUrge}
-                    </Text>
+                    <View className="flex-row items-center">
+                      <Ionicons
+                        name={getIconForUrge(filteredUrge)}
+                        size={24}
+                        color={urge === filteredUrge ? "#374151" : "#FFFFFF"}
+                        style={{ marginRight: 12 }}
+                      />
+                      <Text
+                        className={`text-xl ${
+                          urge === filteredUrge ? "text-gray-800" : "text-white"
+                        }`}
+                      >
+                        {filteredUrge}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                 ))}
 
@@ -339,13 +390,23 @@ const QuickLogScreen: React.FC = () => {
                   }}
                   onPress={() => setTrigger(commonTrigger)}
                 >
-                  <Text
-                    className={`text-xl ${
-                      trigger === commonTrigger ? "text-gray-800" : "text-white"
-                    }`}
-                  >
-                    {commonTrigger}
-                  </Text>
+                  <View className="flex-row items-center">
+                    <Ionicons
+                      name={getIconForTrigger(commonTrigger)}
+                      size={24}
+                      color={trigger === commonTrigger ? "#374151" : "#FFFFFF"}
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-xl ${
+                        trigger === commonTrigger
+                          ? "text-gray-800"
+                          : "text-white"
+                      }`}
+                    >
+                      {commonTrigger}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -393,15 +454,25 @@ const QuickLogScreen: React.FC = () => {
                   }}
                   onPress={() => setLocation(commonLocation)}
                 >
-                  <Text
-                    className={`text-xl ${
-                      location === commonLocation
-                        ? "text-gray-800"
-                        : "text-white"
-                    }`}
-                  >
-                    {commonLocation}
-                  </Text>
+                  <View className="flex-row items-center">
+                    <Ionicons
+                      name={getIconForLocation(commonLocation)}
+                      size={24}
+                      color={
+                        location === commonLocation ? "#374151" : "#FFFFFF"
+                      }
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-xl ${
+                        location === commonLocation
+                          ? "text-gray-800"
+                          : "text-white"
+                      }`}
+                    >
+                      {commonLocation}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -449,13 +520,23 @@ const QuickLogScreen: React.FC = () => {
                   }}
                   onPress={() => setEmotion(commonEmotion)}
                 >
-                  <Text
-                    className={`text-xl ${
-                      emotion === commonEmotion ? "text-gray-800" : "text-white"
-                    }`}
-                  >
-                    {commonEmotion}
-                  </Text>
+                  <View className="flex-row items-center">
+                    <Ionicons
+                      name={getIconForEmotion(commonEmotion)}
+                      size={24}
+                      color={emotion === commonEmotion ? "#374151" : "#FFFFFF"}
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-xl ${
+                        emotion === commonEmotion
+                          ? "text-gray-800"
+                          : "text-white"
+                      }`}
+                    >
+                      {commonEmotion}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               ))}
             </ScrollView>

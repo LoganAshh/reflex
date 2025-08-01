@@ -1,4 +1,4 @@
-// src/screens/OnboardingScreen.tsx
+// screens/OnboardingScreen.tsx
 
 import React, { useState, useRef, useEffect } from "react";
 import {
@@ -39,6 +39,12 @@ const OnboardingScreen: React.FC = () => {
   const slideAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
+
+  // Helper function to get icon for urge
+  const getIconForUrge = (urgeText: string) => {
+    const urgeObj = COMMON_URGES.find((u) => u.text === urgeText);
+    return urgeObj?.icon || "help-circle-outline";
+  };
 
   // Preload the logo image
   useEffect(() => {
@@ -258,9 +264,11 @@ const OnboardingScreen: React.FC = () => {
     handleComplete();
   };
 
-  const toggleUrgeSelection = (urge: string) => {
+  const toggleUrgeSelection = (urgeText: string) => {
     setSelectedUrges((prev) =>
-      prev.includes(urge) ? prev.filter((u) => u !== urge) : [...prev, urge]
+      prev.includes(urgeText)
+        ? prev.filter((u) => u !== urgeText)
+        : [...prev, urgeText]
     );
   };
 
@@ -330,7 +338,7 @@ const OnboardingScreen: React.FC = () => {
         {/* Urge selection grid */}
         <View className="w-full">
           {COMMON_URGES.map((urge, index) => {
-            const isSelected = selectedUrges.includes(urge);
+            const isSelected = selectedUrges.includes(urge.text);
             const isDisabled = !isSelected && selectedUrges.length >= 5;
             return (
               <TouchableOpacity
@@ -348,21 +356,35 @@ const OnboardingScreen: React.FC = () => {
                       ? "rgba(255, 255, 255, 0.15)"
                       : "rgba(255, 255, 255, 0.3)",
                 }}
-                onPress={() => !isDisabled && toggleUrgeSelection(urge)}
+                onPress={() => !isDisabled && toggleUrgeSelection(urge.text)}
                 disabled={isDisabled}
               >
                 <View className="flex-row items-center justify-between">
-                  <Text
-                    className={`text-lg font-medium ${
-                      isSelected
-                        ? "text-gray-800"
-                        : isDisabled
-                          ? "text-white opacity-30"
-                          : "text-white"
-                    }`}
-                  >
-                    {urge}
-                  </Text>
+                  <View className="flex-row items-center flex-1">
+                    <Ionicons
+                      name={urge.icon}
+                      size={24}
+                      color={
+                        isSelected
+                          ? "#374151"
+                          : isDisabled
+                            ? "rgba(255, 255, 255, 0.3)"
+                            : "#FFFFFF"
+                      }
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-lg font-medium ${
+                        isSelected
+                          ? "text-gray-800"
+                          : isDisabled
+                            ? "text-white opacity-30"
+                            : "text-white"
+                      }`}
+                    >
+                      {urge.text}
+                    </Text>
+                  </View>
                   <View
                     className="w-6 h-6 rounded-full border-2 items-center justify-center"
                     style={{
@@ -421,9 +443,9 @@ const OnboardingScreen: React.FC = () => {
             )}
           </Animated.View>
 
-          {/* Title with staggered animation */}
+          {/* Title */}
           <Animated.Text
-            className="text-4xl font-bold text-white text-center mb-8"
+            className="text-4xl font-bold text-white text-center mb-4"
             style={{
               opacity: fadeAnim,
               transform: [{ translateY: slideAnim }],
@@ -432,130 +454,125 @@ const OnboardingScreen: React.FC = () => {
             {step.title}
           </Animated.Text>
 
-          {/* Subtitle with delayed animation */}
+          {/* Subtitle */}
           <Animated.Text
-            className="text-2xl text-white text-center mb-16 font-medium opacity-90"
+            className="text-2xl text-white text-center mb-8 font-medium opacity-90"
             style={{
               opacity: fadeAnim,
-              transform: [
-                {
-                  translateY: Animated.add(slideAnim, 10),
-                },
-              ],
+              transform: [{ translateY: Animated.add(slideAnim, 10) }],
             }}
           >
             {step.subtitle}
           </Animated.Text>
 
-          {/* Description with more delayed animation */}
+          {/* Description */}
           <Animated.Text
-            className="text-2xl text-white text-center mb-8 leading-7 opacity-80"
+            className="text-lg text-white text-center mb-8 leading-7 opacity-80"
             style={{
               opacity: fadeAnim,
-              transform: [
-                {
-                  translateY: Animated.add(slideAnim, 20),
-                },
-              ],
+              transform: [{ translateY: Animated.add(slideAnim, 20) }],
             }}
           >
             {step.description}
           </Animated.Text>
+
+          {/* Tips */}
+          <View className="w-full">
+            {step.tips.map((tip, index) => (
+              <Animated.View
+                key={index}
+                className="flex-row items-center mb-4 p-4 bg-white bg-opacity-10 rounded-lg"
+                style={{
+                  opacity: fadeAnim,
+                  transform: [
+                    { translateY: Animated.add(slideAnim, 30 + index * 10) },
+                  ],
+                }}
+              >
+                <Ionicons
+                  name="checkmark-circle"
+                  size={24}
+                  color="#10B981"
+                  style={{ marginRight: 12 }}
+                />
+                <Text className="text-black text-lg flex-1">{tip}</Text>
+              </Animated.View>
+            ))}
+          </View>
         </Animated.View>
       </ScrollView>
     );
   };
 
-  const isNextDisabled = () => {
-    // For urge selection step, require at least one urge to be selected
-    if (steps[currentStep].id === "urge-selection") {
-      return selectedUrges.length === 0;
-    }
-    return false;
-  };
+  const currentStepData = steps[currentStep];
+  const isUrgeSelectionStep = currentStepData?.id === "urge-selection";
+  const canProceed = isUrgeSelectionStep ? selectedUrges.length > 0 : true;
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: "#185e66" }}>
-      {/* Header */}
-      <View className="px-6 pt-4 pb-2">
-        <View className="flex-row justify-between items-center">
-          <TouchableOpacity onPress={handleSkip}>
-            <Text className="text-white text-lg opacity-75">Skip</Text>
-          </TouchableOpacity>
-
+      {/* Header with progress */}
+      <View className="px-6 pt-4 pb-6">
+        <View className="flex-row justify-between items-center mb-4">
           <Text className="text-white text-lg opacity-75">
             {currentStep + 1} of {steps.length}
           </Text>
+          <TouchableOpacity onPress={handleSkip}>
+            <Text className="text-white text-lg opacity-75">Skip</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Animated Progress bar */}
-        <View className="w-full bg-white bg-opacity-20 rounded-full h-1 mt-4">
+        {/* Progress bar */}
+        <View className="w-full bg-white bg-opacity-20 rounded-full h-2">
           <Animated.View
-            className="h-1 rounded-full"
+            className="bg-white h-2 rounded-full"
             style={{
               width: progressAnim.interpolate({
                 inputRange: [0, 100],
                 outputRange: ["0%", "100%"],
                 extrapolate: "clamp",
               }),
-              backgroundColor: "#10B981",
             }}
           />
         </View>
       </View>
 
       {/* Content */}
-      <View className="flex-1">{renderStep(steps[currentStep])}</View>
+      <View className="flex-1">{renderStep(currentStepData)}</View>
 
-      {/* Bottom Navigation with button animations */}
+      {/* Bottom Navigation */}
       <View className="px-6 py-4 border-t border-white border-opacity-20">
         <View className="flex-row space-x-3">
           {currentStep > 0 && (
-            <Animated.View
-              className="flex-1"
-              style={{
-                opacity: fadeAnim,
-                transform: [{ scale: scaleAnim }],
-              }}
-            >
-              <TouchableOpacity
-                className="rounded-lg py-4 border border-white border-opacity-50"
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
-                onPress={handleBack}
-              >
-                <Text className="text-center text-white font-semibold text-2xl">
-                  Back
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
-          )}
-
-          <Animated.View
-            className="flex-1"
-            style={{
-              opacity: fadeAnim,
-              transform: [{ scale: scaleAnim }],
-            }}
-          >
             <TouchableOpacity
-              className={`rounded-lg py-4 ${
-                isNextDisabled() ? "bg-gray-400 opacity-50" : ""
-              }`}
-              style={{
-                backgroundColor: isNextDisabled() ? "#9CA3AF" : "#10B981",
-              }}
-              onPress={handleNext}
-              disabled={isNextDisabled()}
+              className="flex-1 rounded-lg py-4 border border-white border-opacity-50"
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+              onPress={handleBack}
             >
-              <Text className="text-center font-semibold text-2xl text-white">
-                {currentStep === 0
-                  ? "Get Started!"
-                  : currentStep === steps.length - 1
-                    ? "Finish!"
-                    : "Next"}
+              <Text className="text-center text-white font-semibold text-xl">
+                Back
               </Text>
             </TouchableOpacity>
-          </Animated.View>
+          )}
+
+          <TouchableOpacity
+            className={`flex-1 rounded-lg py-4 ${!canProceed ? "opacity-50" : ""}`}
+            style={{
+              backgroundColor: !canProceed
+                ? "rgba(255, 255, 255, 0.3)"
+                : "#FFFFFF",
+            }}
+            onPress={handleNext}
+            disabled={!canProceed}
+          >
+            <Text
+              className="text-center font-semibold text-xl"
+              style={{
+                color: !canProceed ? "rgba(255, 255, 255, 0.7)" : "#185e66",
+              }}
+            >
+              {currentStep === steps.length - 1 ? "Get Started" : "Next"}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>

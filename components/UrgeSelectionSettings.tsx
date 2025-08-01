@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { COMMON_URGES } from "../types";
 import { useSettings } from "../hooks/useSettings";
+import { Ionicons } from "@expo/vector-icons";
 
 interface UrgeSelectionSettingsProps {
   onClose?: () => void;
@@ -31,10 +32,10 @@ const UrgeSelectionSettings: React.FC<UrgeSelectionSettingsProps> = ({
     }
   }, [settings]);
 
-  const toggleUrgeSelection = (urge: string) => {
-    const newSelection = selectedUrges.includes(urge)
-      ? selectedUrges.filter((u) => u !== urge)
-      : [...selectedUrges, urge];
+  const toggleUrgeSelection = (urgeText: string) => {
+    const newSelection = selectedUrges.includes(urgeText)
+      ? selectedUrges.filter((u) => u !== urgeText)
+      : [...selectedUrges, urgeText];
 
     setSelectedUrges(newSelection);
     setHasChanges(true);
@@ -55,7 +56,7 @@ const UrgeSelectionSettings: React.FC<UrgeSelectionSettingsProps> = ({
   };
 
   const handleSelectAll = () => {
-    setSelectedUrges([...COMMON_URGES]);
+    setSelectedUrges(COMMON_URGES.map((urge) => urge.text));
     setHasChanges(true);
   };
 
@@ -151,7 +152,7 @@ const UrgeSelectionSettings: React.FC<UrgeSelectionSettingsProps> = ({
         {/* Urge selection list */}
         <View className="mb-6">
           {COMMON_URGES.map((urge, index) => {
-            const isSelected = selectedUrges.includes(urge);
+            const isSelected = selectedUrges.includes(urge.text);
             return (
               <TouchableOpacity
                 key={index}
@@ -164,16 +165,24 @@ const UrgeSelectionSettings: React.FC<UrgeSelectionSettingsProps> = ({
                     ? "transparent"
                     : "rgba(255, 255, 255, 0.3)",
                 }}
-                onPress={() => toggleUrgeSelection(urge)}
+                onPress={() => toggleUrgeSelection(urge.text)}
               >
                 <View className="flex-row items-center justify-between">
-                  <Text
-                    className={`text-lg font-medium ${
-                      isSelected ? "text-gray-800" : "text-white"
-                    }`}
-                  >
-                    {urge}
-                  </Text>
+                  <View className="flex-row items-center flex-1">
+                    <Ionicons
+                      name={urge.icon}
+                      size={24}
+                      color={isSelected ? "#374151" : "#FFFFFF"}
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-lg font-medium ${
+                        isSelected ? "text-gray-800" : "text-white"
+                      }`}
+                    >
+                      {urge.text}
+                    </Text>
+                  </View>
                   <View
                     className="w-6 h-6 rounded-full border-2 items-center justify-center"
                     style={{
@@ -193,33 +202,49 @@ const UrgeSelectionSettings: React.FC<UrgeSelectionSettingsProps> = ({
           })}
         </View>
 
-        {/* Helper text */}
-        <View className="mb-8 bg-white bg-opacity-10 rounded-lg p-4">
-          <Text className="text-white text-center text-sm opacity-75">
-            💡 Tip: Focus on 3-5 urges for the best tracking experience. You can
-            always adjust your selection later.
-          </Text>
+        {/* Help text */}
+        <View className="bg-white bg-opacity-10 rounded-lg p-4 mb-6">
+          <View className="flex-row items-start">
+            <Ionicons
+              name="information-circle-outline"
+              size={24}
+              color="rgba(255, 255, 255, 0.7)"
+              style={{ marginRight: 12, marginTop: 2 }}
+            />
+            <View className="flex-1">
+              <Text className="text-white opacity-75 leading-6">
+                Focus on tracking 3-5 urges that you want to be most mindful
+                about. You can always adjust this list later in settings.
+              </Text>
+            </View>
+          </View>
         </View>
+      </ScrollView>
 
-        {/* Save button for non-modal usage */}
-        {!showHeader && (
+      {/* Bottom save button for non-header mode */}
+      {!showHeader && (
+        <View className="px-6 py-4 border-t border-white border-opacity-20">
           <TouchableOpacity
-            className={`rounded-lg py-4 mb-4 ${
-              hasChanges ? "bg-white" : "bg-gray-400 opacity-50"
-            }`}
+            className={`rounded-lg py-4 ${!hasChanges ? "opacity-50" : ""}`}
+            style={{
+              backgroundColor: !hasChanges
+                ? "rgba(255, 255, 255, 0.3)"
+                : "#FFFFFF",
+            }}
             onPress={handleSave}
             disabled={!hasChanges}
           >
             <Text
-              className={`text-center font-semibold text-lg ${
-                hasChanges ? "text-gray-800" : "text-gray-600"
-              }`}
+              className="text-center font-semibold text-xl"
+              style={{
+                color: !hasChanges ? "rgba(255, 255, 255, 0.7)" : "#185e66",
+              }}
             >
               Save Changes
             </Text>
           </TouchableOpacity>
-        )}
-      </ScrollView>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

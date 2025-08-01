@@ -160,78 +160,267 @@ export const STORAGE_KEYS = {
 
 // Common urges, triggers, locations, and emotions for quick selection
 export const COMMON_URGES = [
-  "Drink caffeine",
-  "Scroll social media",
-  "Drink alcohol",
-  "Vape",
-  "Eat junk food",
-  "Smoke weed",
-  "Watch porn",
-  "Play video games",
-  "Gamble",
-  "Online Shopping",
-  "Use phone",
-  "Watch TV",
-  "Smoke cigarettes",
-  "Drink soda",
-  "Have sex",
-  "Bite nails",
+  {
+    text: "Drink caffeine",
+    icon: "cafe-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Scroll social media",
+    icon: "phone-portrait-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Drink alcohol",
+    icon: "wine-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Vape",
+    icon: "cloud-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Eat junk food",
+    icon: "fast-food-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Smoke weed",
+    icon: "leaf-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Watch porn",
+    icon: "eye-off-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Play video games",
+    icon: "game-controller-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Gamble",
+    icon: "dice-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Online Shopping",
+    icon: "bag-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Use phone",
+    icon: "phone-portrait-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Watch TV",
+    icon: "tv-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Smoke cigarettes",
+    icon: "ban-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Drink soda",
+    icon: "restaurant-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Have sex",
+    icon: "heart-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Bite nails",
+    icon: "hand-left-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
 ] as const;
 
 export const COMMON_TRIGGERS = [
-  "Boredom",
-  "Stress",
-  "Loneliness",
-  "Anxiety",
-  "Notification",
-  "Advertisement",
-  "Habit",
-  "Procrastination",
-  "Sadness",
-  "Anger",
-  "FOMO",
-  "Peer pressure",
-  "Celebration",
-  "Fatigue",
-  "Hunger",
+  {
+    text: "Boredom",
+    icon: "time-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Stress",
+    icon: "warning-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Loneliness",
+    icon: "person-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Anxiety",
+    icon: "pulse-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Notification",
+    icon: "notifications-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Advertisement",
+    icon: "megaphone-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Habit",
+    icon: "refresh-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Procrastination",
+    icon: "hourglass-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Sadness",
+    icon: "sad-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Anger",
+    icon: "flame-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "FOMO",
+    icon: "eye-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Peer pressure",
+    icon: "people-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Celebration",
+    icon: "trophy-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Fatigue",
+    icon: "battery-dead-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Hunger",
+    icon: "restaurant-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
 ] as const;
 
 export const COMMON_LOCATIONS = [
-  "Home",
-  "Work",
-  "Gym",
-  "Commuting",
-  "Bedroom",
-  "Kitchen",
-  "Bathroom",
-  "Car",
-  "Friend's house",
-  "Restaurant",
-  "Store",
-  "School",
-  "Outside",
+  {
+    text: "Home",
+    icon: "home-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Work",
+    icon: "briefcase-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Gym",
+    icon: "fitness-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Commuting",
+    icon: "car-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Bedroom",
+    icon: "bed-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Kitchen",
+    icon: "restaurant-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Bathroom",
+    icon: "water-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Car",
+    icon: "car-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Friend's house",
+    icon: "people-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Restaurant",
+    icon: "restaurant-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Store",
+    icon: "storefront-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "School",
+    icon: "school-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Outside",
+    icon: "sunny-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
 ] as const;
 
 export const COMMON_EMOTIONS = [
-  "Anxious",
-  "Stressed",
-  "Bored",
-  "Sad",
-  "Angry",
-  "Lonely",
-  "Frustrated",
-  "Overwhelmed",
-  "Excited",
-  "Happy",
-  "Tired",
-  "Restless",
-  "Guilty",
-  "Ashamed",
-  "Confident",
-  "Insecure",
-  "Content",
-  "Nervous",
-  "Disappointed",
+  {
+    text: "Anxious",
+    icon: "pulse-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Stressed",
+    icon: "warning-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Bored",
+    icon: "time-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Sad",
+    icon: "sad-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Angry",
+    icon: "flame-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Lonely",
+    icon: "person-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Frustrated",
+    icon: "close-circle-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Overwhelmed",
+    icon: "thunderstorm-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Excited",
+    icon: "star-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Happy",
+    icon: "happy-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Tired",
+    icon: "moon-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Restless",
+    icon: "walk-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Guilty",
+    icon: "shield-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Ashamed",
+    icon: "eye-off-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Confident",
+    icon: "ribbon-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Insecure",
+    icon: "help-circle-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Content",
+    icon: "checkmark-circle-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Nervous",
+    icon: "flash-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Disappointed",
+    icon: "arrow-down-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
 ] as const;
 
 // Color schemes for charts and UI
