@@ -122,6 +122,10 @@ const QuickLogScreen: React.FC = () => {
       actedOn,
       notes,
     });
+
+    // Update recent choices for next time
+    updateRecentChoices();
+
     setCurrentStep(1);
     setUrge("");
     setLocation("");
@@ -129,6 +133,38 @@ const QuickLogScreen: React.FC = () => {
     setEmotion("");
     setActedOn(null);
     setNotes("");
+  };
+
+  // Function to move selected choices to the top of their respective lists
+  const updateRecentChoices = async () => {
+    try {
+      const currentSettings = settings || {};
+      
+      // Update recent choices in settings
+      const updatedSettings = {
+        ...currentSettings,
+        selectedUrges: moveToTop(urge, filteredUrges), // Move selected urge to top of user's urges
+        recentTriggers: moveToTop(trigger, (currentSettings as any).recentTriggers || [...COMMON_TRIGGERS]),
+        recentLocations: moveToTop(location, (currentSettings as any).recentLocations || [...COMMON_LOCATIONS]),
+        recentEmotions: moveToTop(emotion, (currentSettings as any).recentEmotions || [...COMMON_EMOTIONS]),
+      };
+
+      await updateSettings(updatedSettings);
+      
+      // Also update local state immediately for better UX
+      setFilteredUrges(moveToTop(urge, filteredUrges));
+    } catch (error) {
+      console.error("Error updating recent choices:", error);
+    }
+  };
+
+  // Helper function to move an item to the top of an array
+  const moveToTop = (item: string, array: string[]): string[] => {
+    if (!item) return array;
+    
+    // Remove the item if it exists and add it to the front
+    const filtered = array.filter(arrayItem => arrayItem !== item);
+    return [item, ...filtered];
   };
 
   const handleAddUrgePress = () => {
@@ -166,9 +202,9 @@ const QuickLogScreen: React.FC = () => {
     );
   }
 
-  const commonLocations = [...COMMON_LOCATIONS];
-  const commonTriggers = [...COMMON_TRIGGERS];
-  const commonEmotions = [...COMMON_EMOTIONS];
+  const commonLocations = (settings as any)?.recentLocations || [...COMMON_LOCATIONS];
+  const commonTriggers = (settings as any)?.recentTriggers || [...COMMON_TRIGGERS];
+  const commonEmotions = (settings as any)?.recentEmotions || [...COMMON_EMOTIONS];
 
   const renderStep = () => {
     switch (currentStep) {
@@ -276,7 +312,7 @@ const QuickLogScreen: React.FC = () => {
               Common triggers:
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {commonTriggers.map((commonTrigger, index) => (
+              {commonTriggers.map((commonTrigger: string, index: number) => (
                 <TouchableOpacity
                   key={index}
                   className="p-4 rounded-lg mb-3"
@@ -330,7 +366,7 @@ const QuickLogScreen: React.FC = () => {
               Common locations:
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {commonLocations.map((commonLocation, index) => (
+              {commonLocations.map((commonLocation: string, index: number) => (
                 <TouchableOpacity
                   key={index}
                   className="p-4 rounded-lg mb-3"
@@ -386,7 +422,7 @@ const QuickLogScreen: React.FC = () => {
               Common emotions:
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {commonEmotions.map((commonEmotion, index) => (
+              {commonEmotions.map((commonEmotion: string, index: number) => (
                 <TouchableOpacity
                   key={index}
                   className="p-4 rounded-lg mb-3"

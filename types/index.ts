@@ -20,6 +20,9 @@ export interface UserSettings {
   onboardingCompleted: boolean;
   theme: "light" | "dark" | "system";
   selectedUrges: string[]; // New field for storing user's selected urges for tracking
+  recentTriggers?: string[]; // Recently used triggers, ordered by most recent first
+  recentLocations?: string[]; // Recently used locations, ordered by most recent first
+  recentEmotions?: string[]; // Recently used emotions, ordered by most recent first
 }
 
 export interface StreakGoal {
@@ -50,7 +53,7 @@ export interface DashboardStats {
   successRate: number;
   commonTriggers: { trigger: string; count: number }[];
   commonUrges: { urge: string; count: number }[];
-  commonEmotions: { emotion: string; count: number }[]; // Added emotions to stats
+  commonEmotions?: { emotion: string; count: number }[]; // Made optional for backward compatibility
   hourlyHeatmap: { hour: number; count: number }[];
   weeklyTrend: { day: string; count: number; date: string }[];
   averageUrgesPerDay: number;
