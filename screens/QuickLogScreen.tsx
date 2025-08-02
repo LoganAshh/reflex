@@ -379,7 +379,7 @@ const QuickLogScreen: React.FC = () => {
               // Show when search has no results
               <View className="mb-4">
                 <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
-                  <Text className="text-white text-center opacity-75">
+                  <Text className="text-black text-center opacity-75">
                     No matching urges found for "{urge}"
                   </Text>
                 </View>
