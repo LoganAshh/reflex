@@ -767,14 +767,13 @@ const QuickLogScreen: React.FC = () => {
 
             <TextInput
               className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
-              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)", minHeight: 80 }}
               placeholder="Any notes? (optional)"
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={notes}
               onChangeText={setNotes}
-              multiline
-              numberOfLines={3}
               returnKeyType="done"
+              blurOnSubmit={true}
             />
           </Animated.View>
         );
