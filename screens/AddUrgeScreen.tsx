@@ -336,6 +336,7 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
             placeholderTextColor="rgba(255, 255, 255, 0.7)"
             value={customUrge}
             onChangeText={handleCustomUrgeChange}
+            returnKeyType="done"
           />
           
           {/* Icon picker for custom urges */}

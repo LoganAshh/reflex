@@ -323,6 +323,7 @@ const QuickLogScreen: React.FC = () => {
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={urge}
               onChangeText={setUrge}
+              returnKeyType="done"
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
@@ -378,7 +379,7 @@ const QuickLogScreen: React.FC = () => {
               // Show when search has no results
               <View className="mb-4">
                 <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
-                  <Text className="text-black text-center opacity-75">
+                  <Text className="text-white text-center opacity-75">
                     No matching urges found for "{urge}"
                   </Text>
                 </View>
@@ -427,6 +428,7 @@ const QuickLogScreen: React.FC = () => {
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={trigger}
               onChangeText={setTrigger}
+              returnKeyType="done"
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
@@ -491,6 +493,7 @@ const QuickLogScreen: React.FC = () => {
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={location}
               onChangeText={setLocation}
+              returnKeyType="done"
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
@@ -557,6 +560,7 @@ const QuickLogScreen: React.FC = () => {
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={emotion}
               onChangeText={setEmotion}
+              returnKeyType="done"
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
@@ -677,6 +681,7 @@ const QuickLogScreen: React.FC = () => {
               onChangeText={setNotes}
               multiline
               numberOfLines={3}
+              returnKeyType="done"
             />
           </Animated.View>
         );
