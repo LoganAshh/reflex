@@ -317,6 +317,42 @@ const QuickLogScreen: React.FC = () => {
     );
   };
 
+  // Helper function to filter triggers based on search text
+  const getFilteredTriggersForSearch = (searchText: string) => {
+    if (!searchText.trim()) {
+      return commonTriggers;
+    }
+    
+    const searchLower = searchText.toLowerCase();
+    return commonTriggers.filter((trigger: string) => 
+      trigger.toLowerCase().includes(searchLower)
+    );
+  };
+
+  // Helper function to filter locations based on search text
+  const getFilteredLocationsForSearch = (searchText: string) => {
+    if (!searchText.trim()) {
+      return commonLocations;
+    }
+    
+    const searchLower = searchText.toLowerCase();
+    return commonLocations.filter((location: string) => 
+      location.toLowerCase().includes(searchLower)
+    );
+  };
+
+  // Helper function to filter emotions based on search text
+  const getFilteredEmotionsForSearch = (searchText: string) => {
+    if (!searchText.trim()) {
+      return commonEmotions;
+    }
+    
+    const searchLower = searchText.toLowerCase();
+    return commonEmotions.filter((emotion: string) => 
+      emotion.toLowerCase().includes(searchLower)
+    );
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -427,6 +463,8 @@ const QuickLogScreen: React.FC = () => {
         );
 
       case 2:
+        const searchFilteredTriggers = getFilteredTriggersForSearch(trigger);
+        
         return (
           <Animated.View
             className="flex-1"
@@ -453,10 +491,12 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              Common triggers:
+              {trigger.trim() && searchFilteredTriggers.length !== commonTriggers.length 
+                ? `Matching triggers (${searchFilteredTriggers.length}):` 
+                : "Common triggers:"}
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {commonTriggers.map((commonTrigger: string, index: number) => (
+              {searchFilteredTriggers.map((commonTrigger: string, index: number) => (
                 <TouchableOpacity
                   key={index}
                   className="p-4 rounded-lg mb-3"
@@ -487,11 +527,21 @@ const QuickLogScreen: React.FC = () => {
                   </View>
                 </TouchableOpacity>
               ))}
+              
+              {searchFilteredTriggers.length === 0 && trigger.trim() && (
+                <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
+                  <Text className="text-black text-center opacity-75">
+                    No matching triggers found for "{trigger}"
+                  </Text>
+                </View>
+              )}
             </ScrollView>
           </Animated.View>
         );
 
       case 3:
+        const searchFilteredLocations = getFilteredLocationsForSearch(location);
+        
         return (
           <Animated.View
             className="flex-1"
@@ -518,10 +568,12 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              Common locations:
+              {location.trim() && searchFilteredLocations.length !== commonLocations.length 
+                ? `Matching locations (${searchFilteredLocations.length}):` 
+                : "Common locations:"}
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {commonLocations.map((commonLocation: string, index: number) => (
+              {searchFilteredLocations.map((commonLocation: string, index: number) => (
                 <TouchableOpacity
                   key={index}
                   className="p-4 rounded-lg mb-3"
@@ -554,11 +606,21 @@ const QuickLogScreen: React.FC = () => {
                   </View>
                 </TouchableOpacity>
               ))}
+              
+              {searchFilteredLocations.length === 0 && location.trim() && (
+                <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
+                  <Text className="text-black text-center opacity-75">
+                    No matching locations found for "{location}"
+                  </Text>
+                </View>
+              )}
             </ScrollView>
           </Animated.View>
         );
 
       case 4:
+        const searchFilteredEmotions = getFilteredEmotionsForSearch(emotion);
+        
         return (
           <Animated.View
             className="flex-1"
@@ -585,10 +647,12 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              Common emotions:
+              {emotion.trim() && searchFilteredEmotions.length !== commonEmotions.length 
+                ? `Matching emotions (${searchFilteredEmotions.length}):` 
+                : "Common emotions:"}
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {commonEmotions.map((commonEmotion: string, index: number) => (
+              {searchFilteredEmotions.map((commonEmotion: string, index: number) => (
                 <TouchableOpacity
                   key={index}
                   className="p-4 rounded-lg mb-3"
@@ -619,6 +683,14 @@ const QuickLogScreen: React.FC = () => {
                   </View>
                 </TouchableOpacity>
               ))}
+              
+              {searchFilteredEmotions.length === 0 && emotion.trim() && (
+                <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
+                  <Text className="text-black text-center opacity-75">
+                    No matching emotions found for "{emotion}"
+                  </Text>
+                </View>
+              )}
             </ScrollView>
           </Animated.View>
         );
