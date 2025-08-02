@@ -215,8 +215,8 @@ const QuickLogScreen: React.FC = () => {
       }));
     }
 
-    // Immediately update local state for instant UI response
-    const updatedUrges = [...filteredUrges, selectedUrge];
+    // Move the selected urge to the top of the list for better UX
+    const updatedUrges = [selectedUrge, ...filteredUrges.filter(urge => urge !== selectedUrge)];
     setFilteredUrges(updatedUrges);
     setUrge(selectedUrge);
     setShowAddUrgeScreen(false);
