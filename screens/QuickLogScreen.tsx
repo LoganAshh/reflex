@@ -39,7 +39,7 @@ const QuickLogScreen: React.FC = () => {
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
   const slideAnim = React.useRef(new Animated.Value(0)).current;
 
-  // Load user's selected urges when component mounts or settings change
+  // Load user's selected urges and custom icons when component mounts or settings change
   useEffect(() => {
     const loadFilteredUrges = () => {
       if (settings?.selectedUrges && settings.selectedUrges.length > 0) {
@@ -64,10 +64,15 @@ const QuickLogScreen: React.FC = () => {
         // Fallback to all common urges if no selection (for existing users)
         setFilteredUrges(COMMON_URGES.map((u) => u.text));
       }
+
+      // Load custom urge icons from settings
+      if ((settings as any)?.customUrgeIcons) {
+        setCustomUrgeIcons((settings as any).customUrgeIcons);
+      }
     };
 
     loadFilteredUrges();
-  }, [settings?.selectedUrges]); // Only depend on selectedUrges, not all settings
+  }, [settings?.selectedUrges, (settings as any)?.customUrgeIcons]); // Depend on both selectedUrges and customUrgeIcons
 
   const animateTransition = (callback: () => void) => {
     Animated.sequence([
@@ -210,12 +215,24 @@ const QuickLogScreen: React.FC = () => {
   };
 
   const handleUrgeSelected = async (selectedUrge: string, selectedIcon?: string) => {
-    // Store the custom icon if provided
+    // Store the custom icon if provided - both in local state and settings
     if (selectedIcon) {
-      setCustomUrgeIcons(prev => ({
-        ...prev,
+      const newCustomIcons = {
+        ...customUrgeIcons,
         [selectedUrge]: selectedIcon
-      }));
+      };
+      
+      setCustomUrgeIcons(newCustomIcons);
+      
+      // Also save to settings for persistence
+      try {
+        await updateSettings({
+          ...settings,
+          customUrgeIcons: newCustomIcons,
+        } as any);
+      } catch (error) {
+        console.error("Error saving custom icon:", error);
+      }
     }
 
     // Move the selected urge to the top of the list for better UX
@@ -226,7 +243,11 @@ const QuickLogScreen: React.FC = () => {
 
     // Save to settings in the background
     try {
-      await updateSettings({ selectedUrges: updatedUrges });
+      await updateSettings({ 
+        ...settings,
+        selectedUrges: updatedUrges,
+        ...(selectedIcon && { customUrgeIcons: { ...customUrgeIcons, [selectedUrge]: selectedIcon } })
+      } as any);
     } catch (error) {
       console.error("Error saving new urge:", error);
       // Optionally revert on error, but keep UI updated for now
