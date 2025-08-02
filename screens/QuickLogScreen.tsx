@@ -279,9 +279,23 @@ const QuickLogScreen: React.FC = () => {
     return urgeObj?.icon || "help-circle-outline";
   };
 
+  // Helper function to filter urges based on search text
+  const getFilteredUrgesForSearch = (searchText: string) => {
+    if (!searchText.trim()) {
+      return filteredUrges;
+    }
+    
+    const searchLower = searchText.toLowerCase();
+    return filteredUrges.filter(urge => 
+      urge.toLowerCase().includes(searchLower)
+    );
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
+        const searchFilteredUrges = getFilteredUrgesForSearch(urge);
+        
         return (
           <Animated.View
             className="flex-1"
@@ -307,12 +321,14 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              Your urges:
+              {urge.trim() && searchFilteredUrges.length !== filteredUrges.length 
+                ? `Matching urges (${searchFilteredUrges.length}):` 
+                : "Your urges:"}
             </Text>
 
-            {filteredUrges.length > 0 ? (
+            {searchFilteredUrges.length > 0 ? (
               <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-                {filteredUrges.map((filteredUrge: string, index: number) => (
+                {searchFilteredUrges.map((filteredUrge: string, index: number) => (
                   <TouchableOpacity
                     key={index}
                     className="p-4 rounded-lg mb-3"
@@ -353,6 +369,25 @@ const QuickLogScreen: React.FC = () => {
                   </Text>
                 </TouchableOpacity>
               </ScrollView>
+            ) : urge.trim() ? (
+              // Show when search has no results
+              <View className="mb-4">
+                <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
+                  <Text className="text-black text-center opacity-75">
+                    No matching urges found for "{urge}"
+                  </Text>
+                </View>
+                
+                <TouchableOpacity
+                  className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                  onPress={handleAddUrgePress}
+                >
+                  <Text className="text-white text-center">
+                    + Create "{urge}" as a custom urge
+                  </Text>
+                </TouchableOpacity>
+              </View>
             ) : (
               <View className="mb-4 p-6 bg-white bg-opacity-10 rounded-lg">
                 <Text className="text-white text-center opacity-75">
