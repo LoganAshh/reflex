@@ -19,6 +19,7 @@ interface AddUrgeScreenProps {
   onUrgeSelected: (urge: string, icon?: string) => void;
   onBack: () => void;
   currentSelectedUrges?: string[];
+  preFilledText?: string;
 }
 
 // Curated list of icons that make sense for urges/behaviors
@@ -142,11 +143,12 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
   onUrgeSelected,
   onBack,
   currentSelectedUrges = [],
+  preFilledText = "",
 }) => {
-  const [customUrge, setCustomUrge] = useState("");
+  const [customUrge, setCustomUrge] = useState(preFilledText);
   const [selectedUrge, setSelectedUrge] = useState("");
   const [selectedIcon, setSelectedIcon] = useState("help-circle-outline");
-  const [showIconPicker, setShowIconPicker] = useState(false);
+  const [showIconPicker, setShowIconPicker] = useState(preFilledText.length > 0);
   const [isLoading, setIsLoading] = useState(false);
   const { settings, updateSettings } = useSettings();
 

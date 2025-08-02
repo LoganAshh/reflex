@@ -202,7 +202,10 @@ const QuickLogScreen: React.FC = () => {
     return [item, ...filtered];
   };
 
-  const handleAddUrgePress = () => {
+  const [preFilledUrgeText, setPreFilledUrgeText] = useState<string>("");
+
+  const handleAddUrgePress = (preFilledText?: string) => {
+    setPreFilledUrgeText(preFilledText || "");
     setShowAddUrgeScreen(true);
   };
 
@@ -232,6 +235,7 @@ const QuickLogScreen: React.FC = () => {
 
   const handleAddUrgeBack = () => {
     setShowAddUrgeScreen(false);
+    setPreFilledUrgeText(""); // Clear the pre-filled text
   };
 
   // If showing add urge screen, render it instead
@@ -241,6 +245,7 @@ const QuickLogScreen: React.FC = () => {
         onUrgeSelected={handleUrgeSelected}
         onBack={handleAddUrgeBack}
         currentSelectedUrges={filteredUrges}
+        preFilledText={preFilledUrgeText}
       />
     );
   }
@@ -362,7 +367,7 @@ const QuickLogScreen: React.FC = () => {
                 <TouchableOpacity
                   className="p-3 rounded-lg mb-3 border border-white border-opacity-30"
                   style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
-                  onPress={handleAddUrgePress}
+                  onPress={() => handleAddUrgePress()}
                 >
                   <Text className="text-white text-center opacity-75">
                     + Add a different urge
@@ -381,7 +386,7 @@ const QuickLogScreen: React.FC = () => {
                 <TouchableOpacity
                   className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
                   style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
-                  onPress={handleAddUrgePress}
+                  onPress={() => handleAddUrgePress(urge.trim())}
                 >
                   <Text className="text-white text-center">
                     + Create "{urge}" as a custom urge
