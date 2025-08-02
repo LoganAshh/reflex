@@ -245,32 +245,6 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
           </TouchableOpacity>
         </View>
         
-        {/* Selected icon preview or Add Icon prompt */}
-        <View className="items-center mb-4">
-          <TouchableOpacity
-            className="w-16 h-16 rounded-full items-center justify-center border-2"
-            style={{
-              backgroundColor: selectedIcon === "help-circle-outline" 
-                ? "rgba(255, 255, 255, 0.1)" 
-                : "rgba(255, 255, 255, 0.2)",
-              borderColor: selectedIcon === "help-circle-outline"
-                ? "rgba(255, 255, 255, 0.3)"
-                : "rgba(255, 255, 255, 0.5)",
-              borderStyle: selectedIcon === "help-circle-outline" ? "dashed" : "solid",
-            }}
-            onPress={() => setShowIconPicker(!showIconPicker)}
-          >
-            {selectedIcon === "help-circle-outline" ? (
-              <Ionicons name="add" size={32} color="rgba(255, 255, 255, 0.7)" />
-            ) : (
-              <Ionicons name={selectedIcon as any} size={32} color="#FFFFFF" />
-            )}
-          </TouchableOpacity>
-          <Text className="text-white text-sm mt-2 opacity-75">
-            {selectedIcon === "help-circle-outline" ? "Add Icon" : selectedIcon}
-          </Text>
-        </View>
-
         {/* Icon grid */}
         <ScrollView 
           className="max-h-64 bg-transparent bg-opacity-10 rounded-lg p-3"
