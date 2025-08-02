@@ -247,7 +247,8 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
         
         {/* Icon grid */}
         <ScrollView 
-          className="max-h-64 bg-transparent bg-opacity-10 rounded-lg p-3"
+          className="max-h-64 rounded-lg p-3 border border-white border-opacity-30"
+          style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
           showsVerticalScrollIndicator={false}
         >
           <View className="flex-row flex-wrap justify-center">
