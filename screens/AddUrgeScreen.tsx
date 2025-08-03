@@ -148,7 +148,9 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
   const [customUrge, setCustomUrge] = useState(preFilledText);
   const [selectedUrge, setSelectedUrge] = useState("");
   const [selectedIcon, setSelectedIcon] = useState("help-circle-outline");
-  const [showIconPicker, setShowIconPicker] = useState(preFilledText.length > 0);
+  const [showIconPicker, setShowIconPicker] = useState(
+    preFilledText.length > 0
+  );
   const [isLoading, setIsLoading] = useState(false);
   const { settings, updateSettings } = useSettings();
 
@@ -227,16 +229,20 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
   };
 
   const renderIconPicker = () => {
-    const screenWidth = Dimensions.get('window').width;
+    const screenWidth = Dimensions.get("window").width;
     const iconSize = 40;
     const padding = 24; // 12px on each side
     const gap = 12;
-    const iconsPerRow = Math.floor((screenWidth - padding * 2) / (iconSize + gap));
+    const iconsPerRow = Math.floor(
+      (screenWidth - padding * 2) / (iconSize + gap)
+    );
 
     return (
       <View className="mb-6">
         <View className="flex-row items-center justify-between mb-4">
-          <Text className="text-white font-medium text-lg">Choose an icon:</Text>
+          <Text className="text-white font-medium text-lg">
+            Choose an icon:
+          </Text>
           <TouchableOpacity
             onPress={() => setShowIconPicker(false)}
             className="p-2"
@@ -244,9 +250,9 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
             <Text className="text-white opacity-75">Hide</Text>
           </TouchableOpacity>
         </View>
-        
+
         {/* Icon grid */}
-        <ScrollView 
+        <ScrollView
           className="max-h-64 rounded-lg p-3 border border-white border-opacity-30"
           style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
           showsVerticalScrollIndicator={false}
@@ -257,19 +263,24 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
                 key={index}
                 className="p-2 m-1 rounded-lg"
                 style={{
-                  backgroundColor: selectedIcon === iconName 
-                    ? "rgba(255, 255, 255, 0.3)" 
-                    : "transparent",
+                  backgroundColor:
+                    selectedIcon === iconName
+                      ? "rgba(255, 255, 255, 0.3)"
+                      : "transparent",
                   width: iconSize + 16,
                   height: iconSize + 16,
                 }}
                 onPress={() => handleIconSelect(iconName)}
               >
                 <View className="items-center justify-center flex-1">
-                  <Ionicons 
-                    name={iconName as any} 
-                    size={24} 
-                    color={selectedIcon === iconName ? "#FFFFFF" : "rgba(255, 255, 255, 0.7)"} 
+                  <Ionicons
+                    name={iconName as any}
+                    size={24}
+                    color={
+                      selectedIcon === iconName
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.7)"
+                    }
                   />
                 </View>
               </TouchableOpacity>
@@ -313,7 +324,7 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
             onChangeText={handleCustomUrgeChange}
             returnKeyType="done"
           />
-          
+
           {/* Icon picker for custom urges */}
           {showIconPicker && customUrge.trim().length > 0 && renderIconPicker()}
         </View>
@@ -351,7 +362,9 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
                   />
                   <Text
                     className={`text-xl ${
-                      selectedUrge === urge.text ? "text-gray-800" : "text-white"
+                      selectedUrge === urge.text
+                        ? "text-gray-800"
+                        : "text-white"
                     }`}
                   >
                     {urge.text}
