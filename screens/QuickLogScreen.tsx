@@ -22,6 +22,7 @@ import { storageService } from "../services/StorageService";
 import { useSettings } from "../hooks/useSettings";
 import AddUrgeScreen from "./AddUrgeScreen";
 import AddTriggerScreen from "./AddTriggerScreen";
+import AddLocationScreen from "./AddLocationScreen";
 import { Ionicons } from "@expo/vector-icons";
 
 const QuickLogScreen: React.FC = () => {
@@ -35,8 +36,10 @@ const QuickLogScreen: React.FC = () => {
   const [filteredUrges, setFilteredUrges] = useState<string[]>([]);
   const [customUrgeIcons, setCustomUrgeIcons] = useState<{ [key: string]: string }>({});
   const [customTriggerIcons, setCustomTriggerIcons] = useState<{ [key: string]: string }>({});
+  const [customLocationIcons, setCustomLocationIcons] = useState<{ [key: string]: string }>({});
   const [showAddUrgeScreen, setShowAddUrgeScreen] = useState(false);
   const [showAddTriggerScreen, setShowAddTriggerScreen] = useState(false);
+  const [showAddLocationScreen, setShowAddLocationScreen] = useState(false);
 
   const { settings, updateSettings } = useSettings();
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
@@ -77,10 +80,15 @@ const QuickLogScreen: React.FC = () => {
       if ((settings as any)?.customTriggerIcons) {
         setCustomTriggerIcons((settings as any).customTriggerIcons);
       }
+
+      // Load custom location icons from settings
+      if ((settings as any)?.customLocationIcons) {
+        setCustomLocationIcons((settings as any).customLocationIcons);
+      }
     };
 
     loadFilteredUrges();
-  }, [settings?.selectedUrges, (settings as any)?.customUrgeIcons, (settings as any)?.customTriggerIcons]); // Depend on selectedUrges, customUrgeIcons, and customTriggerIcons
+  }, [settings?.selectedUrges, (settings as any)?.customUrgeIcons, (settings as any)?.customTriggerIcons, (settings as any)?.customLocationIcons]); // Depend on selectedUrges and all custom icon types
 
   const animateTransition = (callback: () => void) => {
     Animated.sequence([
@@ -217,6 +225,7 @@ const QuickLogScreen: React.FC = () => {
 
   const [preFilledUrgeText, setPreFilledUrgeText] = useState<string>("");
   const [preFilledTriggerText, setPreFilledTriggerText] = useState<string>("");
+  const [preFilledLocationText, setPreFilledLocationText] = useState<string>("");
 
   const handleAddUrgePress = (preFilledText?: string) => {
     setPreFilledUrgeText(preFilledText || "");
@@ -228,6 +237,50 @@ const QuickLogScreen: React.FC = () => {
     setShowAddTriggerScreen(true);
   };
 
+  const handleAddLocationPress = (preFilledText?: string) => {
+    setPreFilledLocationText(preFilledText || "");
+    setShowAddLocationScreen(true);
+  };
+
+  const handleLocationSelected = async (selectedLocation: string, selectedIcon?: string) => {
+    // Store the custom icon if provided - both in local state and settings
+    if (selectedIcon) {
+      const newCustomIcons = {
+        ...customLocationIcons,
+        [selectedLocation]: selectedIcon
+      };
+      
+      setCustomLocationIcons(newCustomIcons);
+      
+      // Also save to settings for persistence
+      try {
+        await updateSettings({
+          ...settings,
+          customLocationIcons: newCustomIcons,
+        } as any);
+      } catch (error) {
+        console.error("Error saving custom location icon:", error);
+      }
+    }
+
+    // Set the selected location and close the screen
+    setLocation(selectedLocation);
+    setShowAddLocationScreen(false);
+
+    // Save to settings in the background
+    try {
+      const currentLocations = (settings as any)?.recentLocations || COMMON_LOCATIONS.map((l) => l.text);
+      const updatedLocations = [selectedLocation, ...currentLocations.filter((l: string) => l !== selectedLocation)];
+      
+      await updateSettings({ 
+        ...settings,
+        recentLocations: updatedLocations,
+        ...(selectedIcon && { customLocationIcons: { ...customLocationIcons, [selectedLocation]: selectedIcon } })
+      } as any);
+    } catch (error) {
+      console.error("Error saving new location:", error);
+    }
+  };
   const handleTriggerSelected = async (selectedTrigger: string, selectedIcon?: string) => {
     // Store the custom icon if provided - both in local state and settings
     if (selectedIcon) {
@@ -317,6 +370,11 @@ const QuickLogScreen: React.FC = () => {
     setPreFilledTriggerText(""); // Clear the pre-filled text
   };
 
+  const handleAddLocationBack = () => {
+    setShowAddLocationScreen(false);
+    setPreFilledLocationText(""); // Clear the pre-filled text
+  };
+
   // If showing add urge screen, render it instead
   if (showAddUrgeScreen) {
     return (
@@ -329,6 +387,19 @@ const QuickLogScreen: React.FC = () => {
     );
   }
 
+  // If showing add location screen, render it instead
+  if (showAddLocationScreen) {
+    const currentLocations = (settings as any)?.recentLocations || COMMON_LOCATIONS.map((l) => l.text);
+    
+    return (
+      <AddLocationScreen
+        onLocationSelected={handleLocationSelected}
+        onBack={handleAddLocationBack}
+        currentSelectedLocations={currentLocations}
+        preFilledText={preFilledLocationText}
+      />
+    );
+  }
   // If showing add trigger screen, render it instead
   if (showAddTriggerScreen) {
     const currentTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
@@ -363,6 +434,12 @@ const QuickLogScreen: React.FC = () => {
   };
 
   const getIconForLocation = (locationText: string) => {
+    // First check if we have a custom icon stored for this location
+    if (customLocationIcons[locationText]) {
+      return customLocationIcons[locationText];
+    }
+    
+    // Otherwise, look for it in the predefined locations
     const locationObj = COMMON_LOCATIONS.find((l) => l.text === locationText);
     return locationObj?.icon || "location-outline";
   };
@@ -731,11 +808,34 @@ const QuickLogScreen: React.FC = () => {
                 </TouchableOpacity>
               ))}
               
+              {/* Add option to use other locations */}
+              <TouchableOpacity
+                className="p-3 rounded-lg mb-3 border border-white border-opacity-30"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+                onPress={() => handleAddLocationPress()}
+              >
+                <Text className="text-white text-center opacity-75">
+                  + Add a different location
+                </Text>
+              </TouchableOpacity>
+              
               {searchFilteredLocations.length === 0 && location.trim() && (
-                <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
-                  <Text className="text-black text-center opacity-75">
-                    No matching locations found for "{location}"
-                  </Text>
+                <View className="mb-4">
+                  <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
+                    <Text className="text-black text-center opacity-75">
+                      No matching locations found for "{location}"
+                    </Text>
+                  </View>
+                  
+                  <TouchableOpacity
+                    className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                    onPress={() => handleAddLocationPress(location.trim())}
+                  >
+                    <Text className="text-white text-center">
+                      + Create "{location}" as a custom location
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               )}
             </ScrollView>
