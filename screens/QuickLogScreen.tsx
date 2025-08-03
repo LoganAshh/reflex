@@ -23,6 +23,7 @@ import { useSettings } from "../hooks/useSettings";
 import AddUrgeScreen from "./AddUrgeScreen";
 import AddTriggerScreen from "./AddTriggerScreen";
 import AddLocationScreen from "./AddLocationScreen";
+import AddEmotionScreen from "./AddEmotionScreen";
 import { Ionicons } from "@expo/vector-icons";
 
 const QuickLogScreen: React.FC = () => {
@@ -43,9 +44,13 @@ const QuickLogScreen: React.FC = () => {
   const [customLocationIcons, setCustomLocationIcons] = useState<{
     [key: string]: string;
   }>({});
+  const [customEmotionIcons, setCustomEmotionIcons] = useState<{
+    [key: string]: string;
+  }>({});
   const [showAddUrgeScreen, setShowAddUrgeScreen] = useState(false);
   const [showAddTriggerScreen, setShowAddTriggerScreen] = useState(false);
   const [showAddLocationScreen, setShowAddLocationScreen] = useState(false);
+  const [showAddEmotionScreen, setShowAddEmotionScreen] = useState(false);
 
   const { settings, updateSettings } = useSettings();
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
@@ -91,6 +96,11 @@ const QuickLogScreen: React.FC = () => {
       if ((settings as any)?.customLocationIcons) {
         setCustomLocationIcons((settings as any).customLocationIcons);
       }
+
+      // Load custom emotion icons from settings
+      if ((settings as any)?.customEmotionIcons) {
+        setCustomEmotionIcons((settings as any).customEmotionIcons);
+      }
     };
 
     loadFilteredUrges();
@@ -99,6 +109,7 @@ const QuickLogScreen: React.FC = () => {
     (settings as any)?.customUrgeIcons,
     (settings as any)?.customTriggerIcons,
     (settings as any)?.customLocationIcons,
+    (settings as any)?.customEmotionIcons,
   ]); // Depend on selectedUrges and all custom icon types
 
   const animateTransition = (callback: () => void) => {
@@ -238,6 +249,7 @@ const QuickLogScreen: React.FC = () => {
   const [preFilledTriggerText, setPreFilledTriggerText] = useState<string>("");
   const [preFilledLocationText, setPreFilledLocationText] =
     useState<string>("");
+  const [preFilledEmotionText, setPreFilledEmotionText] = useState<string>("");
 
   const handleAddUrgePress = (preFilledText?: string) => {
     setPreFilledUrgeText(preFilledText || "");
@@ -254,6 +266,62 @@ const QuickLogScreen: React.FC = () => {
     setShowAddLocationScreen(true);
   };
 
+  const handleAddEmotionPress = (preFilledText?: string) => {
+    setPreFilledEmotionText(preFilledText || "");
+    setShowAddEmotionScreen(true);
+  };
+
+  const handleEmotionSelected = async (
+    selectedEmotion: string,
+    selectedIcon?: string
+  ) => {
+    // Store the custom icon if provided - both in local state and settings
+    if (selectedIcon) {
+      const newCustomIcons = {
+        ...customEmotionIcons,
+        [selectedEmotion]: selectedIcon,
+      };
+
+      setCustomEmotionIcons(newCustomIcons);
+
+      // Also save to settings for persistence
+      try {
+        await updateSettings({
+          ...settings,
+          customEmotionIcons: newCustomIcons,
+        } as any);
+      } catch (error) {
+        console.error("Error saving custom emotion icon:", error);
+      }
+    }
+
+    // Set the selected emotion and close the screen
+    setEmotion(selectedEmotion);
+    setShowAddEmotionScreen(false);
+
+    // Save to settings in the background
+    try {
+      const currentEmotions =
+        (settings as any)?.recentEmotions || COMMON_EMOTIONS.map((e) => e.text);
+      const updatedEmotions = [
+        selectedEmotion,
+        ...currentEmotions.filter((e: string) => e !== selectedEmotion),
+      ];
+
+      await updateSettings({
+        ...settings,
+        recentEmotions: updatedEmotions,
+        ...(selectedIcon && {
+          customEmotionIcons: {
+            ...customEmotionIcons,
+            [selectedEmotion]: selectedIcon,
+          },
+        }),
+      } as any);
+    } catch (error) {
+      console.error("Error saving new emotion:", error);
+    }
+  };
   const handleLocationSelected = async (
     selectedLocation: string,
     selectedIcon?: string
@@ -420,6 +488,11 @@ const QuickLogScreen: React.FC = () => {
     setPreFilledLocationText(""); // Clear the pre-filled text
   };
 
+  const handleAddEmotionBack = () => {
+    setShowAddEmotionScreen(false);
+    setPreFilledEmotionText(""); // Clear the pre-filled text
+  };
+
   // If showing add urge screen, render it instead
   if (showAddUrgeScreen) {
     return (
@@ -432,6 +505,20 @@ const QuickLogScreen: React.FC = () => {
     );
   }
 
+  // If showing add emotion screen, render it instead
+  if (showAddEmotionScreen) {
+    const currentEmotions =
+      (settings as any)?.recentEmotions || COMMON_EMOTIONS.map((e) => e.text);
+
+    return (
+      <AddEmotionScreen
+        onEmotionSelected={handleEmotionSelected}
+        onBack={handleAddEmotionBack}
+        currentSelectedEmotions={currentEmotions}
+        preFilledText={preFilledEmotionText}
+      />
+    );
+  }
   // If showing add location screen, render it instead
   if (showAddLocationScreen) {
     const currentLocations =
@@ -492,6 +579,12 @@ const QuickLogScreen: React.FC = () => {
   };
 
   const getIconForEmotion = (emotionText: string) => {
+    // First check if we have a custom icon stored for this emotion
+    if (customEmotionIcons[emotionText]) {
+      return customEmotionIcons[emotionText];
+    }
+
+    // Otherwise, look for it in the predefined emotions
     const emotionObj = COMMON_EMOTIONS.find((e) => e.text === emotionText);
     return emotionObj?.icon || "happy-outline";
   };
@@ -985,11 +1078,34 @@ const QuickLogScreen: React.FC = () => {
                 )
               )}
 
+              {/* Add option to use other emotions */}
+              <TouchableOpacity
+                className="p-3 rounded-lg mb-3 border border-white border-opacity-30"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+                onPress={() => handleAddEmotionPress()}
+              >
+                <Text className="text-white text-center opacity-75">
+                  + Add a different emotion
+                </Text>
+              </TouchableOpacity>
+
               {searchFilteredEmotions.length === 0 && emotion.trim() && (
-                <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
-                  <Text className="text-black text-center opacity-75">
-                    No matching emotions found for "{emotion}"
-                  </Text>
+                <View className="mb-4">
+                  <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
+                    <Text className="text-black text-center opacity-75">
+                      No matching emotions found for "{emotion}"
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                    onPress={() => handleAddEmotionPress(emotion.trim())}
+                  >
+                    <Text className="text-white text-center">
+                      + Create "{emotion}" as a custom emotion
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               )}
             </ScrollView>
