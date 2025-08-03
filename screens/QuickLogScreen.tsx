@@ -377,7 +377,9 @@ const QuickLogScreen: React.FC = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        const searchFilteredUrges = getFilteredUrgesForSearch(urge);
+        // Only filter while typing, not after selecting an existing urge
+        const isExistingUrge = filteredUrges.includes(urge);
+        const searchFilteredUrges = getFilteredUrgesForSearch(isExistingUrge ? "" : urge);
         
         return (
           <Animated.View
@@ -405,7 +407,7 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              {urge.trim() && searchFilteredUrges.length !== filteredUrges.length && !filteredUrges.find(u => u.toLowerCase() === urge.toLowerCase())
+              {urge.trim() && !isExistingUrge && searchFilteredUrges.length !== filteredUrges.length
                 ? `Matching urges (${searchFilteredUrges.length}):` 
                 : "Your urges:"}
             </Text>
@@ -453,7 +455,7 @@ const QuickLogScreen: React.FC = () => {
                   </Text>
                 </TouchableOpacity>
               </ScrollView>
-            ) : urge.trim() ? (
+            ) : urge.trim() && !isExistingUrge ? (
               // Show when search has no results
               <View className="mb-4">
                 <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
