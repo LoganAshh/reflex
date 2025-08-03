@@ -148,7 +148,9 @@ const AddTriggerScreen: React.FC<AddTriggerScreenProps> = ({
   const [customTrigger, setCustomTrigger] = useState(preFilledText);
   const [selectedTrigger, setSelectedTrigger] = useState("");
   const [selectedIcon, setSelectedIcon] = useState("help-circle-outline");
-  const [showIconPicker, setShowIconPicker] = useState(preFilledText.length > 0);
+  const [showIconPicker, setShowIconPicker] = useState(
+    preFilledText.length > 0
+  );
   const [isLoading, setIsLoading] = useState(false);
   const { settings, updateSettings } = useSettings();
 
@@ -187,7 +189,9 @@ const AddTriggerScreen: React.FC<AddTriggerScreenProps> = ({
         const iconToUse = isCustomTrigger ? selectedIcon : undefined;
 
         // Add the new trigger to user's recent triggers
-        const currentTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+        const currentTriggers =
+          (settings as any)?.recentTriggers ||
+          COMMON_TRIGGERS.map((t) => t.text);
 
         // Check if trigger already exists
         if (currentTriggers.includes(triggerToAdd)) {
@@ -217,7 +221,8 @@ const AddTriggerScreen: React.FC<AddTriggerScreenProps> = ({
 
   const isValidSelection = () => {
     return (
-      !isLoading && (customTrigger.trim().length > 0 || selectedTrigger.length > 0)
+      !isLoading &&
+      (customTrigger.trim().length > 0 || selectedTrigger.length > 0)
     );
   };
 
@@ -227,16 +232,20 @@ const AddTriggerScreen: React.FC<AddTriggerScreenProps> = ({
   };
 
   const renderIconPicker = () => {
-    const screenWidth = Dimensions.get('window').width;
+    const screenWidth = Dimensions.get("window").width;
     const iconSize = 40;
     const padding = 24; // 12px on each side
     const gap = 12;
-    const iconsPerRow = Math.floor((screenWidth - padding * 2) / (iconSize + gap));
+    const iconsPerRow = Math.floor(
+      (screenWidth - padding * 2) / (iconSize + gap)
+    );
 
     return (
       <View className="mb-6">
         <View className="flex-row items-center justify-between mb-4">
-          <Text className="text-white font-medium text-lg">Choose an icon:</Text>
+          <Text className="text-white font-medium text-lg">
+            Choose an icon:
+          </Text>
           <TouchableOpacity
             onPress={() => setShowIconPicker(false)}
             className="p-2"
@@ -244,9 +253,9 @@ const AddTriggerScreen: React.FC<AddTriggerScreenProps> = ({
             <Text className="text-white opacity-75">Hide</Text>
           </TouchableOpacity>
         </View>
-        
+
         {/* Icon grid */}
-        <ScrollView 
+        <ScrollView
           className="max-h-64 rounded-lg p-3 border border-white border-opacity-30"
           style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
           showsVerticalScrollIndicator={false}
@@ -257,19 +266,24 @@ const AddTriggerScreen: React.FC<AddTriggerScreenProps> = ({
                 key={index}
                 className="p-2 m-1 rounded-lg"
                 style={{
-                  backgroundColor: selectedIcon === iconName 
-                    ? "rgba(255, 255, 255, 0.3)" 
-                    : "transparent",
+                  backgroundColor:
+                    selectedIcon === iconName
+                      ? "rgba(255, 255, 255, 0.3)"
+                      : "transparent",
                   width: iconSize + 16,
                   height: iconSize + 16,
                 }}
                 onPress={() => handleIconSelect(iconName)}
               >
                 <View className="items-center justify-center flex-1">
-                  <Ionicons 
-                    name={iconName as any} 
-                    size={24} 
-                    color={selectedIcon === iconName ? "#FFFFFF" : "rgba(255, 255, 255, 0.7)"} 
+                  <Ionicons
+                    name={iconName as any}
+                    size={24}
+                    color={
+                      selectedIcon === iconName
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.7)"
+                    }
                   />
                 </View>
               </TouchableOpacity>
@@ -313,9 +327,11 @@ const AddTriggerScreen: React.FC<AddTriggerScreenProps> = ({
             onChangeText={handleCustomTriggerChange}
             returnKeyType="done"
           />
-          
+
           {/* Icon picker for custom triggers */}
-          {showIconPicker && customTrigger.trim().length > 0 && renderIconPicker()}
+          {showIconPicker &&
+            customTrigger.trim().length > 0 &&
+            renderIconPicker()}
         </View>
 
         <View className="flex-row items-center mb-6">
@@ -346,12 +362,16 @@ const AddTriggerScreen: React.FC<AddTriggerScreenProps> = ({
                   <Ionicons
                     name={trigger.icon as any}
                     size={24}
-                    color={selectedTrigger === trigger.text ? "#374151" : "#FFFFFF"}
+                    color={
+                      selectedTrigger === trigger.text ? "#374151" : "#FFFFFF"
+                    }
                     style={{ marginRight: 12 }}
                   />
                   <Text
                     className={`text-xl ${
-                      selectedTrigger === trigger.text ? "text-gray-800" : "text-white"
+                      selectedTrigger === trigger.text
+                        ? "text-gray-800"
+                        : "text-white"
                     }`}
                   >
                     {trigger.text}
@@ -363,8 +383,8 @@ const AddTriggerScreen: React.FC<AddTriggerScreenProps> = ({
         ) : (
           <View className="flex-1 justify-center items-center p-6">
             <Text className="text-white text-center opacity-75 text-lg">
-              All common triggers are already in your list. Create a custom trigger
-              above.
+              All common triggers are already in your list. Create a custom
+              trigger above.
             </Text>
           </View>
         )}
