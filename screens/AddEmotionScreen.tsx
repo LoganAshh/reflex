@@ -27,8 +27,8 @@ const AVAILABLE_ICONS = [
   "happy-outline",
   "sad-outline",
   "heart-outline",
-  "heart-broken-outline",
-  "heart-dislike-outline",
+  "heart-dislike-outline", // Instead of heart-broken-outline
+  "heart-half-outline",
   "sunny-outline",
   "cloudy-outline",
   "rainy-outline",
@@ -151,8 +151,7 @@ const AVAILABLE_ICONS = [
   "basketball-outline",
   "football-outline",
   "golf-outline",
-  "tennis-outline",
-  "baseball-outline",
+  "baseball-outline", // Instead of tennis-outline
   "bed-outline",
   "umbrella-outline",
   "glasses-outline",
@@ -190,7 +189,7 @@ const AVAILABLE_ICONS = [
   "cloud-download-outline",
   "cloud-upload-outline",
   "download-outline",
-  "upload-outline",
+  "cloud-upload-outline", // Instead of upload-outline
   "share-outline",
   "copy-outline",
   "duplicate-outline",
@@ -204,7 +203,7 @@ const AVAILABLE_ICONS = [
   "bug-outline",
   "fish-outline",
   "leaf-outline",
-  "tree-outline",
+  "bonfire-outline", // Instead of tree-outline
   "bonfire-outline",
   "water-outline",
   "earth-outline",
