@@ -21,6 +21,7 @@ import {
 import { storageService } from "../services/StorageService";
 import { useSettings } from "../hooks/useSettings";
 import AddUrgeScreen from "./AddUrgeScreen";
+import AddTriggerScreen from "./AddTriggerScreen";
 import { Ionicons } from "@expo/vector-icons";
 
 const QuickLogScreen: React.FC = () => {
@@ -33,7 +34,9 @@ const QuickLogScreen: React.FC = () => {
   const [notes, setNotes] = useState("");
   const [filteredUrges, setFilteredUrges] = useState<string[]>([]);
   const [customUrgeIcons, setCustomUrgeIcons] = useState<{ [key: string]: string }>({});
+  const [customTriggerIcons, setCustomTriggerIcons] = useState<{ [key: string]: string }>({});
   const [showAddUrgeScreen, setShowAddUrgeScreen] = useState(false);
+  const [showAddTriggerScreen, setShowAddTriggerScreen] = useState(false);
 
   const { settings, updateSettings } = useSettings();
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
@@ -69,10 +72,15 @@ const QuickLogScreen: React.FC = () => {
       if ((settings as any)?.customUrgeIcons) {
         setCustomUrgeIcons((settings as any).customUrgeIcons);
       }
+
+      // Load custom trigger icons from settings
+      if ((settings as any)?.customTriggerIcons) {
+        setCustomTriggerIcons((settings as any).customTriggerIcons);
+      }
     };
 
     loadFilteredUrges();
-  }, [settings?.selectedUrges, (settings as any)?.customUrgeIcons]); // Depend on both selectedUrges and customUrgeIcons
+  }, [settings?.selectedUrges, (settings as any)?.customUrgeIcons, (settings as any)?.customTriggerIcons]); // Depend on selectedUrges, customUrgeIcons, and customTriggerIcons
 
   const animateTransition = (callback: () => void) => {
     Animated.sequence([
@@ -208,12 +216,57 @@ const QuickLogScreen: React.FC = () => {
   };
 
   const [preFilledUrgeText, setPreFilledUrgeText] = useState<string>("");
+  const [preFilledTriggerText, setPreFilledTriggerText] = useState<string>("");
 
   const handleAddUrgePress = (preFilledText?: string) => {
     setPreFilledUrgeText(preFilledText || "");
     setShowAddUrgeScreen(true);
   };
 
+  const handleAddTriggerPress = (preFilledText?: string) => {
+    setPreFilledTriggerText(preFilledText || "");
+    setShowAddTriggerScreen(true);
+  };
+
+  const handleTriggerSelected = async (selectedTrigger: string, selectedIcon?: string) => {
+    // Store the custom icon if provided - both in local state and settings
+    if (selectedIcon) {
+      const newCustomIcons = {
+        ...customTriggerIcons,
+        [selectedTrigger]: selectedIcon
+      };
+      
+      setCustomTriggerIcons(newCustomIcons);
+      
+      // Also save to settings for persistence
+      try {
+        await updateSettings({
+          ...settings,
+          customTriggerIcons: newCustomIcons,
+        } as any);
+      } catch (error) {
+        console.error("Error saving custom trigger icon:", error);
+      }
+    }
+
+    // Set the selected trigger and close the screen
+    setTrigger(selectedTrigger);
+    setShowAddTriggerScreen(false);
+
+    // Save to settings in the background
+    try {
+      const currentTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+      const updatedTriggers = [selectedTrigger, ...currentTriggers.filter((t: string) => t !== selectedTrigger)];
+      
+      await updateSettings({ 
+        ...settings,
+        recentTriggers: updatedTriggers,
+        ...(selectedIcon && { customTriggerIcons: { ...customTriggerIcons, [selectedTrigger]: selectedIcon } })
+      } as any);
+    } catch (error) {
+      console.error("Error saving new trigger:", error);
+    }
+  };
   const handleUrgeSelected = async (selectedUrge: string, selectedIcon?: string) => {
     // Store the custom icon if provided - both in local state and settings
     if (selectedIcon) {
@@ -259,6 +312,11 @@ const QuickLogScreen: React.FC = () => {
     setPreFilledUrgeText(""); // Clear the pre-filled text
   };
 
+  const handleAddTriggerBack = () => {
+    setShowAddTriggerScreen(false);
+    setPreFilledTriggerText(""); // Clear the pre-filled text
+  };
+
   // If showing add urge screen, render it instead
   if (showAddUrgeScreen) {
     return (
@@ -267,6 +325,20 @@ const QuickLogScreen: React.FC = () => {
         onBack={handleAddUrgeBack}
         currentSelectedUrges={filteredUrges}
         preFilledText={preFilledUrgeText}
+      />
+    );
+  }
+
+  // If showing add trigger screen, render it instead
+  if (showAddTriggerScreen) {
+    const currentTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+    
+    return (
+      <AddTriggerScreen
+        onTriggerSelected={handleTriggerSelected}
+        onBack={handleAddTriggerBack}
+        currentSelectedTriggers={currentTriggers}
+        preFilledText={preFilledTriggerText}
       />
     );
   }
@@ -280,6 +352,12 @@ const QuickLogScreen: React.FC = () => {
 
   // Helper functions to get icons for items
   const getIconForTrigger = (triggerText: string) => {
+    // First check if we have a custom icon stored for this trigger
+    if (customTriggerIcons[triggerText]) {
+      return customTriggerIcons[triggerText];
+    }
+    
+    // Otherwise, look for it in the predefined triggers
     const triggerObj = COMMON_TRIGGERS.find((t) => t.text === triggerText);
     return triggerObj?.icon || "help-circle-outline";
   };
@@ -552,10 +630,22 @@ const QuickLogScreen: React.FC = () => {
               ))}
               
               {searchFilteredTriggers.length === 0 && trigger.trim() && (
-                <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
-                  <Text className="text-black text-center opacity-75">
-                    No matching triggers found for "{trigger}"
-                  </Text>
+                <View className="mb-4">
+                  <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
+                    <Text className="text-black text-center opacity-75">
+                      No matching triggers found for "{trigger}"
+                    </Text>
+                  </View>
+                  
+                  <TouchableOpacity
+                    className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                    onPress={() => handleAddTriggerPress(trigger.trim())}
+                  >
+                    <Text className="text-white text-center">
+                      + Create "{trigger}" as a custom trigger
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               )}
             </ScrollView>
