@@ -33,12 +33,8 @@ const QuickLogScreen: React.FC = () => {
   const [actedOn, setActedOn] = useState<boolean | null>(null);
   const [notes, setNotes] = useState("");
   const [filteredUrges, setFilteredUrges] = useState<string[]>([]);
-  const [customUrgeIcons, setCustomUrgeIcons] = useState<{
-    [key: string]: string;
-  }>({});
-  const [customTriggerIcons, setCustomTriggerIcons] = useState<{
-    [key: string]: string;
-  }>({});
+  const [customUrgeIcons, setCustomUrgeIcons] = useState<{ [key: string]: string }>({});
+  const [customTriggerIcons, setCustomTriggerIcons] = useState<{ [key: string]: string }>({});
   const [showAddUrgeScreen, setShowAddUrgeScreen] = useState(false);
   const [showAddTriggerScreen, setShowAddTriggerScreen] = useState(false);
 
@@ -84,11 +80,7 @@ const QuickLogScreen: React.FC = () => {
     };
 
     loadFilteredUrges();
-  }, [
-    settings?.selectedUrges,
-    (settings as any)?.customUrgeIcons,
-    (settings as any)?.customTriggerIcons,
-  ]); // Depend on selectedUrges, customUrgeIcons, and customTriggerIcons
+  }, [settings?.selectedUrges, (settings as any)?.customUrgeIcons, (settings as any)?.customTriggerIcons]); // Depend on selectedUrges, customUrgeIcons, and customTriggerIcons
 
   const animateTransition = (callback: () => void) => {
     Animated.sequence([
@@ -236,19 +228,16 @@ const QuickLogScreen: React.FC = () => {
     setShowAddTriggerScreen(true);
   };
 
-  const handleTriggerSelected = async (
-    selectedTrigger: string,
-    selectedIcon?: string
-  ) => {
+  const handleTriggerSelected = async (selectedTrigger: string, selectedIcon?: string) => {
     // Store the custom icon if provided - both in local state and settings
     if (selectedIcon) {
       const newCustomIcons = {
         ...customTriggerIcons,
-        [selectedTrigger]: selectedIcon,
+        [selectedTrigger]: selectedIcon
       };
-
+      
       setCustomTriggerIcons(newCustomIcons);
-
+      
       // Also save to settings for persistence
       try {
         await updateSettings({
@@ -266,40 +255,28 @@ const QuickLogScreen: React.FC = () => {
 
     // Save to settings in the background
     try {
-      const currentTriggers =
-        (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
-      const updatedTriggers = [
-        selectedTrigger,
-        ...currentTriggers.filter((t: string) => t !== selectedTrigger),
-      ];
-
-      await updateSettings({
+      const currentTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+      const updatedTriggers = [selectedTrigger, ...currentTriggers.filter((t: string) => t !== selectedTrigger)];
+      
+      await updateSettings({ 
         ...settings,
         recentTriggers: updatedTriggers,
-        ...(selectedIcon && {
-          customTriggerIcons: {
-            ...customTriggerIcons,
-            [selectedTrigger]: selectedIcon,
-          },
-        }),
+        ...(selectedIcon && { customTriggerIcons: { ...customTriggerIcons, [selectedTrigger]: selectedIcon } })
       } as any);
     } catch (error) {
       console.error("Error saving new trigger:", error);
     }
   };
-  const handleUrgeSelected = async (
-    selectedUrge: string,
-    selectedIcon?: string
-  ) => {
+  const handleUrgeSelected = async (selectedUrge: string, selectedIcon?: string) => {
     // Store the custom icon if provided - both in local state and settings
     if (selectedIcon) {
       const newCustomIcons = {
         ...customUrgeIcons,
-        [selectedUrge]: selectedIcon,
+        [selectedUrge]: selectedIcon
       };
-
+      
       setCustomUrgeIcons(newCustomIcons);
-
+      
       // Also save to settings for persistence
       try {
         await updateSettings({
@@ -312,22 +289,17 @@ const QuickLogScreen: React.FC = () => {
     }
 
     // Move the selected urge to the top of the list for better UX
-    const updatedUrges = [
-      selectedUrge,
-      ...filteredUrges.filter((urge) => urge !== selectedUrge),
-    ];
+    const updatedUrges = [selectedUrge, ...filteredUrges.filter(urge => urge !== selectedUrge)];
     setFilteredUrges(updatedUrges);
     setUrge(selectedUrge);
     setShowAddUrgeScreen(false);
 
     // Save to settings in the background
     try {
-      await updateSettings({
+      await updateSettings({ 
         ...settings,
         selectedUrges: updatedUrges,
-        ...(selectedIcon && {
-          customUrgeIcons: { ...customUrgeIcons, [selectedUrge]: selectedIcon },
-        }),
+        ...(selectedIcon && { customUrgeIcons: { ...customUrgeIcons, [selectedUrge]: selectedIcon } })
       } as any);
     } catch (error) {
       console.error("Error saving new urge:", error);
@@ -359,9 +331,8 @@ const QuickLogScreen: React.FC = () => {
 
   // If showing add trigger screen, render it instead
   if (showAddTriggerScreen) {
-    const currentTriggers =
-      (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
-
+    const currentTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+    
     return (
       <AddTriggerScreen
         onTriggerSelected={handleTriggerSelected}
@@ -385,7 +356,7 @@ const QuickLogScreen: React.FC = () => {
     if (customTriggerIcons[triggerText]) {
       return customTriggerIcons[triggerText];
     }
-
+    
     // Otherwise, look for it in the predefined triggers
     const triggerObj = COMMON_TRIGGERS.find((t) => t.text === triggerText);
     return triggerObj?.icon || "help-circle-outline";
@@ -406,7 +377,7 @@ const QuickLogScreen: React.FC = () => {
     if (customUrgeIcons[urgeText]) {
       return customUrgeIcons[urgeText];
     }
-
+    
     // Otherwise, look for it in the predefined urges
     const urgeObj = COMMON_URGES.find((u) => u.text === urgeText);
     return urgeObj?.icon || "help-circle-outline";
@@ -417,9 +388,9 @@ const QuickLogScreen: React.FC = () => {
     if (!searchText.trim()) {
       return filteredUrges;
     }
-
+    
     const searchLower = searchText.toLowerCase();
-    return filteredUrges.filter((urge) =>
+    return filteredUrges.filter(urge => 
       urge.toLowerCase().includes(searchLower)
     );
   };
@@ -429,17 +400,17 @@ const QuickLogScreen: React.FC = () => {
     if (!searchText.trim()) {
       return commonTriggers;
     }
-
+    
     const searchLower = searchText.toLowerCase();
-    const filtered = commonTriggers.filter((trigger: string) =>
+    const filtered = commonTriggers.filter((trigger: string) => 
       trigger.toLowerCase().includes(searchLower)
     );
-
+    
     // If exact match exists, don't filter (show all options)
-    const exactMatch = commonTriggers.find(
-      (trigger: string) => trigger.toLowerCase() === searchLower
+    const exactMatch = commonTriggers.find((trigger: string) => 
+      trigger.toLowerCase() === searchLower
     );
-
+    
     return exactMatch ? commonTriggers : filtered;
   };
 
@@ -448,17 +419,17 @@ const QuickLogScreen: React.FC = () => {
     if (!searchText.trim()) {
       return commonLocations;
     }
-
+    
     const searchLower = searchText.toLowerCase();
-    const filtered = commonLocations.filter((location: string) =>
+    const filtered = commonLocations.filter((location: string) => 
       location.toLowerCase().includes(searchLower)
     );
-
+    
     // If exact match exists, don't filter (show all options)
-    const exactMatch = commonLocations.find(
-      (location: string) => location.toLowerCase() === searchLower
+    const exactMatch = commonLocations.find((location: string) => 
+      location.toLowerCase() === searchLower
     );
-
+    
     return exactMatch ? commonLocations : filtered;
   };
 
@@ -467,17 +438,17 @@ const QuickLogScreen: React.FC = () => {
     if (!searchText.trim()) {
       return commonEmotions;
     }
-
+    
     const searchLower = searchText.toLowerCase();
-    const filtered = commonEmotions.filter((emotion: string) =>
+    const filtered = commonEmotions.filter((emotion: string) => 
       emotion.toLowerCase().includes(searchLower)
     );
-
+    
     // If exact match exists, don't filter (show all options)
-    const exactMatch = commonEmotions.find(
-      (emotion: string) => emotion.toLowerCase() === searchLower
+    const exactMatch = commonEmotions.find((emotion: string) => 
+      emotion.toLowerCase() === searchLower
     );
-
+    
     return exactMatch ? commonEmotions : filtered;
   };
 
@@ -486,10 +457,8 @@ const QuickLogScreen: React.FC = () => {
       case 1:
         // Only filter while typing, not after selecting an existing urge
         const isExistingUrge = filteredUrges.includes(urge);
-        const searchFilteredUrges = getFilteredUrgesForSearch(
-          isExistingUrge ? "" : urge
-        );
-
+        const searchFilteredUrges = getFilteredUrgesForSearch(isExistingUrge ? "" : urge);
+        
         return (
           <Animated.View
             className="flex-1"
@@ -516,48 +485,42 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              {urge.trim() &&
-              !isExistingUrge &&
-              searchFilteredUrges.length !== filteredUrges.length
-                ? `Matching urges (${searchFilteredUrges.length}):`
+              {urge.trim() && !isExistingUrge && searchFilteredUrges.length !== filteredUrges.length
+                ? `Matching urges (${searchFilteredUrges.length}):` 
                 : "Your urges:"}
             </Text>
 
             {searchFilteredUrges.length > 0 ? (
               <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-                {searchFilteredUrges.map(
-                  (filteredUrge: string, index: number) => (
-                    <TouchableOpacity
-                      key={index}
-                      className="p-4 rounded-lg mb-3"
-                      style={{
-                        backgroundColor:
-                          urge === filteredUrge
-                            ? "#FFFFFF"
-                            : "rgba(255, 255, 255, 0.2)",
-                      }}
-                      onPress={() => setUrge(filteredUrge)}
-                    >
-                      <View className="flex-row items-center">
-                        <Ionicons
-                          name={getIconForUrge(filteredUrge) as any}
-                          size={24}
-                          color={urge === filteredUrge ? "#374151" : "#FFFFFF"}
-                          style={{ marginRight: 12 }}
-                        />
-                        <Text
-                          className={`text-xl ${
-                            urge === filteredUrge
-                              ? "text-gray-800"
-                              : "text-white"
-                          }`}
-                        >
-                          {filteredUrge}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  )
-                )}
+                {searchFilteredUrges.map((filteredUrge: string, index: number) => (
+                  <TouchableOpacity
+                    key={index}
+                    className="p-4 rounded-lg mb-3"
+                    style={{
+                      backgroundColor:
+                        urge === filteredUrge
+                          ? "#FFFFFF"
+                          : "rgba(255, 255, 255, 0.2)",
+                    }}
+                    onPress={() => setUrge(filteredUrge)}
+                  >
+                    <View className="flex-row items-center">
+                      <Ionicons
+                        name={getIconForUrge(filteredUrge) as any}
+                        size={24}
+                        color={urge === filteredUrge ? "#374151" : "#FFFFFF"}
+                        style={{ marginRight: 12 }}
+                      />
+                      <Text
+                        className={`text-xl ${
+                          urge === filteredUrge ? "text-gray-800" : "text-white"
+                        }`}
+                      >
+                        {filteredUrge}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
 
                 {/* Add option to use other urges */}
                 <TouchableOpacity
@@ -578,7 +541,7 @@ const QuickLogScreen: React.FC = () => {
                     No matching urges found for "{urge}"
                   </Text>
                 </View>
-
+                
                 <TouchableOpacity
                   className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
                   style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
@@ -602,7 +565,7 @@ const QuickLogScreen: React.FC = () => {
 
       case 2:
         const searchFilteredTriggers = getFilteredTriggersForSearch(trigger);
-
+        
         return (
           <Animated.View
             className="flex-1"
@@ -629,51 +592,54 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              {trigger.trim() &&
-              searchFilteredTriggers.length !== commonTriggers.length &&
-              !commonTriggers.find(
-                (t: string) => t.toLowerCase() === trigger.toLowerCase()
-              )
-                ? `Matching triggers (${searchFilteredTriggers.length}):`
+              {trigger.trim() && searchFilteredTriggers.length !== commonTriggers.length && !commonTriggers.find((t: string) => t.toLowerCase() === trigger.toLowerCase())
+                ? `Matching triggers (${searchFilteredTriggers.length}):` 
                 : "Common triggers:"}
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {searchFilteredTriggers.map(
-                (commonTrigger: string, index: number) => (
-                  <TouchableOpacity
-                    key={index}
-                    className="p-4 rounded-lg mb-3"
-                    style={{
-                      backgroundColor:
+              {searchFilteredTriggers.map((commonTrigger: string, index: number) => (
+                <TouchableOpacity
+                  key={index}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      trigger === commonTrigger
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
+                  onPress={() => setTrigger(commonTrigger)}
+                >
+                  <View className="flex-row items-center">
+                    <Ionicons
+                      name={getIconForTrigger(commonTrigger) as any}
+                      size={24}
+                      color={trigger === commonTrigger ? "#374151" : "#FFFFFF"}
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-xl ${
                         trigger === commonTrigger
-                          ? "#FFFFFF"
-                          : "rgba(255, 255, 255, 0.2)",
-                    }}
-                    onPress={() => setTrigger(commonTrigger)}
-                  >
-                    <View className="flex-row items-center">
-                      <Ionicons
-                        name={getIconForTrigger(commonTrigger) as any}
-                        size={24}
-                        color={
-                          trigger === commonTrigger ? "#374151" : "#FFFFFF"
-                        }
-                        style={{ marginRight: 12 }}
-                      />
-                      <Text
-                        className={`text-xl ${
-                          trigger === commonTrigger
-                            ? "text-gray-800"
-                            : "text-white"
-                        }`}
-                      >
-                        {commonTrigger}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              )}
+                          ? "text-gray-800"
+                          : "text-white"
+                      }`}
+                    >
+                      {commonTrigger}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
 
+              {/* Add option to use other triggers */}
+              <TouchableOpacity
+                className="p-3 rounded-lg mb-3 border border-white border-opacity-30"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+                onPress={() => handleAddTriggerPress()}
+              >
+                <Text className="text-white text-center opacity-75">
+                  + Add a different trigger
+                </Text>
+              </TouchableOpacity>
+              
               {searchFilteredTriggers.length === 0 && trigger.trim() && (
                 <View className="mb-4">
                   <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
@@ -681,7 +647,7 @@ const QuickLogScreen: React.FC = () => {
                       No matching triggers found for "{trigger}"
                     </Text>
                   </View>
-
+                  
                   <TouchableOpacity
                     className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
                     style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
@@ -699,7 +665,7 @@ const QuickLogScreen: React.FC = () => {
 
       case 3:
         const searchFilteredLocations = getFilteredLocationsForSearch(location);
-
+        
         return (
           <Animated.View
             className="flex-1"
@@ -726,51 +692,45 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              {location.trim() &&
-              searchFilteredLocations.length !== commonLocations.length &&
-              !commonLocations.find(
-                (l: string) => l.toLowerCase() === location.toLowerCase()
-              )
-                ? `Matching locations (${searchFilteredLocations.length}):`
+              {location.trim() && searchFilteredLocations.length !== commonLocations.length && !commonLocations.find((l: string) => l.toLowerCase() === location.toLowerCase())
+                ? `Matching locations (${searchFilteredLocations.length}):` 
                 : "Common locations:"}
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {searchFilteredLocations.map(
-                (commonLocation: string, index: number) => (
-                  <TouchableOpacity
-                    key={index}
-                    className="p-4 rounded-lg mb-3"
-                    style={{
-                      backgroundColor:
+              {searchFilteredLocations.map((commonLocation: string, index: number) => (
+                <TouchableOpacity
+                  key={index}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      location === commonLocation
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
+                  onPress={() => setLocation(commonLocation)}
+                >
+                  <View className="flex-row items-center">
+                    <Ionicons
+                      name={getIconForLocation(commonLocation) as any}
+                      size={24}
+                      color={
+                        location === commonLocation ? "#374151" : "#FFFFFF"
+                      }
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-xl ${
                         location === commonLocation
-                          ? "#FFFFFF"
-                          : "rgba(255, 255, 255, 0.2)",
-                    }}
-                    onPress={() => setLocation(commonLocation)}
-                  >
-                    <View className="flex-row items-center">
-                      <Ionicons
-                        name={getIconForLocation(commonLocation) as any}
-                        size={24}
-                        color={
-                          location === commonLocation ? "#374151" : "#FFFFFF"
-                        }
-                        style={{ marginRight: 12 }}
-                      />
-                      <Text
-                        className={`text-xl ${
-                          location === commonLocation
-                            ? "text-gray-800"
-                            : "text-white"
-                        }`}
-                      >
-                        {commonLocation}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              )}
-
+                          ? "text-gray-800"
+                          : "text-white"
+                      }`}
+                    >
+                      {commonLocation}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+              
               {searchFilteredLocations.length === 0 && location.trim() && (
                 <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
                   <Text className="text-black text-center opacity-75">
@@ -784,7 +744,7 @@ const QuickLogScreen: React.FC = () => {
 
       case 4:
         const searchFilteredEmotions = getFilteredEmotionsForSearch(emotion);
-
+        
         return (
           <Animated.View
             className="flex-1"
@@ -811,51 +771,43 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              {emotion.trim() &&
-              searchFilteredEmotions.length !== commonEmotions.length &&
-              !commonEmotions.find(
-                (e: string) => e.toLowerCase() === emotion.toLowerCase()
-              )
-                ? `Matching emotions (${searchFilteredEmotions.length}):`
+              {emotion.trim() && searchFilteredEmotions.length !== commonEmotions.length && !commonEmotions.find((e: string) => e.toLowerCase() === emotion.toLowerCase())
+                ? `Matching emotions (${searchFilteredEmotions.length}):` 
                 : "Common emotions:"}
             </Text>
             <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-              {searchFilteredEmotions.map(
-                (commonEmotion: string, index: number) => (
-                  <TouchableOpacity
-                    key={index}
-                    className="p-4 rounded-lg mb-3"
-                    style={{
-                      backgroundColor:
+              {searchFilteredEmotions.map((commonEmotion: string, index: number) => (
+                <TouchableOpacity
+                  key={index}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      emotion === commonEmotion
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
+                  onPress={() => setEmotion(commonEmotion)}
+                >
+                  <View className="flex-row items-center">
+                    <Ionicons
+                      name={getIconForEmotion(commonEmotion) as any}
+                      size={24}
+                      color={emotion === commonEmotion ? "#374151" : "#FFFFFF"}
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-xl ${
                         emotion === commonEmotion
-                          ? "#FFFFFF"
-                          : "rgba(255, 255, 255, 0.2)",
-                    }}
-                    onPress={() => setEmotion(commonEmotion)}
-                  >
-                    <View className="flex-row items-center">
-                      <Ionicons
-                        name={getIconForEmotion(commonEmotion) as any}
-                        size={24}
-                        color={
-                          emotion === commonEmotion ? "#374151" : "#FFFFFF"
-                        }
-                        style={{ marginRight: 12 }}
-                      />
-                      <Text
-                        className={`text-xl ${
-                          emotion === commonEmotion
-                            ? "text-gray-800"
-                            : "text-white"
-                        }`}
-                      >
-                        {commonEmotion}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              )}
-
+                          ? "text-gray-800"
+                          : "text-white"
+                      }`}
+                    >
+                      {commonEmotion}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+              
               {searchFilteredEmotions.length === 0 && emotion.trim() && (
                 <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
                   <Text className="text-black text-center opacity-75">
@@ -939,10 +891,7 @@ const QuickLogScreen: React.FC = () => {
 
             <TextInput
               className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                minHeight: 80,
-              }}
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)", minHeight: 80 }}
               placeholder="Any notes? (optional)"
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={notes}
