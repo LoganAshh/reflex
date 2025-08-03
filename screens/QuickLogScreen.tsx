@@ -324,9 +324,16 @@ const QuickLogScreen: React.FC = () => {
     }
     
     const searchLower = searchText.toLowerCase();
-    return commonTriggers.filter((trigger: string) => 
+    const filtered = commonTriggers.filter((trigger: string) => 
       trigger.toLowerCase().includes(searchLower)
     );
+    
+    // If exact match exists, don't filter (show all options)
+    const exactMatch = commonTriggers.find((trigger: string) => 
+      trigger.toLowerCase() === searchLower
+    );
+    
+    return exactMatch ? commonTriggers : filtered;
   };
 
   // Helper function to filter locations based on search text
@@ -336,9 +343,16 @@ const QuickLogScreen: React.FC = () => {
     }
     
     const searchLower = searchText.toLowerCase();
-    return commonLocations.filter((location: string) => 
+    const filtered = commonLocations.filter((location: string) => 
       location.toLowerCase().includes(searchLower)
     );
+    
+    // If exact match exists, don't filter (show all options)
+    const exactMatch = commonLocations.find((location: string) => 
+      location.toLowerCase() === searchLower
+    );
+    
+    return exactMatch ? commonLocations : filtered;
   };
 
   // Helper function to filter emotions based on search text
@@ -348,9 +362,16 @@ const QuickLogScreen: React.FC = () => {
     }
     
     const searchLower = searchText.toLowerCase();
-    return commonEmotions.filter((emotion: string) => 
+    const filtered = commonEmotions.filter((emotion: string) => 
       emotion.toLowerCase().includes(searchLower)
     );
+    
+    // If exact match exists, don't filter (show all options)
+    const exactMatch = commonEmotions.find((emotion: string) => 
+      emotion.toLowerCase() === searchLower
+    );
+    
+    return exactMatch ? commonEmotions : filtered;
   };
 
   const renderStep = () => {
@@ -384,7 +405,7 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              {urge.trim() && searchFilteredUrges.length !== filteredUrges.length 
+              {urge.trim() && searchFilteredUrges.length !== filteredUrges.length && !filteredUrges.find(u => u.toLowerCase() === urge.toLowerCase())
                 ? `Matching urges (${searchFilteredUrges.length}):` 
                 : "Your urges:"}
             </Text>
@@ -491,7 +512,7 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              {trigger.trim() && searchFilteredTriggers.length !== commonTriggers.length 
+              {trigger.trim() && searchFilteredTriggers.length !== commonTriggers.length && !commonTriggers.find((t: string) => t.toLowerCase() === trigger.toLowerCase())
                 ? `Matching triggers (${searchFilteredTriggers.length}):` 
                 : "Common triggers:"}
             </Text>
@@ -568,7 +589,7 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              {location.trim() && searchFilteredLocations.length !== commonLocations.length 
+              {location.trim() && searchFilteredLocations.length !== commonLocations.length && !commonLocations.find((l: string) => l.toLowerCase() === location.toLowerCase())
                 ? `Matching locations (${searchFilteredLocations.length}):` 
                 : "Common locations:"}
             </Text>
@@ -647,7 +668,7 @@ const QuickLogScreen: React.FC = () => {
             />
 
             <Text className="text-white font-medium mb-4 text-lg opacity-90">
-              {emotion.trim() && searchFilteredEmotions.length !== commonEmotions.length 
+              {emotion.trim() && searchFilteredEmotions.length !== commonEmotions.length && !commonEmotions.find((e: string) => e.toLowerCase() === emotion.toLowerCase())
                 ? `Matching emotions (${searchFilteredEmotions.length}):` 
                 : "Common emotions:"}
             </Text>
