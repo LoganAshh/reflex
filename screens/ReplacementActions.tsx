@@ -51,10 +51,10 @@ const ReplacementActions: React.FC = () => {
     try {
       const currentSelections = selectedActionIds;
       const isSelected = currentSelections.includes(actionId);
-      
+
       let updatedSelections;
       if (isSelected) {
-        updatedSelections = currentSelections.filter(id => id !== actionId);
+        updatedSelections = currentSelections.filter((id) => id !== actionId);
       } else {
         updatedSelections = [...currentSelections, actionId];
       }
@@ -74,10 +74,12 @@ const ReplacementActions: React.FC = () => {
 
   const handleSelectAll = async () => {
     try {
-      const allActionIds = filteredActions.map(action => action.id);
+      const allActionIds = filteredActions.map((action) => action.id);
       await updateSettings({
         ...settings,
-        selectedReplacementActions: [...new Set([...selectedActionIds, ...allActionIds])],
+        selectedReplacementActions: [
+          ...new Set([...selectedActionIds, ...allActionIds]),
+        ],
       });
     } catch (error) {
       Alert.alert("Error", "Failed to select all actions.");
@@ -86,9 +88,11 @@ const ReplacementActions: React.FC = () => {
 
   const handleSelectNone = async () => {
     try {
-      const filteredActionIds = filteredActions.map(action => action.id);
-      const remainingSelections = selectedActionIds.filter(id => !filteredActionIds.includes(id));
-      
+      const filteredActionIds = filteredActions.map((action) => action.id);
+      const remainingSelections = selectedActionIds.filter(
+        (id) => !filteredActionIds.includes(id)
+      );
+
       await updateSettings({
         ...settings,
         selectedReplacementActions: remainingSelections,
@@ -100,7 +104,9 @@ const ReplacementActions: React.FC = () => {
 
   // Helper function to get the current category name
   const getCurrentCategoryName = () => {
-    const currentCategory = categories.find(cat => cat.id === selectedCategory);
+    const currentCategory = categories.find(
+      (cat) => cat.id === selectedCategory
+    );
     return currentCategory?.name || "";
   };
 
@@ -124,7 +130,7 @@ const ReplacementActions: React.FC = () => {
         <Text className="text-xl text-white text-center mt-2 opacity-90">
           Choose actions that appear when you resist urges
         </Text>
-        
+
         {/* Selection count */}
         <View className="mt-4 items-center">
           <View className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
@@ -178,7 +184,8 @@ const ReplacementActions: React.FC = () => {
             className="bg-white bg-opacity-20 rounded-lg px-4 py-2"
           >
             <Text className="text-black text-sm">
-              Select All {selectedCategory === "all" ? "" : getCurrentCategoryName()}
+              Select All{" "}
+              {selectedCategory === "all" ? "" : getCurrentCategoryName()}
             </Text>
           </TouchableOpacity>
 
@@ -187,7 +194,8 @@ const ReplacementActions: React.FC = () => {
             className="bg-white bg-opacity-20 rounded-lg px-4 py-2"
           >
             <Text className="text-black text-sm">
-              Deselect All {selectedCategory === "all" ? "" : getCurrentCategoryName()}
+              Deselect All{" "}
+              {selectedCategory === "all" ? "" : getCurrentCategoryName()}
             </Text>
           </TouchableOpacity>
         </View>
@@ -198,17 +206,17 @@ const ReplacementActions: React.FC = () => {
         <View className="space-y-4 pb-8">
           {filteredActions.map((action) => {
             const isSelected = selectedActionIds.includes(action.id);
-            
+
             return (
               <TouchableOpacity
                 key={action.id}
                 className="rounded-2xl p-6 border"
                 style={{
-                  backgroundColor: isSelected 
-                    ? "rgba(255, 255, 255, 0.2)" 
+                  backgroundColor: isSelected
+                    ? "rgba(255, 255, 255, 0.2)"
                     : "rgba(255, 255, 255, 0.05)",
-                  borderColor: isSelected 
-                    ? "rgba(255, 255, 255, 0.4)" 
+                  borderColor: isSelected
+                    ? "rgba(255, 255, 255, 0.4)"
                     : "rgba(255, 255, 255, 0.2)",
                   borderWidth: isSelected ? 2 : 1,
                 }}
@@ -231,7 +239,9 @@ const ReplacementActions: React.FC = () => {
                   <View
                     className="w-8 h-8 rounded-full border-2 items-center justify-center ml-4"
                     style={{
-                      borderColor: isSelected ? "#10B981" : "rgba(255, 255, 255, 0.5)",
+                      borderColor: isSelected
+                        ? "#10B981"
+                        : "rgba(255, 255, 255, 0.5)",
                       backgroundColor: isSelected ? "#10B981" : "transparent",
                     }}
                   >
@@ -250,7 +260,7 @@ const ReplacementActions: React.FC = () => {
                         {action.difficulty}
                       </Text>
                     </View>
-                    
+
                     <Text className="text-white opacity-75 mr-4">
                       ⏱️ {action.duration}
                     </Text>
@@ -289,9 +299,9 @@ const ReplacementActions: React.FC = () => {
             />
             <View className="flex-1">
               <Text className="text-black opacity-75 leading-6">
-                Select 3-5 replacement actions that you find helpful. These will appear 
-                as options when you successfully resist an urge, helping you channel 
-                that energy into something positive.
+                Select 3-5 replacement actions that you find helpful. These will
+                appear as options when you successfully resist an urge, helping
+                you channel that energy into something positive.
               </Text>
             </View>
           </View>
