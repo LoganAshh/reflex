@@ -82,7 +82,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "pricing",
       title: "Free Forever",
-      subtitle: "Core features always available 🎁",
+      subtitle: "Core features always \navailable 🎁",
       description:
         "Reflex's essential tracking and insights remain completely free. Premium features are optional add-ons to enhance your experience.",
       icon: "",
