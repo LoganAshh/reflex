@@ -1,3 +1,5 @@
+// screens/SettingsScreen.tsx
+
 import React, { useState } from "react";
 import {
   View,
@@ -8,9 +10,17 @@ import {
   Switch,
   Alert,
 } from "react-native";
+import {
+  COMMON_URGES,
+  COMMON_LOCATIONS,
+  COMMON_TRIGGERS,
+  COMMON_EMOTIONS,
+} from "../types";
+import { useSettings } from "../hooks/useSettings";
 
 const SettingsScreen: React.FC = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const { settings, updateSettings } = useSettings();
 
   const renderSettingItem = (
     title: string,
@@ -39,6 +49,91 @@ const SettingsScreen: React.FC = () => {
       </View>
     </TouchableOpacity>
   );
+
+  // Reset functions
+  const resetToDefaults = async () => {
+    try {
+      const currentSettings = settings || {};
+      
+      // Reset to default values from the constants
+      const updatedSettings = {
+        ...currentSettings,
+        recentTriggers: COMMON_TRIGGERS.map((t) => t.text),
+        recentLocations: COMMON_LOCATIONS.map((l) => l.text),
+        recentEmotions: COMMON_EMOTIONS.map((e) => e.text),
+        // Optionally also reset custom icons
+        customTriggerIcons: {},
+        customLocationIcons: {},
+        customEmotionIcons: {},
+      };
+
+      await updateSettings(updatedSettings);
+      
+      // Show confirmation
+      Alert.alert(
+        "Reset Complete",
+        "Triggers, locations, and emotions have been reset to defaults.",
+        [{ text: "OK" }]
+      );
+      
+      console.log("Successfully reset to defaults");
+    } catch (error) {
+      console.error("Error resetting to defaults:", error);
+      Alert.alert(
+        "Error",
+        "Failed to reset to defaults. Please try again.",
+        [{ text: "OK" }]
+      );
+    }
+  };
+
+  const resetTriggersToDefault = async () => {
+    try {
+      const currentSettings = settings || {};
+      const updatedSettings = {
+        ...currentSettings,
+        recentTriggers: COMMON_TRIGGERS.map((t) => t.text),
+        customTriggerIcons: {},
+      };
+      await updateSettings(updatedSettings);
+      Alert.alert("Reset Complete", "Triggers have been reset to defaults.");
+    } catch (error) {
+      console.error("Error resetting triggers:", error);
+      Alert.alert("Error", "Failed to reset triggers.");
+    }
+  };
+
+  const resetLocationsToDefault = async () => {
+    try {
+      const currentSettings = settings || {};
+      const updatedSettings = {
+        ...currentSettings,
+        recentLocations: COMMON_LOCATIONS.map((l) => l.text),
+        customLocationIcons: {},
+      };
+      await updateSettings(updatedSettings);
+      Alert.alert("Reset Complete", "Locations have been reset to defaults.");
+    } catch (error) {
+      console.error("Error resetting locations:", error);
+      Alert.alert("Error", "Failed to reset locations.");
+    }
+  };
+
+  const resetEmotionsToDefault = async () => {
+    try {
+      const currentSettings = settings || {};
+      const updatedSettings = {
+        ...currentSettings,
+        recentEmotions: COMMON_EMOTIONS.map((e) => e.text),
+        customEmotionIcons: {},
+      };
+      await updateSettings(updatedSettings);
+      Alert.alert("Reset Complete", "Emotions have been reset to defaults.");
+    } catch (error) {
+      console.error("Error resetting emotions:", error);
+      Alert.alert("Error", "Failed to reset emotions.");
+    }
+  };
 
   const handleExportData = () => {
     Alert.alert(
@@ -73,6 +168,64 @@ const SettingsScreen: React.FC = () => {
       { text: "9:00 PM", onPress: () => console.log("Set to 9:00 PM") },
       { text: "10:00 PM", onPress: () => console.log("Set to 10:00 PM") },
     ]);
+  };
+
+  const handleResetMenuOptions = () => {
+    Alert.alert(
+      "Reset Options",
+      "Choose what to reset to defaults:",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Reset All", onPress: () => confirmResetAll() },
+        { text: "Reset Triggers", onPress: () => confirmResetTriggers() },
+        { text: "Reset Locations", onPress: () => confirmResetLocations() },
+        { text: "Reset Emotions", onPress: () => confirmResetEmotions() },
+      ]
+    );
+  };
+
+  const confirmResetAll = () => {
+    Alert.alert(
+      "Confirm Reset All",
+      "This will reset all triggers, locations, emotions, and custom icons to defaults. Are you sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Reset All", style: "destructive", onPress: resetToDefaults },
+      ]
+    );
+  };
+
+  const confirmResetTriggers = () => {
+    Alert.alert(
+      "Confirm Reset Triggers",
+      "This will reset triggers and their custom icons to defaults. Are you sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Reset", style: "destructive", onPress: resetTriggersToDefault },
+      ]
+    );
+  };
+
+  const confirmResetLocations = () => {
+    Alert.alert(
+      "Confirm Reset Locations",
+      "This will reset locations and their custom icons to defaults. Are you sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Reset", style: "destructive", onPress: resetLocationsToDefault },
+      ]
+    );
+  };
+
+  const confirmResetEmotions = () => {
+    Alert.alert(
+      "Confirm Reset Emotions",
+      "This will reset emotions and their custom icons to defaults. Are you sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Reset", style: "destructive", onPress: resetEmotionsToDefault },
+      ]
+    );
   };
 
   return (
@@ -149,6 +302,34 @@ const SettingsScreen: React.FC = () => {
             },
             undefined,
             "⚡"
+          )}
+        </View>
+
+        {/* Data Management - NEW SECTION */}
+        <View className="mb-8">
+          <Text className="text-2xl font-bold text-white mb-4">
+            🔄 Data Management
+          </Text>
+
+          {renderSettingItem(
+            "Reset to Defaults",
+            "Reset triggers, locations, and emotions",
+            handleResetMenuOptions,
+            undefined,
+            "🔄"
+          )}
+
+          {renderSettingItem(
+            "Manage Urges",
+            `${settings?.selectedUrges?.length || 0} urges selected`,
+            () => {
+              Alert.alert(
+                "Manage Urges",
+                "Go to the urge selection screen to customize which urges you want to track."
+              );
+            },
+            undefined,
+            "🎯"
           )}
         </View>
 
