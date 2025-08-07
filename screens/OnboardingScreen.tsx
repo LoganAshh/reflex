@@ -450,9 +450,6 @@ const OnboardingScreen: React.FC = () => {
           <Text className="text-white text-lg opacity-75">
             {currentStep + 1} of {steps.length}
           </Text>
-          <TouchableOpacity onPress={handleSkip}>
-            <Text className="text-white text-lg opacity-75">Skip</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Progress bar */}
