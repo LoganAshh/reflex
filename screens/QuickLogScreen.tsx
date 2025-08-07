@@ -633,11 +633,8 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
+            <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
               What's the urge?
-            </Text>
-            <Text className="text-xl text-white text-center mb-8 opacity-90">
-              Name it to tame it
             </Text>
 
             <TextInput
@@ -740,11 +737,8 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
+            <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
               What triggered it?
-            </Text>
-            <Text className="text-xl text-white text-center mb-8 opacity-90">
-              Understanding triggers builds awareness
             </Text>
 
             <TextInput
@@ -840,11 +834,8 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
+            <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
               Where are you?
-            </Text>
-            <Text className="text-xl text-white text-center mb-8 opacity-90">
-              Location patterns matter
             </Text>
 
             <TextInput
@@ -942,11 +933,8 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
+            <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
               How were you feeling?
-            </Text>
-            <Text className="text-xl text-white text-center mb-8 opacity-90">
-              Emotions often drive our urges
             </Text>
 
             <TextInput
@@ -1040,11 +1028,8 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
+            <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
               Did you act on it?
-            </Text>
-            <Text className="text-xl text-white text-center mb-8 opacity-90">
-              Honest tracking builds awareness
             </Text>
 
             <View className="space-y-4 mb-8">
@@ -1129,11 +1114,8 @@ const QuickLogScreen: React.FC = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-4 mt-8">
+            <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
               Try a replacement action
-            </Text>
-            <Text className="text-xl text-white text-center mb-8 opacity-90">
-              Channel that energy into something positive
             </Text>
 
             {availableActions.length > 0 ? (
