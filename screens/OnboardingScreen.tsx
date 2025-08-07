@@ -383,7 +383,7 @@ const OnboardingScreen: React.FC = () => {
         >
           {/* Logo/Icon with bounce animation */}
           <Animated.View
-            className="w-32 h-32 items-center justify-center mb-16 mt-16"
+            className="w-32 h-32 items-center justify-center mb-16 mt-8"
             style={{
               transform: [{ scale: scaleAnim }],
               paddingHorizontal: 8,
@@ -403,7 +403,7 @@ const OnboardingScreen: React.FC = () => {
 
           {/* Title */}
           <Animated.Text
-            className="text-4xl font-bold text-white text-center mb-4"
+            className="text-4xl font-bold text-white text-center mb-16"
             style={{
               opacity: fadeAnim,
               transform: [{ translateY: slideAnim }],
@@ -414,7 +414,7 @@ const OnboardingScreen: React.FC = () => {
 
           {/* Subtitle */}
           <Animated.Text
-            className="text-2xl text-white text-center mb-8 font-medium opacity-90"
+            className="text-2xl text-white text-center mb-16 font-medium opacity-90"
             style={{
               opacity: fadeAnim,
               transform: [{ translateY: Animated.add(slideAnim, 10) }],
