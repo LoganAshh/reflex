@@ -66,7 +66,7 @@ const OnboardingScreen: React.FC = () => {
       title: "Did You Know?",
       subtitle: "Your habits can become as automatic as a reflex",
       description:
-        "This app helps you become aware of these automatic urges and gives you the power to choose your response instead of reacting on autopilot.",
+        "This app helps you recognize urges and choose how to respond rather than react on autopilot.",
       icon: "",
       iconName: "bulb-outline",
     },
