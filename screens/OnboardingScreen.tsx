@@ -26,7 +26,6 @@ interface OnboardingStep {
   description: string;
   icon: string;
   iconName?: keyof typeof Ionicons.glyphMap;
-  tips: string[];
 }
 
 const OnboardingScreen: React.FC = () => {
@@ -61,11 +60,6 @@ const OnboardingScreen: React.FC = () => {
       description:
         "Reflex helps you build self-awareness and transform automatic urges into conscious choices.",
       icon: "logo", // Special case for logo
-      tips: [
-        "Track urges without judgment",
-        "Discover your patterns",
-        "Build healthier responses",
-      ],
     },
     {
       id: "how-it-works",
@@ -75,11 +69,6 @@ const OnboardingScreen: React.FC = () => {
         "When you feel an urge, quickly log it. Over time, you'll see patterns and build better habits.",
       icon: "",
       iconName: "create-outline",
-      tips: [
-        "Log urges in under 30 seconds",
-        "See patterns in your behavior",
-        "Replace urges with positive actions",
-      ],
     },
     {
       id: "patterns",
@@ -89,7 +78,6 @@ const OnboardingScreen: React.FC = () => {
         "See when, where, and why urges happen. Understanding patterns is the first step to change.",
       icon: "",
       iconName: "analytics-outline",
-      tips: ["Time-based patterns", "Common triggers", "Success rate tracking"],
     },
     {
       id: "actions",
@@ -99,11 +87,6 @@ const OnboardingScreen: React.FC = () => {
         "Instead of just resisting urges, replace them with healthy alternatives that make you feel good.",
       icon: "",
       iconName: "flash-outline",
-      tips: [
-        "Quick 1-minute actions",
-        "Proven techniques",
-        "Personalized suggestions",
-      ],
     },
     {
       id: "privacy",
@@ -113,11 +96,6 @@ const OnboardingScreen: React.FC = () => {
         "All your data is stored locally on your phone. We never collect or share your personal information.",
       icon: "",
       iconName: "lock-closed-outline",
-      tips: [
-        "No account required",
-        "No data sent to servers",
-        "You control your information",
-      ],
     },
     {
       id: "pricing",
@@ -127,11 +105,6 @@ const OnboardingScreen: React.FC = () => {
         "Reflex's essential tracking and insights remain completely free. Premium features are optional add-ons to enhance your experience.",
       icon: "",
       iconName: "gift-outline",
-      tips: [
-        "Core tracking always free",
-        "Premium features are optional",
-        "No hidden costs or surprises",
-      ],
     },
     {
       id: "judgment-free",
@@ -141,11 +114,6 @@ const OnboardingScreen: React.FC = () => {
         "Every urge is human. There's no shame in feeling them or even acting on them. Progress comes from awareness, not perfection.",
       icon: "",
       iconName: "heart-outline",
-      tips: [
-        "All urges are normal and human",
-        "No shame, just awareness",
-        "Progress over perfection",
-      ],
     },
     {
       id: "urge-selection",
@@ -155,11 +123,6 @@ const OnboardingScreen: React.FC = () => {
         "Select the urges you want to track. You can always add or remove urges later in settings.",
       icon: "",
       iconName: "radio-button-on-outline",
-      tips: [
-        "Select urges you want to be mindful about",
-        "Your QuickLog will show only these urges",
-        "This helps keep your tracking focused",
-      ],
     },
     {
       id: "ready",
@@ -169,11 +132,6 @@ const OnboardingScreen: React.FC = () => {
         "Ready to build more awareness and intentional choices? Let's begin tracking your urges.",
       icon: "",
       iconName: "rocket-outline",
-      tips: [
-        "Every urge logged is progress",
-        "Patterns emerge over time",
-        "Small changes create lasting impact",
-      ],
     },
   ];
 
@@ -475,30 +433,6 @@ const OnboardingScreen: React.FC = () => {
           >
             {step.description}
           </Animated.Text>
-
-          {/* Tips */}
-          <View className="w-full">
-            {step.tips.map((tip, index) => (
-              <Animated.View
-                key={index}
-                className="flex-row items-center mb-4 p-4 bg-white bg-opacity-10 rounded-lg"
-                style={{
-                  opacity: fadeAnim,
-                  transform: [
-                    { translateY: Animated.add(slideAnim, 30 + index * 10) },
-                  ],
-                }}
-              >
-                <Ionicons
-                  name="checkmark-circle"
-                  size={24}
-                  color="#10B981"
-                  style={{ marginRight: 12 }}
-                />
-                <Text className="text-black text-lg flex-1">{tip}</Text>
-              </Animated.View>
-            ))}
-          </View>
         </Animated.View>
       </ScrollView>
     );
