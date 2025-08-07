@@ -62,7 +62,7 @@ const OnboardingScreen: React.FC = () => {
       icon: "logo", // Special case for logo
     },
     {
-      id: "how-it-works",
+      id: "did-you-know",
       title: "Did You Know?",
       subtitle: "Your habits can become as automatic as a reflex",
       description:
