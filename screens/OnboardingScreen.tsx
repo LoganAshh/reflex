@@ -493,7 +493,7 @@ const OnboardingScreen: React.FC = () => {
             style={{
               backgroundColor: !canProceed
                 ? "rgba(255, 255, 255, 0.3)"
-                : "#FFFFFF",
+                : "#10B981",
             }}
             onPress={handleNext}
             disabled={!canProceed}
@@ -501,7 +501,7 @@ const OnboardingScreen: React.FC = () => {
             <Text
               className="text-center font-semibold text-xl"
               style={{
-                color: !canProceed ? "rgba(255, 255, 255, 0.7)" : "#185e66",
+                color: !canProceed ? "rgba(255, 255, 255, 0.7)" : "#FFFFFF",
               }}
             >
               {currentStep === steps.length - 1 ? "Get Started" : "Next"}
