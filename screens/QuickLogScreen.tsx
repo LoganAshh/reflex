@@ -1231,7 +1231,9 @@ const QuickLogScreen: React.FC = () => {
         <View className="w-full bg-white bg-opacity-20 rounded-full h-2 mt-4">
           <View
             className="bg-white h-2 rounded-full transition-all duration-300"
-            style={{ width: `${(currentStep / (actedOn === false ? 6 : 5)) * 100}%` }}
+            style={{
+              width: `${(currentStep / (actedOn === false ? 6 : 5)) * 100}%`,
+            }}
           />
         </View>
       </View>
@@ -1248,7 +1250,7 @@ const QuickLogScreen: React.FC = () => {
               style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
               onPress={handleBack}
             >
-              <Text className="text-center text-white font-semibold text-xl">
+              <Text className="text-center text-white font-semibold text-2xl">
                 Back
               </Text>
             </TouchableOpacity>
@@ -1261,18 +1263,24 @@ const QuickLogScreen: React.FC = () => {
             style={{
               backgroundColor: !isStepValid()
                 ? "rgba(255, 255, 255, 0.3)"
-                : "#FFFFFF",
+                : "#10B981",
             }}
-            onPress={currentStep === 6 || (currentStep === 5 && actedOn === true) ? handleSubmit : handleNext}
+            onPress={
+              currentStep === 6 || (currentStep === 5 && actedOn === true)
+                ? handleSubmit
+                : handleNext
+            }
             disabled={!isStepValid()}
           >
             <Text
-              className="text-center font-semibold text-xl"
+              className="text-center font-semibold text-2xl"
               style={{
-                color: !isStepValid() ? "rgba(255, 255, 255, 0.7)" : "#185e66",
+                color: !isStepValid() ? "rgba(255, 255, 255, 0.7)" : "#FFFFFF",
               }}
             >
-              {currentStep === 6 || (currentStep === 5 && actedOn === true) ? "Save Log" : "Next"}
+              {currentStep === 6 || (currentStep === 5 && actedOn === true)
+                ? "Save Log"
+                : "Next"}
             </Text>
           </TouchableOpacity>
         </View>
