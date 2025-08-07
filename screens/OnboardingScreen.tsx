@@ -63,12 +63,12 @@ const OnboardingScreen: React.FC = () => {
     },
     {
       id: "how-it-works",
-      title: "How It Works",
-      subtitle: "Simple, powerful tracking",
+      title: "Did You Know?",
+      subtitle: "Your habits can become as automatic as a reflex",
       description:
-        "When you feel an urge, quickly log it. Over time, you'll see patterns and build better habits.",
+        "Reflex helps you become aware of these automatic urges and gives you the power to choose your response instead of reacting on autopilot.",
       icon: "",
-      iconName: "create-outline",
+      iconName: "bulb-outline",
     },
     {
       id: "patterns",
