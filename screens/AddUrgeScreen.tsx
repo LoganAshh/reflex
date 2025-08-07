@@ -241,7 +241,7 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
 
     return (
       <View className="mb-6">
-        <View className="flex-row items-center justify-between mb-4">
+        <View className="flex-row items-center justify-between mb-2 mt-2">
           <Text className="text-white font-medium text-lg">
             Choose an icon:
           </Text>
@@ -329,8 +329,8 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
             Select from common urges or create your own
           </Text>
 
-          <View className="mb-8">
-            <Text className="text-white font-medium mb-3 text-lg">
+          <View className="mb-4">
+            <Text className="text-white font-medium mb-2 text-lg">
               Create custom urge:
             </Text>
             <TextInput
@@ -349,7 +349,7 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
               renderIconPicker()}
           </View>
 
-          <View className="flex-row items-center mb-6">
+          <View className="flex-row items-center mb-6 mt-4">
             <View className="flex-1 h-px bg-white opacity-30" />
             <Text className="mx-4 text-white opacity-75">OR</Text>
             <View className="flex-1 h-px bg-white opacity-30" />
