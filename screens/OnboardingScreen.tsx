@@ -482,7 +482,7 @@ const OnboardingScreen: React.FC = () => {
               style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
               onPress={handleBack}
             >
-              <Text className="text-center text-white font-semibold text-xl">
+              <Text className="text-center text-white font-semibold text-2xl">
                 Back
               </Text>
             </TouchableOpacity>
@@ -499,7 +499,7 @@ const OnboardingScreen: React.FC = () => {
             disabled={!canProceed}
           >
             <Text
-              className="text-center font-semibold text-xl"
+              className="text-center font-semibold text-2xl"
               style={{
                 color: !canProceed ? "rgba(255, 255, 255, 0.7)" : "#FFFFFF",
               }}
