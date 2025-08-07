@@ -66,7 +66,7 @@ const OnboardingScreen: React.FC = () => {
       title: "Did You Know?",
       subtitle: "Your habits can become as automatic as a reflex",
       description:
-        "Reflex helps you become aware of these automatic urges and gives you the power to choose your response instead of reacting on autopilot.",
+        "This app helps you become aware of these automatic urges and gives you the power to choose your response instead of reacting on autopilot.",
       icon: "",
       iconName: "bulb-outline",
     },
@@ -403,7 +403,7 @@ const OnboardingScreen: React.FC = () => {
 
           {/* Title */}
           <Animated.Text
-            className="text-4xl font-bold text-white text-center mb-16"
+            className="text-4xl font-bold text-white text-center mb-8"
             style={{
               opacity: fadeAnim,
               transform: [{ translateY: slideAnim }],
@@ -414,7 +414,7 @@ const OnboardingScreen: React.FC = () => {
 
           {/* Subtitle */}
           <Animated.Text
-            className="text-3xl text-white text-center mb-16 font-medium opacity-90"
+            className="text-3xl text-white text-center mb-8 font-medium opacity-90"
             style={{
               opacity: fadeAnim,
               transform: [{ translateY: Animated.add(slideAnim, 10) }],
