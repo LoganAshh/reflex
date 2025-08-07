@@ -71,24 +71,6 @@ const OnboardingScreen: React.FC = () => {
       iconName: "bulb-outline",
     },
     {
-      id: "patterns",
-      title: "Discover Patterns",
-      subtitle: "Insights from your data",
-      description:
-        "See when, where, and why urges happen. Understanding patterns is the first step to change.",
-      icon: "",
-      iconName: "analytics-outline",
-    },
-    {
-      id: "actions",
-      title: "Replacement Actions",
-      subtitle: "Build positive habits",
-      description:
-        "Instead of just resisting urges, replace them with healthy alternatives that make you feel good.",
-      icon: "",
-      iconName: "flash-outline",
-    },
-    {
       id: "privacy",
       title: "Your Privacy Matters",
       subtitle: "Data stays on your device",
@@ -114,6 +96,24 @@ const OnboardingScreen: React.FC = () => {
         "Every urge is human. There's no shame in feeling them or even acting on them. Progress comes from awareness, not perfection.",
       icon: "",
       iconName: "heart-outline",
+    },
+    {
+      id: "patterns",
+      title: "Discover Patterns",
+      subtitle: "Insights from your data",
+      description:
+        "See when, where, and why urges happen. Understanding patterns is the first step to change.",
+      icon: "",
+      iconName: "analytics-outline",
+    },
+    {
+      id: "actions",
+      title: "Replacement Actions",
+      subtitle: "Build positive habits",
+      description:
+        "Instead of just resisting urges, replace them with healthy alternatives that make you feel good.",
+      icon: "",
+      iconName: "flash-outline",
     },
     {
       id: "urge-selection",
@@ -501,7 +501,11 @@ const OnboardingScreen: React.FC = () => {
                 color: !canProceed ? "rgba(255, 255, 255, 0.7)" : "#FFFFFF",
               }}
             >
-              {currentStep === 0 ? "Get Started!" : currentStep === steps.length - 1 ? "Finish!" : "Next"}
+              {currentStep === 0
+                ? "Get Started!"
+                : currentStep === steps.length - 1
+                  ? "Finish!"
+                  : "Next"}
             </Text>
           </TouchableOpacity>
         </View>
