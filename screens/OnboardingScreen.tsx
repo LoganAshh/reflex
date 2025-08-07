@@ -56,9 +56,9 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "welcome",
       title: "Welcome to Reflex!",
-      subtitle: "Your mindful urge companion",
+      subtitle: "First of all, Congrats! 🎉",
       description:
-        "Reflex helps you build self-awareness and transform automatic urges into conscious choices.",
+        "You have just taken the first step towards breaking your bad habits and addictions!",
       icon: "logo", // Special case for logo
     },
     {
@@ -414,7 +414,7 @@ const OnboardingScreen: React.FC = () => {
 
           {/* Subtitle */}
           <Animated.Text
-            className="text-2xl text-white text-center mb-16 font-medium opacity-90"
+            className="text-3xl text-white text-center mb-16 font-medium opacity-90"
             style={{
               opacity: fadeAnim,
               transform: [{ translateY: Animated.add(slideAnim, 10) }],
@@ -425,7 +425,7 @@ const OnboardingScreen: React.FC = () => {
 
           {/* Description */}
           <Animated.Text
-            className="text-lg text-white text-center mb-8 leading-7 opacity-80"
+            className="text-2xl text-white text-center mb-8 leading-7 opacity-80"
             style={{
               opacity: fadeAnim,
               transform: [{ translateY: Animated.add(slideAnim, 20) }],
