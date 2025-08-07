@@ -64,7 +64,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "did-you-know",
       title: "Did You Know?",
-      subtitle: "Your habits can become as automatic as a reflex",
+      subtitle: "Your habits can become as automatic as a reflex 🧠",
       description:
         "This app helps you recognize urges and choose how to respond rather than react on autopilot.",
       icon: "",
@@ -73,7 +73,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "privacy",
       title: "Your Privacy Matters",
-      subtitle: "Data stays on your device",
+      subtitle: "Data stays on your device 🔒",
       description:
         "All your data is stored locally on your phone. We never collect or share your personal information.",
       icon: "",
@@ -82,7 +82,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "pricing",
       title: "Free Forever",
-      subtitle: "Core features always available",
+      subtitle: "Core features always available 🎁",
       description:
         "Reflex's essential tracking and insights remain completely free. Premium features are optional add-ons to enhance your experience.",
       icon: "",
@@ -91,7 +91,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "judgment-free",
       title: "Zero Judgment Zone",
-      subtitle: "A safe space for honest reflection",
+      subtitle: "A safe space for honest reflection 💙",
       description:
         "Every urge is human. There's no shame in feeling them or even acting on them. Progress comes from awareness, not perfection.",
       icon: "",
@@ -100,7 +100,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "patterns",
       title: "Discover Patterns",
-      subtitle: "Insights from your data",
+      subtitle: "Insights from your data 📊",
       description:
         "See when, where, and why urges happen. Understanding patterns is the first step to change.",
       icon: "",
@@ -109,7 +109,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "actions",
       title: "Replacement Actions",
-      subtitle: "Build positive habits",
+      subtitle: "Build positive habits ⚡",
       description:
         "Instead of just resisting urges, replace them with healthy alternatives that make you feel good.",
       icon: "",
@@ -118,7 +118,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "urge-selection",
       title: "Choose Your Focus",
-      subtitle: "What urges are you mindful about?",
+      subtitle: "What urges are you mindful about? 🎯",
       description:
         "Select the urges you want to track. You can always add or remove urges later in settings.",
       icon: "",
@@ -127,7 +127,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "ready",
       title: "You're All Set!",
-      subtitle: "Start your mindful journey",
+      subtitle: "Start your mindful journey 🚀",
       description:
         "Ready to build more awareness and intentional choices? Let's begin tracking your urges.",
       icon: "",
