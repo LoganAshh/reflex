@@ -504,7 +504,7 @@ const OnboardingScreen: React.FC = () => {
                 color: !canProceed ? "rgba(255, 255, 255, 0.7)" : "#FFFFFF",
               }}
             >
-              {currentStep === steps.length - 1 ? "Get Started" : "Next"}
+              {currentStep === 0 ? "Get Started!" : currentStep === steps.length - 1 ? "Finish!" : "Next"}
             </Text>
           </TouchableOpacity>
         </View>
