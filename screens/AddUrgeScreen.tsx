@@ -10,6 +10,8 @@ import {
   SafeAreaView,
   Alert,
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { COMMON_URGES } from "../types";
 import { useSettings } from "../hooks/useSettings";
@@ -251,42 +253,48 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
           </TouchableOpacity>
         </View>
 
-        {/* Icon grid */}
-        <ScrollView
-          className="max-h-64 rounded-lg p-3 border border-white border-opacity-30"
-          style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
-          showsVerticalScrollIndicator={false}
+        {/* Fixed Icon grid with proper nested ScrollView */}
+        <View
+          className="rounded-lg p-3 border border-white border-opacity-30"
+          style={{ backgroundColor: "rgba(255, 255, 255, 0.1)", height: 200 }}
         >
-          <View className="flex-row flex-wrap justify-center">
-            {AVAILABLE_ICONS.map((iconName, index) => (
-              <TouchableOpacity
-                key={index}
-                className="p-2 m-1 rounded-lg"
-                style={{
-                  backgroundColor:
-                    selectedIcon === iconName
-                      ? "rgba(255, 255, 255, 0.3)"
-                      : "transparent",
-                  width: iconSize + 16,
-                  height: iconSize + 16,
-                }}
-                onPress={() => handleIconSelect(iconName)}
-              >
-                <View className="items-center justify-center flex-1">
-                  <Ionicons
-                    name={iconName as any}
-                    size={24}
-                    color={
+          <ScrollView
+            showsVerticalScrollIndicator={true}
+            nestedScrollEnabled={true}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 10 }}
+          >
+            <View className="flex-row flex-wrap justify-center">
+              {AVAILABLE_ICONS.map((iconName, index) => (
+                <TouchableOpacity
+                  key={index}
+                  className="p-2 m-1 rounded-lg"
+                  style={{
+                    backgroundColor:
                       selectedIcon === iconName
-                        ? "#FFFFFF"
-                        : "rgba(255, 255, 255, 0.7)"
-                    }
-                  />
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
+                        ? "rgba(255, 255, 255, 0.3)"
+                        : "transparent",
+                    width: iconSize + 16,
+                    height: iconSize + 16,
+                  }}
+                  onPress={() => handleIconSelect(iconName)}
+                >
+                  <View className="items-center justify-center flex-1">
+                    <Ionicons
+                      name={iconName as any}
+                      size={24}
+                      color={
+                        selectedIcon === iconName
+                          ? "#FFFFFF"
+                          : "rgba(255, 255, 255, 0.7)"
+                      }
+                    />
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
       </View>
     );
   };
@@ -303,85 +311,98 @@ const AddUrgeScreen: React.FC<AddUrgeScreenProps> = ({
         </View>
       </View>
 
-      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        <Text className="text-3xl font-bold text-white text-center mb-4">
-          Choose or create an urge
-        </Text>
-        <Text className="text-lg text-white text-center mb-8 opacity-90">
-          Select from common urges or create your own
-        </Text>
-
-        <View className="mb-8">
-          <Text className="text-white font-medium mb-3 text-lg">
-            Create custom urge:
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        <ScrollView
+          className="flex-1 px-6"
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flexGrow: 1 }}
+        >
+          <Text className="text-3xl font-bold text-white text-center mb-4">
+            Choose or create an urge
           </Text>
-          <TextInput
-            className="border border-white border-opacity-30 rounded-lg p-4 text-xl text-white"
-            style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
-            placeholder="Type your own urge..."
-            placeholderTextColor="rgba(255, 255, 255, 0.7)"
-            value={customUrge}
-            onChangeText={handleCustomUrgeChange}
-            returnKeyType="done"
-          />
+          <Text className="text-lg text-white text-center mb-8 opacity-90">
+            Select from common urges or create your own
+          </Text>
 
-          {/* Icon picker for custom urges */}
-          {showIconPicker && customUrge.trim().length > 0 && renderIconPicker()}
-        </View>
-
-        <View className="flex-row items-center mb-6">
-          <View className="flex-1 h-px bg-white opacity-30" />
-          <Text className="mx-4 text-white opacity-75">OR</Text>
-          <View className="flex-1 h-px bg-white opacity-30" />
-        </View>
-
-        <Text className="text-white font-medium mb-4 text-lg">
-          Choose from available urges:
-        </Text>
-
-        {availableUrges.length > 0 ? (
-          <View className="mb-4">
-            {availableUrges.map((urge, index) => (
-              <TouchableOpacity
-                key={index}
-                className="p-4 rounded-lg mb-3"
-                style={{
-                  backgroundColor:
-                    selectedUrge === urge.text
-                      ? "#FFFFFF"
-                      : "rgba(255, 255, 255, 0.2)",
-                }}
-                onPress={() => handleUrgeSelect(urge.text)}
-              >
-                <View className="flex-row items-center">
-                  <Ionicons
-                    name={urge.icon as any}
-                    size={24}
-                    color={selectedUrge === urge.text ? "#374151" : "#FFFFFF"}
-                    style={{ marginRight: 12 }}
-                  />
-                  <Text
-                    className={`text-xl ${
-                      selectedUrge === urge.text
-                        ? "text-gray-800"
-                        : "text-white"
-                    }`}
-                  >
-                    {urge.text}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ) : (
-          <View className="flex-1 justify-center items-center p-6">
-            <Text className="text-white text-center opacity-75 text-lg">
-              All common urges are already in your list. Create a custom urge
-              above.
+          <View className="mb-8">
+            <Text className="text-white font-medium mb-3 text-lg">
+              Create custom urge:
             </Text>
+            <TextInput
+              className="border border-white border-opacity-30 rounded-lg p-4 text-xl text-white"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              placeholder="Type your own urge..."
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={customUrge}
+              onChangeText={handleCustomUrgeChange}
+              returnKeyType="done"
+            />
+
+            {/* Icon picker for custom urges */}
+            {showIconPicker &&
+              customUrge.trim().length > 0 &&
+              renderIconPicker()}
           </View>
-        )}
-      </ScrollView>
+
+          <View className="flex-row items-center mb-6">
+            <View className="flex-1 h-px bg-white opacity-30" />
+            <Text className="mx-4 text-white opacity-75">OR</Text>
+            <View className="flex-1 h-px bg-white opacity-30" />
+          </View>
+
+          <Text className="text-white font-medium mb-4 text-lg">
+            Choose from available urges:
+          </Text>
+
+          {availableUrges.length > 0 ? (
+            <View className="mb-4">
+              {availableUrges.map((urge, index) => (
+                <TouchableOpacity
+                  key={index}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      selectedUrge === urge.text
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
+                  onPress={() => handleUrgeSelect(urge.text)}
+                >
+                  <View className="flex-row items-center">
+                    <Ionicons
+                      name={urge.icon as any}
+                      size={24}
+                      color={selectedUrge === urge.text ? "#374151" : "#FFFFFF"}
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-xl ${
+                        selectedUrge === urge.text
+                          ? "text-gray-800"
+                          : "text-white"
+                      }`}
+                    >
+                      {urge.text}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : (
+            <View className="flex-1 justify-center items-center p-6">
+              <Text className="text-white text-center opacity-75 text-lg">
+                All common urges are already in your list. Create a custom urge
+                above.
+              </Text>
+            </View>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       <View className="px-6 py-4 border-t border-white border-opacity-20">
         <TouchableOpacity
