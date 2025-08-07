@@ -281,7 +281,7 @@ const OnboardingScreen: React.FC = () => {
             transform: [{ translateY: Animated.add(slideAnim, 20) }],
           }}
         >
-          Select up to 5 urges you want to track. You can always add or remove
+          Select up to 4 urges you want to track. You can always add or remove
           urges later in settings.
         </Animated.Text>
 
@@ -297,7 +297,7 @@ const OnboardingScreen: React.FC = () => {
         <View className="w-full">
           {COMMON_URGES.map((urge, index) => {
             const isSelected = selectedUrges.includes(urge.text);
-            const isDisabled = !isSelected && selectedUrges.length >= 5;
+            const isDisabled = !isSelected && selectedUrges.length >= 4;
             return (
               <TouchableOpacity
                 key={index}
