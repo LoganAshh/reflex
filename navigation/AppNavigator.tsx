@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import QuickLogScreen from "../screens/QuickLogScreen";
 import PatternDashboard from "../screens/PatternDashboard";
 import ReplacementActions from "../screens/ReplacementActions";
@@ -44,11 +44,31 @@ const AppNavigator: React.FC = () => {
   };
 
   const tabs = [
-    { id: "patterns" as TabType, label: "Patterns", icon: "analytics-outline" as keyof typeof Ionicons.glyphMap },
-    { id: "actions" as TabType, label: "Actions", icon: "flash-outline" as keyof typeof Ionicons.glyphMap },
-    { id: "log" as TabType, label: "Log", icon: "create-outline" as keyof typeof Ionicons.glyphMap },
-    { id: "streaks" as TabType, label: "Streaks", icon: "flame-outline" as keyof typeof Ionicons.glyphMap },
-    { id: "settings" as TabType, label: "Settings", icon: "settings-outline" as keyof typeof Ionicons.glyphMap },
+    {
+      id: "patterns" as TabType,
+      label: "Patterns",
+      icon: "analytics-outline" as keyof typeof Ionicons.glyphMap,
+    },
+    {
+      id: "actions" as TabType,
+      label: "Actions",
+      icon: "flash-outline" as keyof typeof Ionicons.glyphMap,
+    },
+    {
+      id: "log" as TabType,
+      label: "Log",
+      icon: "create-outline" as keyof typeof Ionicons.glyphMap,
+    },
+    {
+      id: "streaks" as TabType,
+      label: "Streaks",
+      icon: "flame-outline" as keyof typeof Ionicons.glyphMap,
+    },
+    {
+      id: "settings" as TabType,
+      label: "Settings",
+      icon: "settings-outline" as keyof typeof Ionicons.glyphMap,
+    },
   ];
 
   // Enhanced home screen with history (styled to match onboarding)
@@ -265,10 +285,10 @@ const AppNavigator: React.FC = () => {
                 onPress={() => setActiveTab(tab.id)}
               >
                 <View className="relative">
-                  <Ionicons 
-                    name={tab.icon} 
-                    size={28} 
-                    color={isActive ? "#10B981" : "white"} 
+                  <Ionicons
+                    name={tab.icon}
+                    size={28}
+                    color={isActive ? "#10B981" : "white"}
                   />
                   {renderTabBadge(badgeCount)}
                 </View>
