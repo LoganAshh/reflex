@@ -33,13 +33,35 @@ const ReplacementActions: React.FC = () => {
     selectedCategory === "all"
       ? actions.sort((a, b) => {
           const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
-          return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+          
+          // First sort by difficulty
+          const difficultyComparison = difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+          if (difficultyComparison !== 0) return difficultyComparison;
+          
+          // Then sort by duration (extract minimum number from duration string)
+          const getDurationMinutes = (duration: string) => {
+            const match = duration.match(/(\d+)/);
+            return match ? parseInt(match[1]) : 999;
+          };
+          
+          return getDurationMinutes(a.duration) - getDurationMinutes(b.duration);
         })
       : actions
           .filter((action) => action.category === selectedCategory)
           .sort((a, b) => {
             const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
-            return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+            
+            // First sort by difficulty
+            const difficultyComparison = difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+            if (difficultyComparison !== 0) return difficultyComparison;
+            
+            // Then sort by duration (extract minimum number from duration string)
+            const getDurationMinutes = (duration: string) => {
+              const match = duration.match(/(\d+)/);
+              return match ? parseInt(match[1]) : 999;
+            };
+            
+            return getDurationMinutes(a.duration) - getDurationMinutes(b.duration);
           });
 
   const getDifficultyColor = (difficulty: string) => {
