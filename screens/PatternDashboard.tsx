@@ -513,20 +513,34 @@ const PatternDashboard: React.FC = () => {
             📈 Weekly Success Trend
           </Text>
           <View className="flex-row justify-between items-end h-32">
-            {habitData.successTrend.map((item, index) => (
-              <View key={index} className="flex-1 items-center">
-                <View
-                  className="bg-purple-400 rounded-t w-8 mb-2"
-                  style={{ height: `${(item.rate / 100) * 80}%`, minHeight: 8 }}
-                />
-                <Text className="text-white text-sm opacity-90">
-                  {item.day}
-                </Text>
-                <Text className="text-white text-xs opacity-75">
-                  {item.rate}%
-                </Text>
-              </View>
-            ))}
+            {habitData.weeklyResistance.map((item, index) => {
+              const successRate = item.total > 0 ? (item.resisted / item.total) * 100 : 0;
+              return (
+                <View key={index} className="flex-1 items-center">
+                  <View
+                    className="rounded-t w-8 mb-2 relative"
+                    style={{ 
+                      height: `${item.total > 0 ? Math.max((item.total / 8) * 80, 16) : 16}%`,
+                      backgroundColor: "rgba(255, 255, 255, 0.2)"
+                    }}
+                  >
+                    <View
+                      className="rounded-t w-full"
+                      style={{ 
+                        height: `${successRate}%`,
+                        backgroundColor: "#10B981"
+                      }}
+                    />
+                  </View>
+                  <Text className="text-white text-sm opacity-90">
+                    {habitData.successTrend[index].day}
+                  </Text>
+                  <Text className="text-white text-xs opacity-75">
+                    {item.resisted}/{item.total}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
         </View>
 
