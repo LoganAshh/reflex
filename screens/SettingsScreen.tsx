@@ -22,6 +22,11 @@ const SettingsScreen: React.FC = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { settings, updateSettings } = useSettings();
 
+  // Helper functions to get only the first 4 items (same as in QuickLogScreen)
+  const getDefaultTriggers = () => COMMON_TRIGGERS.slice(0, 4).map((t) => t.text);
+  const getDefaultLocations = () => COMMON_LOCATIONS.slice(0, 4).map((l) => l.text);
+  const getDefaultEmotions = () => COMMON_EMOTIONS.slice(0, 4).map((e) => e.text);
+
   const renderSettingItem = (
     title: string,
     subtitle: string,
@@ -50,18 +55,18 @@ const SettingsScreen: React.FC = () => {
     </TouchableOpacity>
   );
 
-  // Reset functions
+  // Updated reset functions to use only first 4 items
   const resetToDefaults = async () => {
     try {
       const currentSettings = settings || {};
       
-      // Reset to default values from the constants
+      // Reset to limited default values (first 4 of each)
       const updatedSettings = {
         ...currentSettings,
-        recentTriggers: COMMON_TRIGGERS.map((t) => t.text),
-        recentLocations: COMMON_LOCATIONS.map((l) => l.text),
-        recentEmotions: COMMON_EMOTIONS.map((e) => e.text),
-        // Optionally also reset custom icons
+        recentTriggers: getDefaultTriggers(),
+        recentLocations: getDefaultLocations(),
+        recentEmotions: getDefaultEmotions(),
+        // Reset custom icons
         customTriggerIcons: {},
         customLocationIcons: {},
         customEmotionIcons: {},
@@ -72,11 +77,11 @@ const SettingsScreen: React.FC = () => {
       // Show confirmation
       Alert.alert(
         "Reset Complete",
-        "Triggers, locations, and emotions have been reset to defaults.",
+        "Triggers, locations, and emotions have been reset to 4 default options each.",
         [{ text: "OK" }]
       );
       
-      console.log("Successfully reset to defaults");
+      console.log("Successfully reset to limited defaults");
     } catch (error) {
       console.error("Error resetting to defaults:", error);
       Alert.alert(
@@ -92,11 +97,11 @@ const SettingsScreen: React.FC = () => {
       const currentSettings = settings || {};
       const updatedSettings = {
         ...currentSettings,
-        recentTriggers: COMMON_TRIGGERS.map((t) => t.text),
+        recentTriggers: getDefaultTriggers(),
         customTriggerIcons: {},
       };
       await updateSettings(updatedSettings);
-      Alert.alert("Reset Complete", "Triggers have been reset to defaults.");
+      Alert.alert("Reset Complete", "Triggers have been reset to 4 default options.");
     } catch (error) {
       console.error("Error resetting triggers:", error);
       Alert.alert("Error", "Failed to reset triggers.");
@@ -108,11 +113,11 @@ const SettingsScreen: React.FC = () => {
       const currentSettings = settings || {};
       const updatedSettings = {
         ...currentSettings,
-        recentLocations: COMMON_LOCATIONS.map((l) => l.text),
+        recentLocations: getDefaultLocations(),
         customLocationIcons: {},
       };
       await updateSettings(updatedSettings);
-      Alert.alert("Reset Complete", "Locations have been reset to defaults.");
+      Alert.alert("Reset Complete", "Locations have been reset to 4 default options.");
     } catch (error) {
       console.error("Error resetting locations:", error);
       Alert.alert("Error", "Failed to reset locations.");
@@ -124,11 +129,11 @@ const SettingsScreen: React.FC = () => {
       const currentSettings = settings || {};
       const updatedSettings = {
         ...currentSettings,
-        recentEmotions: COMMON_EMOTIONS.map((e) => e.text),
+        recentEmotions: getDefaultEmotions(),
         customEmotionIcons: {},
       };
       await updateSettings(updatedSettings);
-      Alert.alert("Reset Complete", "Emotions have been reset to defaults.");
+      Alert.alert("Reset Complete", "Emotions have been reset to 4 default options.");
     } catch (error) {
       console.error("Error resetting emotions:", error);
       Alert.alert("Error", "Failed to reset emotions.");
@@ -173,7 +178,7 @@ const SettingsScreen: React.FC = () => {
   const handleResetMenuOptions = () => {
     Alert.alert(
       "Reset Options",
-      "Choose what to reset to defaults:",
+      "Choose what to reset to 4 default options:",
       [
         { text: "Cancel", style: "cancel" },
         { text: "Reset All", onPress: () => confirmResetAll() },
@@ -187,7 +192,7 @@ const SettingsScreen: React.FC = () => {
   const confirmResetAll = () => {
     Alert.alert(
       "Confirm Reset All",
-      "This will reset all triggers, locations, emotions, and custom icons to defaults. Are you sure?",
+      "This will reset all triggers, locations, emotions, and custom icons to 4 default options each. Are you sure?",
       [
         { text: "Cancel", style: "cancel" },
         { text: "Reset All", style: "destructive", onPress: resetToDefaults },
@@ -198,7 +203,7 @@ const SettingsScreen: React.FC = () => {
   const confirmResetTriggers = () => {
     Alert.alert(
       "Confirm Reset Triggers",
-      "This will reset triggers and their custom icons to defaults. Are you sure?",
+      "This will reset triggers and their custom icons to 4 default options. Are you sure?",
       [
         { text: "Cancel", style: "cancel" },
         { text: "Reset", style: "destructive", onPress: resetTriggersToDefault },
@@ -209,7 +214,7 @@ const SettingsScreen: React.FC = () => {
   const confirmResetLocations = () => {
     Alert.alert(
       "Confirm Reset Locations",
-      "This will reset locations and their custom icons to defaults. Are you sure?",
+      "This will reset locations and their custom icons to 4 default options. Are you sure?",
       [
         { text: "Cancel", style: "cancel" },
         { text: "Reset", style: "destructive", onPress: resetLocationsToDefault },
@@ -220,7 +225,7 @@ const SettingsScreen: React.FC = () => {
   const confirmResetEmotions = () => {
     Alert.alert(
       "Confirm Reset Emotions",
-      "This will reset emotions and their custom icons to defaults. Are you sure?",
+      "This will reset emotions and their custom icons to 4 default options. Are you sure?",
       [
         { text: "Cancel", style: "cancel" },
         { text: "Reset", style: "destructive", onPress: resetEmotionsToDefault },
@@ -270,6 +275,51 @@ const SettingsScreen: React.FC = () => {
             )}
         </View>
 
+        {/* Data Management */}
+        <View className="mb-8">
+          <Text className="text-2xl font-bold text-white mb-4">
+            🔄 Data Management
+          </Text>
+
+          {renderSettingItem(
+            "Reset to Defaults",
+            "Reset to 4 triggers, locations, and emotions",
+            handleResetMenuOptions,
+            undefined,
+            "🔄"
+          )}
+
+          {renderSettingItem(
+            "Manage Urges",
+            `${settings?.selectedUrges?.length || 0} urges selected`,
+            () => {
+              Alert.alert(
+                "Manage Urges",
+                "Go to the urge selection screen to customize which urges you want to track."
+              );
+            },
+            undefined,
+            "🎯"
+          )}
+
+          {renderSettingItem(
+            "Current Options",
+            `${(settings as any)?.recentTriggers?.length || 4} triggers, ${(settings as any)?.recentLocations?.length || 4} locations, ${(settings as any)?.recentEmotions?.length || 4} emotions`,
+            () => {
+              const triggerCount = (settings as any)?.recentTriggers?.length || 4;
+              const locationCount = (settings as any)?.recentLocations?.length || 4;
+              const emotionCount = (settings as any)?.recentEmotions?.length || 4;
+              
+              Alert.alert(
+                "Current Options",
+                `You currently have:\n• ${triggerCount} triggers\n• ${locationCount} locations\n• ${emotionCount} emotions\n\nUse "Reset to Defaults" to reduce to 4 each.`
+              );
+            },
+            undefined,
+            "📊"
+          )}
+        </View>
+
         {/* App Preferences */}
         <View className="mb-8">
           <Text className="text-2xl font-bold text-white mb-4">
@@ -302,34 +352,6 @@ const SettingsScreen: React.FC = () => {
             },
             undefined,
             "⚡"
-          )}
-        </View>
-
-        {/* Data Management - NEW SECTION */}
-        <View className="mb-8">
-          <Text className="text-2xl font-bold text-white mb-4">
-            🔄 Data Management
-          </Text>
-
-          {renderSettingItem(
-            "Reset to Defaults",
-            "Reset triggers, locations, and emotions",
-            handleResetMenuOptions,
-            undefined,
-            "🔄"
-          )}
-
-          {renderSettingItem(
-            "Manage Urges",
-            `${settings?.selectedUrges?.length || 0} urges selected`,
-            () => {
-              Alert.alert(
-                "Manage Urges",
-                "Go to the urge selection screen to customize which urges you want to track."
-              );
-            },
-            undefined,
-            "🎯"
           )}
         </View>
 

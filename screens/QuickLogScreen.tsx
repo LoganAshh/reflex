@@ -46,6 +46,11 @@ const QuickLogScreen: React.FC = () => {
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
   const slideAnim = React.useRef(new Animated.Value(0)).current;
 
+  // Helper function to get default limited items
+  const getDefaultTriggers = () => COMMON_TRIGGERS.slice(0, 4).map((t) => t.text);
+  const getDefaultLocations = () => COMMON_LOCATIONS.slice(0, 4).map((l) => l.text);
+  const getDefaultEmotions = () => COMMON_EMOTIONS.slice(0, 4).map((e) => e.text);
+
   // Load user's selected urges and custom icons when component mounts or settings change
   useEffect(() => {
     const loadFilteredUrges = () => {
@@ -183,18 +188,15 @@ const QuickLogScreen: React.FC = () => {
         selectedUrges: moveToTop(urge, filteredUrges),
         recentTriggers: moveToTop(
           trigger,
-          (currentSettings as any).recentTriggers ||
-            COMMON_TRIGGERS.map((t) => t.text)
+          (currentSettings as any).recentTriggers || getDefaultTriggers()
         ),
         recentLocations: moveToTop(
           location,
-          (currentSettings as any).recentLocations ||
-            COMMON_LOCATIONS.map((l) => l.text)
+          (currentSettings as any).recentLocations || getDefaultLocations()
         ),
         recentEmotions: moveToTop(
           emotion,
-          (currentSettings as any).recentEmotions ||
-            COMMON_EMOTIONS.map((e) => e.text)
+          (currentSettings as any).recentEmotions || getDefaultEmotions()
         ),
       };
 
@@ -289,7 +291,7 @@ const QuickLogScreen: React.FC = () => {
     setShowAddTriggerScreen(false);
 
     try {
-      const currentTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+      const currentTriggers = (settings as any)?.recentTriggers || getDefaultTriggers();
       const updatedTriggers = [selectedTrigger, ...currentTriggers.filter((t: string) => t !== selectedTrigger)];
       
       await updateSettings({ 
@@ -330,7 +332,7 @@ const QuickLogScreen: React.FC = () => {
     setShowAddLocationScreen(false);
 
     try {
-      const currentLocations = (settings as any)?.recentLocations || COMMON_LOCATIONS.map((l) => l.text);
+      const currentLocations = (settings as any)?.recentLocations || getDefaultLocations();
       const updatedLocations = [selectedLocation, ...currentLocations.filter((l: string) => l !== selectedLocation)];
       
       await updateSettings({ 
@@ -371,7 +373,7 @@ const QuickLogScreen: React.FC = () => {
     setShowAddEmotionScreen(false);
 
     try {
-      const currentEmotions = (settings as any)?.recentEmotions || COMMON_EMOTIONS.map((e) => e.text);
+      const currentEmotions = (settings as any)?.recentEmotions || getDefaultEmotions();
       const updatedEmotions = [selectedEmotion, ...currentEmotions.filter((e: string) => e !== selectedEmotion)];
       
       await updateSettings({ 
@@ -418,7 +420,7 @@ const QuickLogScreen: React.FC = () => {
   }
 
   if (showAddEmotionScreen) {
-    const currentEmotions = (settings as any)?.recentEmotions || COMMON_EMOTIONS.map((e) => e.text);
+    const currentEmotions = (settings as any)?.recentEmotions || getDefaultEmotions();
     
     return (
       <AddEmotionScreen
@@ -431,7 +433,7 @@ const QuickLogScreen: React.FC = () => {
   }
 
   if (showAddLocationScreen) {
-    const currentLocations = (settings as any)?.recentLocations || COMMON_LOCATIONS.map((l) => l.text);
+    const currentLocations = (settings as any)?.recentLocations || getDefaultLocations();
     
     return (
       <AddLocationScreen
@@ -444,7 +446,7 @@ const QuickLogScreen: React.FC = () => {
   }
 
   if (showAddTriggerScreen) {
-    const currentTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+    const currentTriggers = (settings as any)?.recentTriggers || getDefaultTriggers();
     
     return (
       <AddTriggerScreen

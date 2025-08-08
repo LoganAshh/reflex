@@ -78,6 +78,11 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
   handleAddLocationPress,
   handleAddEmotionPress,
 }) => {
+  // Helper function to get default limited items (first 4 of each type)
+  const getDefaultTriggers = () => COMMON_TRIGGERS.slice(0, 4).map((t) => t.text);
+  const getDefaultLocations = () => COMMON_LOCATIONS.slice(0, 4).map((l) => l.text);
+  const getDefaultEmotions = () => COMMON_EMOTIONS.slice(0, 4).map((e) => e.text);
+
   // Helper functions to get icons for items
   const getIconForTrigger = (triggerText: string) => {
     if (customTriggerIcons[triggerText]) {
@@ -123,7 +128,7 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
   };
 
   const getFilteredTriggersForSearch = (searchText: string) => {
-    const commonTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+    const commonTriggers = (settings as any)?.recentTriggers || getDefaultTriggers();
     if (!searchText.trim()) {
       return commonTriggers;
     }
@@ -138,7 +143,7 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
   };
 
   const getFilteredLocationsForSearch = (searchText: string) => {
-    const commonLocations = (settings as any)?.recentLocations || COMMON_LOCATIONS.map((l) => l.text);
+    const commonLocations = (settings as any)?.recentLocations || getDefaultLocations();
     if (!searchText.trim()) {
       return commonLocations;
     }
@@ -153,7 +158,7 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
   };
 
   const getFilteredEmotionsForSearch = (searchText: string) => {
-    const commonEmotions = (settings as any)?.recentEmotions || COMMON_EMOTIONS.map((e) => e.text);
+    const commonEmotions = (settings as any)?.recentEmotions || getDefaultEmotions();
     if (!searchText.trim()) {
       return commonEmotions;
     }
@@ -274,7 +279,7 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
 
       case 2:
         const searchFilteredTriggers = getFilteredTriggersForSearch(trigger);
-        const commonTriggers = (settings as any)?.recentTriggers || COMMON_TRIGGERS.map((t) => t.text);
+        const commonTriggers = (settings as any)?.recentTriggers || getDefaultTriggers();
         
         return (
           <Animated.View
@@ -371,7 +376,7 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
 
       case 3:
         const searchFilteredLocations = getFilteredLocationsForSearch(location);
-        const commonLocations = (settings as any)?.recentLocations || COMMON_LOCATIONS.map((l) => l.text);
+        const commonLocations = (settings as any)?.recentLocations || getDefaultLocations();
         
         return (
           <Animated.View
@@ -470,7 +475,7 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
 
       case 4:
         const searchFilteredEmotions = getFilteredEmotionsForSearch(emotion);
-        const commonEmotions = (settings as any)?.recentEmotions || COMMON_EMOTIONS.map((e) => e.text);
+        const commonEmotions = (settings as any)?.recentEmotions || getDefaultEmotions();
         
         return (
           <Animated.View
