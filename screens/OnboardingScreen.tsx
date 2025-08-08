@@ -56,7 +56,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "welcome",
       title: "Welcome to Reflex!",
-      subtitle: "First of all, Congrats! 🎉",
+      subtitle: "Congratulations! 🎉",
       description:
         "You have just taken the first step towards breaking your bad habits and addictions!",
       icon: "logo", // Special case for logo
