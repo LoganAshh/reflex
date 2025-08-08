@@ -161,7 +161,9 @@ const PatternDashboard: React.FC = () => {
             🔥 Habit Streaks
           </Text>
           <View className="space-y-4">
-            {mockStats.habitStreaks.map((habit, index) => (
+            {mockStats.habitStreaks
+              .sort((a, b) => b.currentStreak - a.currentStreak)
+              .map((habit, index) => (
               <View key={index} className="space-y-2">
                 <View className="flex-row justify-between items-center">
                   <Text className="text-white font-semibold text-lg">
