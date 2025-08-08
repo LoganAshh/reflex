@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Animated,
 } from "react-native";
+import * as Haptics from 'expo-haptics';
 import {
   COMMON_URGES,
   COMMON_LOCATIONS,
@@ -140,6 +141,9 @@ const QuickLogScreen: React.FC = () => {
 
   const handleNext = () => {
     if (currentStep < 6 && isStepValid()) {
+      // Add haptic feedback for successful next
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      
       if (currentStep === 5 && actedOn === true) {
         handleSubmit();
       } else {
@@ -156,6 +160,9 @@ const QuickLogScreen: React.FC = () => {
 
   const handleSubmit = () => {
     if (!isStepValid()) return;
+
+    // Add haptic feedback for successful submission
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     console.log("Submitting urge log:", {
       urge,
