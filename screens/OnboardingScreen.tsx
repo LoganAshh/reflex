@@ -13,6 +13,7 @@ import {
   Easing,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { useOnboarding } from "../hooks/useOnboarding";
 import { COMMON_URGES } from "../types";
 import { storageService } from "../services/StorageService";
@@ -82,7 +83,7 @@ const OnboardingScreen: React.FC = () => {
     {
       id: "pricing",
       title: "Free Forever",
-      subtitle: "Core features always \navailable 🎁",
+      subtitle: "Core features always available 🎁",
       description:
         "Reflex's essential tracking and insights remain completely free. Premium features are optional add-ons to enhance your experience.",
       icon: "",
@@ -192,6 +193,15 @@ const OnboardingScreen: React.FC = () => {
   };
 
   const handleNext = () => {
+    // Add haptic feedback
+    if (currentStep === steps.length - 1) {
+      // Medium haptic for finish button
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    } else {
+      // Light haptic for next button
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
     if (currentStep < steps.length - 1) {
       animateTransition(() => setCurrentStep(currentStep + 1));
     } else {
