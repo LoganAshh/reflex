@@ -210,6 +210,9 @@ const OnboardingScreen: React.FC = () => {
   };
 
   const handleBack = () => {
+    // Add light haptic feedback
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
     if (currentStep > 0) {
       animateTransition(() => setCurrentStep(currentStep - 1));
     }
