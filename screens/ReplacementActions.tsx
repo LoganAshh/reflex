@@ -31,8 +31,16 @@ const ReplacementActions: React.FC = () => {
 
   const filteredActions =
     selectedCategory === "all"
-      ? actions
-      : actions.filter((action) => action.category === selectedCategory);
+      ? actions.sort((a, b) => {
+          const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
+          return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+        })
+      : actions
+          .filter((action) => action.category === selectedCategory)
+          .sort((a, b) => {
+            const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
+            return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+          });
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -130,7 +138,7 @@ const ReplacementActions: React.FC = () => {
         <Text className="text-xl text-white text-center mt-2 opacity-90">
           Choose actions that appear when you resist urges
         </Text>
-
+        
         {/* Selection count */}
         <View className="mt-4 items-center">
           <View className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
@@ -206,7 +214,7 @@ const ReplacementActions: React.FC = () => {
         <View className="space-y-4 pb-8">
           {filteredActions.map((action) => {
             const isSelected = selectedActionIds.includes(action.id);
-
+            
             return (
               <TouchableOpacity
                 key={action.id}
@@ -260,7 +268,7 @@ const ReplacementActions: React.FC = () => {
                         {action.difficulty}
                       </Text>
                     </View>
-
+                    
                     <Text className="text-white opacity-75 mr-4">
                       ⏱️ {action.duration}
                     </Text>
