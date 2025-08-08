@@ -477,17 +477,17 @@ const AddEmotionScreen: React.FC<AddEmotionScreenProps> = ({
           style={{
             backgroundColor: !isValidSelection()
               ? "rgba(255, 255, 255, 0.3)"
-              : "#FFFFFF",
+              : "#10B981",
           }}
           onPress={handleConfirm}
           disabled={!isValidSelection()}
         >
           <Text
-            className="text-center font-semibold text-xl"
+            className="text-center font-semibold text-2xl"
             style={{
               color: !isValidSelection()
                 ? "rgba(255, 255, 255, 0.7)"
-                : "#185e66",
+                : "#FFFFFF",
             }}
           >
             {isLoading ? "Adding..." : "Add This Emotion"}
