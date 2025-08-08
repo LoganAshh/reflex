@@ -213,9 +213,7 @@ const PatternDashboard: React.FC = () => {
   const renderTabButton = (id: string, label: string, icon?: keyof typeof Ionicons.glyphMap) => (
     <TouchableOpacity
       key={id}
-      className={`flex-1 py-3 px-2 rounded-lg mx-1 ${
-        selectedView === id ? "bg-white bg-opacity-20" : "bg-transparent"
-      }`}
+      className="flex-1 py-3 px-2 mx-1"
       onPress={() => setSelectedView(id)}
     >
       <View className="items-center">
@@ -223,13 +221,13 @@ const PatternDashboard: React.FC = () => {
           <Ionicons 
             name={icon} 
             size={16} 
-            color="white" 
+            color={selectedView === id ? "#10B981" : "white"}
             style={{ marginBottom: 4 }} 
           />
         )}
         <Text 
-          className={`text-white text-xs text-center font-medium ${
-            selectedView === id ? "opacity-100" : "opacity-70"
+          className={`text-xs text-center font-medium ${
+            selectedView === id ? "text-green-400 opacity-100" : "text-white opacity-70"
           }`}
           numberOfLines={1}
         >
