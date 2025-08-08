@@ -32,7 +32,7 @@ const AVAILABLE_ICONS = [
   "sad-outline",
   "happy-outline",
   "heart-outline",
-  "heart-broken-outline",
+  "heart-dislike-outline",
   "people-outline",
   "person-outline",
   "chatbubble-outline",
