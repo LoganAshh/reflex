@@ -93,7 +93,6 @@ const AVAILABLE_ICONS = [
   "leaf-outline",
   "flower-outline",
   "rose-outline",
-  "tree-outline",
   "water-outline",
   "flame-outline",
   "flash-outline",
