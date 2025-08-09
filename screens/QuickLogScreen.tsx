@@ -154,6 +154,9 @@ const QuickLogScreen: React.FC = () => {
 
   const handleBack = () => {
     if (currentStep > 1) {
+      // Add haptic feedback for back navigation
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      
       animateTransition(() => setCurrentStep(currentStep - 1));
     }
   };
