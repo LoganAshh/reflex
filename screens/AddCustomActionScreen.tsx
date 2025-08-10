@@ -152,6 +152,7 @@ const AddCustomActionScreen: React.FC<AddCustomActionScreenProps> = ({
             placeholderTextColor="rgba(255, 255, 255, 0.5)"
             className="bg-white bg-opacity-10 rounded-xl px-4 py-4 text-white text-2xl text-center mb-4"
             style={{
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
               borderColor: "rgba(255, 255, 255, 0.3)",
               borderWidth: 1,
               minHeight: 60,
@@ -170,6 +171,7 @@ const AddCustomActionScreen: React.FC<AddCustomActionScreenProps> = ({
                 onPress={() => setEmoji(emojiOption)}
                 className="bg-white bg-opacity-10 rounded-lg p-3 m-1"
                 style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
                   borderColor: emoji === emojiOption ? "#10B981" : "rgba(255, 255, 255, 0.2)",
                   borderWidth: emoji === emojiOption ? 2 : 1,
                 }}
