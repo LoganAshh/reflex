@@ -551,30 +551,6 @@ const UrgeAnalyticsScreen: React.FC = () => {
 
     return (
       <ScrollView className="flex-1 px-6">
-        {/* Habit Header */}
-        <View
-          className="rounded-2xl p-6 mb-6 border"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            borderColor: "rgba(255, 255, 255, 0.2)",
-          }}
-        >
-          <View className="flex-row items-center justify-center mb-4">
-            <Ionicons 
-              name={getIconForUrge(habitName)} 
-              size={32} 
-              color="white" 
-              style={{ marginRight: 12 }} 
-            />
-            <Text className="text-2xl font-bold text-white text-center">
-              {habitName}
-            </Text>
-          </View>
-          <Text className="text-white opacity-90 text-center">
-            Understanding when and why this urge occurs
-          </Text>
-        </View>
-
         {/* Peak Times for This Habit */}
         <View
           className="rounded-2xl p-6 mb-6 border"
