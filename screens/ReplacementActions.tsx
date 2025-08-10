@@ -216,8 +216,8 @@ const ReplacementActions: React.FC = () => {
 
         {/* Selection count */}
         <View className="mt-4 items-center">
-          <View className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
-            <Text className="text-black font-medium">
+          <View className="rounded-lg px-4 py-2" style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}>
+            <Text className="text-white font-medium">
               {getSelectedCount()} actions selected
             </Text>
           </View>
@@ -264,9 +264,10 @@ const ReplacementActions: React.FC = () => {
         <View className="flex-row justify-between mt-4">
           <TouchableOpacity
             onPress={handleSelectAll}
-            className="bg-white bg-opacity-20 rounded-lg px-4 py-2"
+            className="rounded-lg px-4 py-2"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
           >
-            <Text className="text-black text-sm">
+            <Text className="text-white text-sm">
               Select All{" "}
               {selectedCategory === "all" ? "" : getCurrentCategoryName()}
             </Text>
@@ -274,9 +275,10 @@ const ReplacementActions: React.FC = () => {
 
           <TouchableOpacity
             onPress={handleSelectNone}
-            className="bg-white bg-opacity-20 rounded-lg px-4 py-2"
+            className="rounded-lg px-4 py-2"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
           >
-            <Text className="text-black text-sm">
+            <Text className="text-white text-sm">
               Deselect All{" "}
               {selectedCategory === "all" ? "" : getCurrentCategoryName()}
             </Text>
@@ -372,7 +374,7 @@ const ReplacementActions: React.FC = () => {
         </View>
 
         {/* Help text */}
-        <View className="bg-white bg-opacity-10 rounded-lg p-4 mb-6">
+        <View className="rounded-lg p-4 mb-6" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
           <View className="flex-row items-start">
             <Ionicons
               name="information-circle-outline"
@@ -381,7 +383,7 @@ const ReplacementActions: React.FC = () => {
               style={{ marginRight: 12, marginTop: 2 }}
             />
             <View className="flex-1">
-              <Text className="text-black opacity-75 leading-6">
+              <Text className="text-white opacity-75 leading-6">
                 Select 3-5 replacement actions that you find helpful. These will
                 appear as options when you successfully resist an urge, helping
                 you channel that energy into something positive.
