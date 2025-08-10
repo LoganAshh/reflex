@@ -334,7 +334,7 @@ const UrgeAnalyticsScreen: React.FC = () => {
         <Text className="text-2xl font-bold text-white mb-4 text-center">
           📅 Day of Week Patterns
         </Text>
-        <View className="flex-row justify-between items-end h-32 px-2">
+        <View className="flex-row justify-between items-end h-32 px-2 mt-4">
           {mockOverallAnalytics.dayPatterns.map((item, index) => (
             <View key={index} className="items-center" style={{ width: '12%' }}>
               <View
@@ -600,7 +600,7 @@ const UrgeAnalyticsScreen: React.FC = () => {
           <Text className="text-2xl font-bold text-white mb-4 text-center">
             📅 Weekly Pattern
           </Text>
-          <View className="flex-row justify-between items-end h-32 px-2">
+          <View className="flex-row justify-between items-end h-32 px-2 mt-4">
             {habitData.dayPatterns.map((item, index) => (
               <View key={index} className="items-center" style={{ width: '12%' }}>
                 <View
