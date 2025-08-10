@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import QuickLogScreen from "../screens/QuickLogScreen";
 import PatternDashboard from "../screens/PatternDashboard";
 import ReplacementActions from "../screens/ReplacementActions";
-import StreaksScreen from "../screens/UrgeAnalyticsScreen";
+import UrgeAnalyticsScreen from "../screens/UrgeAnalyticsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import DailyCheckIn from "../components/DailyCheckIn";
@@ -12,7 +12,7 @@ import UrgeHistory from "../components/UrgeHistory";
 import { useUrgeData } from "../hooks/useUrgeData";
 import { useOnboarding } from "../hooks/useOnboarding";
 
-type TabType = "log" | "patterns" | "actions" | "streaks" | "settings";
+type TabType = "log" | "patterns" | "actions" | "analytics" | "settings";
 
 const AppNavigator: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>("log");
@@ -60,9 +60,9 @@ const AppNavigator: React.FC = () => {
       icon: "create-outline" as keyof typeof Ionicons.glyphMap,
     },
     {
-      id: "streaks" as TabType,
-      label: "Streaks",
-      icon: "flame-outline" as keyof typeof Ionicons.glyphMap,
+      id: "analytics" as TabType,
+      label: "Analytics",
+      icon: "pulse-outline" as keyof typeof Ionicons.glyphMap,
     },
     {
       id: "settings" as TabType,
@@ -209,8 +209,8 @@ const AppNavigator: React.FC = () => {
         return <PatternDashboard />;
       case "actions":
         return <ReplacementActions />;
-      case "streaks":
-        return <StreaksScreen />;
+      case "analytics":
+        return <UrgeAnalyticsScreen />;
       case "settings":
         return <SettingsScreen />;
       default:
@@ -222,7 +222,7 @@ const AppNavigator: React.FC = () => {
     switch (tabId) {
       case "log":
         return getTodaysLogs().length;
-      case "streaks":
+      case "analytics":
         return getTodaysLogs().filter((log) => !log.actedOn).length;
       default:
         return 0;
