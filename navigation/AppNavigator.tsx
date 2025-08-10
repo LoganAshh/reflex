@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import QuickLogScreen from "../screens/QuickLogScreen";
 import PatternDashboard from "../screens/PatternDashboard";
 import ReplacementActions from "../screens/ReplacementActions";
-import StreaksScreen from "../screens/StreaksScreen";
+import StreaksScreen from "../screens/UrgeAnalyticsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import DailyCheckIn from "../components/DailyCheckIn";
