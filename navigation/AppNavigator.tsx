@@ -57,7 +57,7 @@ const AppNavigator: React.FC = () => {
     {
       id: "log" as TabType,
       label: "Log",
-      icon: "create-outline" as keyof typeof Ionicons.glyphMap,
+      icon: "add-circle-outline" as keyof typeof Ionicons.glyphMap,
     },
     {
       id: "analytics" as TabType,
@@ -67,7 +67,7 @@ const AppNavigator: React.FC = () => {
     {
       id: "patterns" as TabType,
       label: "Patterns",
-      icon: "analytics-outline" as keyof typeof Ionicons.glyphMap,
+      icon: "person-outline" as keyof typeof Ionicons.glyphMap,
     },
   ];
 
