@@ -12,10 +12,13 @@ import {
 import { useReplacementActions } from "../hooks/useReplacementActions";
 import { useSettings } from "../hooks/useSettings";
 import { Ionicons } from "@expo/vector-icons";
+import { ReplacementAction } from "../types";
+import AddCustomActionScreen from "./AddCustomActionScreen";
 
 const ReplacementActions: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const { actions, loading } = useReplacementActions();
+  const [showAddCustomAction, setShowAddCustomAction] = useState(false);
+  const { actions, loading, refreshActions } = useReplacementActions();
   const { settings, updateSettings } = useSettings();
 
   const categories = [
@@ -132,6 +135,46 @@ const ReplacementActions: React.FC = () => {
     }
   };
 
+  const handleAddCustomAction = async (
+    newAction: Omit<ReplacementAction, "id" | "timesUsed">
+  ) => {
+    try {
+      // Create the full action object with ID and initial usage
+      const actionWithId: ReplacementAction = {
+        ...newAction,
+        id: `custom-${Date.now().toString()}-${Math.random().toString(36).substr(2, 9)}`,
+        timesUsed: 0,
+      };
+
+      // Import the storage service to add the custom action
+      const { storageService } = await import("../services/StorageService");
+      
+      // Get current actions and add the new one
+      const currentActions = await storageService.getReplacementActions();
+      const updatedActions = [...currentActions, actionWithId];
+      
+      // Since setItem is private, we'll use AsyncStorage directly
+      const AsyncStorage = await import("@react-native-async-storage/async-storage");
+      await AsyncStorage.default.setItem("replacement_actions", JSON.stringify(updatedActions));
+      
+      // Refresh the actions list
+      await refreshActions();
+      
+      // Close the add screen
+      setShowAddCustomAction(false);
+      
+      // Show success message
+      Alert.alert(
+        "Success!",
+        `"${newAction.title}" has been added to your replacement actions.`,
+        [{ text: "OK" }]
+      );
+    } catch (error) {
+      console.error("Error adding custom action:", error);
+      Alert.alert("Error", "Failed to add custom action. Please try again.");
+    }
+  };
+
   // Helper function to get the current category name
   const getCurrentCategoryName = () => {
     const currentCategory = categories.find(
@@ -139,6 +182,16 @@ const ReplacementActions: React.FC = () => {
     );
     return currentCategory?.name || "";
   };
+
+  // Show Add Custom Action Screen
+  if (showAddCustomAction) {
+    return (
+      <AddCustomActionScreen
+        onSave={handleAddCustomAction}
+        onCancel={() => setShowAddCustomAction(false)}
+      />
+    );
+  }
 
   if (loading) {
     return (
@@ -160,7 +213,7 @@ const ReplacementActions: React.FC = () => {
         <Text className="text-xl text-white text-center mt-2 opacity-90">
           Choose actions that appear when you resist urges
         </Text>
-        
+
         {/* Selection count */}
         <View className="mt-4 items-center">
           <View className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
@@ -236,7 +289,7 @@ const ReplacementActions: React.FC = () => {
         <View className="space-y-4 pb-8">
           {filteredActions.map((action) => {
             const isSelected = selectedActionIds.includes(action.id);
-            
+
             return (
               <TouchableOpacity
                 key={action.id}
@@ -290,7 +343,7 @@ const ReplacementActions: React.FC = () => {
                         {action.difficulty}
                       </Text>
                     </View>
-                    
+
                     <Text className="text-white opacity-75 mr-4">
                       ⏱️ {action.duration}
                     </Text>
@@ -344,6 +397,7 @@ const ReplacementActions: React.FC = () => {
             backgroundColor: "rgba(255, 255, 255, 0.15)",
             borderColor: "rgba(255, 255, 255, 0.3)",
           }}
+          onPress={() => setShowAddCustomAction(true)}
         >
           <View className="items-center">
             <Text className="text-4xl mb-3">➕</Text>
