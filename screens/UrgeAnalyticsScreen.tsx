@@ -334,14 +334,18 @@ const UrgeAnalyticsScreen: React.FC = () => {
         <Text className="text-2xl font-bold text-white mb-4 text-center">
           📅 Day of Week Patterns
         </Text>
-        <View className="flex-row justify-between items-end h-32">
+        <View className="flex-row justify-between items-end h-32 px-2">
           {mockOverallAnalytics.dayPatterns.map((item, index) => (
-            <View key={index} className="flex-1 items-center">
+            <View key={index} className="items-center" style={{ width: '12%' }}>
               <View
-                className="bg-purple-400 rounded-t w-8 mb-2"
-                style={{ height: `${(item.count / 9) * 80}%`, minHeight: 8 }}
+                className="bg-purple-400 rounded-t mb-2"
+                style={{ 
+                  height: `${(item.count / 9) * 80}%`, 
+                  minHeight: 8,
+                  width: 28
+                }}
               />
-              <Text className="text-white text-sm opacity-90">
+              <Text className="text-white text-xs opacity-90">
                 {item.day}
               </Text>
               <Text className="text-white text-xs opacity-75">
@@ -596,14 +600,18 @@ const UrgeAnalyticsScreen: React.FC = () => {
           <Text className="text-2xl font-bold text-white mb-4 text-center">
             📅 Weekly Pattern
           </Text>
-          <View className="flex-row justify-between items-end h-32">
+          <View className="flex-row justify-between items-end h-32 px-2">
             {habitData.dayPatterns.map((item, index) => (
-              <View key={index} className="flex-1 items-center">
+              <View key={index} className="items-center" style={{ width: '12%' }}>
                 <View
-                  className="bg-purple-400 rounded-t w-8 mb-2"
-                  style={{ height: `${(item.count / Math.max(...habitData.dayPatterns.map(d => d.count))) * 80}%`, minHeight: 8 }}
+                  className="bg-purple-400 rounded-t mb-2"
+                  style={{ 
+                    height: `${(item.count / Math.max(...habitData.dayPatterns.map(d => d.count))) * 80}%`, 
+                    minHeight: 8,
+                    width: 28
+                  }}
                 />
-                <Text className="text-white text-sm opacity-90">
+                <Text className="text-white text-xs opacity-90">
                   {item.day}
                 </Text>
                 <Text className="text-white text-xs opacity-75">
