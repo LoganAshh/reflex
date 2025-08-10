@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import HomeScreen from "../screens/HomeScreen";
 import QuickLogScreen from "../screens/QuickLogScreen";
 import PatternDashboard from "../screens/PatternDashboard";
 import ReplacementActions from "../screens/ReplacementActions";
@@ -8,14 +9,13 @@ import UrgeAnalyticsScreen from "../screens/UrgeAnalyticsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import DailyCheckIn from "../components/DailyCheckIn";
-import UrgeHistory from "../components/UrgeHistory";
 import { useUrgeData } from "../hooks/useUrgeData";
 import { useOnboarding } from "../hooks/useOnboarding";
 
-type TabType = "log" | "patterns" | "actions" | "analytics" | "settings";
+type TabType = "home" | "actions" | "log" | "analytics" | "patterns";
 
 const AppNavigator: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>("log");
+  const [activeTab, setActiveTab] = useState<TabType>("home");
   const [showDailyCheckIn, setShowDailyCheckIn] = useState(false);
 
   const { getTodaysLogs } = useUrgeData();
@@ -45,9 +45,9 @@ const AppNavigator: React.FC = () => {
 
   const tabs = [
     {
-      id: "patterns" as TabType,
-      label: "Patterns",
-      icon: "analytics-outline" as keyof typeof Ionicons.glyphMap,
+      id: "home" as TabType,
+      label: "Home",
+      icon: "home-outline" as keyof typeof Ionicons.glyphMap,
     },
     {
       id: "actions" as TabType,
@@ -65,156 +65,36 @@ const AppNavigator: React.FC = () => {
       icon: "pulse-outline" as keyof typeof Ionicons.glyphMap,
     },
     {
-      id: "settings" as TabType,
-      label: "Settings",
-      icon: "settings-outline" as keyof typeof Ionicons.glyphMap,
+      id: "patterns" as TabType,
+      label: "Patterns",
+      icon: "analytics-outline" as keyof typeof Ionicons.glyphMap,
     },
   ];
 
-  // Enhanced home screen with history (styled to match onboarding)
-  const HomeScreen = () => (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#185e66" }}>
-      {/* Header */}
-      <View className="px-6 pt-4 pb-6">
-        <Text className="text-3xl font-bold text-white text-center">
-          Welcome back! 👋
-        </Text>
-        <Text className="text-xl text-white text-center mt-2 opacity-90">
-          How are you feeling today?
-        </Text>
-      </View>
-
-      <View className="flex-1 px-6">
-        {/* Quick Stats */}
-        <View
-          className="rounded-2xl p-6 mb-6 border"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            borderColor: "rgba(255, 255, 255, 0.2)",
-          }}
-        >
-          <Text className="text-2xl font-bold text-white mb-4 text-center">
-            Today's Progress
-          </Text>
-
-          <View className="flex-row justify-around">
-            <View className="items-center">
-              <Text className="text-3xl font-bold text-white">
-                {getTodaysLogs().length}
-              </Text>
-              <Text className="text-white opacity-75 text-sm">
-                Urges Logged
-              </Text>
-            </View>
-            <View className="items-center">
-              <Text className="text-3xl font-bold text-white">
-                {getTodaysLogs().filter((log) => !log.actedOn).length}
-              </Text>
-              <Text className="text-white opacity-75 text-sm">Resisted</Text>
-            </View>
-            <View className="items-center">
-              <Text className="text-3xl font-bold text-white">
-                {getTodaysLogs().length > 0
-                  ? Math.round(
-                      (getTodaysLogs().filter((log) => !log.actedOn).length /
-                        getTodaysLogs().length) *
-                        100
-                    )
-                  : 0}
-                %
-              </Text>
-              <Text className="text-white opacity-75 text-sm">
-                Success Rate
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Quick Actions */}
-        <View
-          className="rounded-2xl p-6 mb-6 border"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            borderColor: "rgba(255, 255, 255, 0.2)",
-          }}
-        >
-          <Text className="text-2xl font-bold text-white mb-4 text-center">
-            Quick Actions
-          </Text>
-
-          <View className="space-y-3">
-            <TouchableOpacity
-              className="p-4 rounded-lg border"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
-                borderColor: "rgba(255, 255, 255, 0.3)",
-              }}
-              onPress={() => setActiveTab("log")}
-            >
-              <Text className="text-white font-semibold text-center text-lg">
-                📝 Log Urge
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className="p-4 rounded-lg border"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
-                borderColor: "rgba(255, 255, 255, 0.3)",
-              }}
-              onPress={() => setActiveTab("actions")}
-            >
-              <Text className="text-white font-semibold text-center text-lg">
-                ⚡ Find Action
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className="p-4 rounded-lg border"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
-                borderColor: "rgba(255, 255, 255, 0.3)",
-              }}
-              onPress={() => setShowDailyCheckIn(true)}
-            >
-              <Text className="text-white font-semibold text-center text-lg">
-                🌟 Daily Check-in
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Recent History */}
-        <View
-          className="rounded-2xl p-6 mb-6 border"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            borderColor: "rgba(255, 255, 255, 0.2)",
-          }}
-        >
-          <Text className="text-2xl font-bold text-white mb-4 text-center">
-            Recent Activity
-          </Text>
-          <UrgeHistory limit={3} />
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-
   const renderScreen = () => {
     switch (activeTab) {
-      case "log":
-        return <QuickLogScreen />;
-      case "patterns":
-        return <PatternDashboard />;
+      case "home":
+        return (
+          <HomeScreen 
+            setActiveTab={setActiveTab} 
+            setShowDailyCheckIn={setShowDailyCheckIn} 
+          />
+        );
       case "actions":
         return <ReplacementActions />;
+      case "log":
+        return <QuickLogScreen />;
       case "analytics":
         return <UrgeAnalyticsScreen />;
-      case "settings":
-        return <SettingsScreen />;
+      case "patterns":
+        return <PatternDashboard />;
       default:
-        return <HomeScreen />;
+        return (
+          <HomeScreen 
+            setActiveTab={setActiveTab} 
+            setShowDailyCheckIn={setShowDailyCheckIn} 
+          />
+        );
     }
   };
 
