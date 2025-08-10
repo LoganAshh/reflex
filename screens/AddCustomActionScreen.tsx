@@ -105,8 +105,9 @@ const AddCustomActionScreen: React.FC<AddCustomActionScreenProps> = ({
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
-        className="bg-white bg-opacity-10 rounded-xl px-4 py-4 text-white text-base"
+        className="rounded-xl px-4 py-4 text-white text-base"
         style={{
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
           borderColor: "rgba(255, 255, 255, 0.3)",
           borderWidth: 1,
           minHeight: multiline ? 80 : 50,
@@ -150,7 +151,7 @@ const AddCustomActionScreen: React.FC<AddCustomActionScreenProps> = ({
             onChangeText={setEmoji}
             placeholder="Enter an emoji (e.g., 🎯)"
             placeholderTextColor="rgba(255, 255, 255, 0.5)"
-            className="bg-white bg-opacity-10 rounded-xl px-4 py-4 text-white text-2xl text-center mb-4"
+            className="rounded-xl px-4 py-4 text-white text-2xl text-center mb-4"
             style={{
               backgroundColor: "rgba(255, 255, 255, 0.1)",
               borderColor: "rgba(255, 255, 255, 0.3)",
@@ -169,7 +170,7 @@ const AddCustomActionScreen: React.FC<AddCustomActionScreenProps> = ({
               <TouchableOpacity
                 key={index}
                 onPress={() => setEmoji(emojiOption)}
-                className="bg-white bg-opacity-10 rounded-lg p-3 m-1"
+                className="rounded-lg p-3 m-1"
                 style={{
                   backgroundColor: "rgba(255, 255, 255, 0.1)",
                   borderColor: emoji === emojiOption ? "#10B981" : "rgba(255, 255, 255, 0.2)",
@@ -336,7 +337,7 @@ const AddCustomActionScreen: React.FC<AddCustomActionScreenProps> = ({
         </View>
 
         {/* Help Text */}
-        <View className="bg-white bg-opacity-10 rounded-lg p-4 mb-8">
+        <View className="rounded-lg p-4 mb-8" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
           <View className="flex-row items-start">
             <Ionicons
               name="information-circle-outline"
