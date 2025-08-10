@@ -288,6 +288,26 @@ const ReplacementActions: React.FC = () => {
 
       {/* Actions List */}
       <ScrollView className="flex-1 px-6">
+        {/* Add Custom Action - Moved to top */}
+        <TouchableOpacity
+          className="rounded-2xl p-6 mb-6 border"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            borderColor: "rgba(255, 255, 255, 0.3)",
+          }}
+          onPress={() => setShowAddCustomAction(true)}
+        >
+          <View className="items-center">
+            <Text className="text-4xl mb-3">➕</Text>
+            <Text className="text-white font-bold text-xl mb-2">
+              Add Custom Action
+            </Text>
+            <Text className="text-white opacity-90 text-center">
+              Create your own replacement action that works for you
+            </Text>
+          </View>
+        </TouchableOpacity>
+
         <View className="space-y-4 pb-8">
           {filteredActions.map((action) => {
             const isSelected = selectedActionIds.includes(action.id);
@@ -391,26 +411,6 @@ const ReplacementActions: React.FC = () => {
             </View>
           </View>
         </View>
-
-        {/* Add Custom Action */}
-        <TouchableOpacity
-          className="rounded-2xl p-6 mb-8 border"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.15)",
-            borderColor: "rgba(255, 255, 255, 0.3)",
-          }}
-          onPress={() => setShowAddCustomAction(true)}
-        >
-          <View className="items-center">
-            <Text className="text-4xl mb-3">➕</Text>
-            <Text className="text-white font-bold text-xl mb-2">
-              Add Custom Action
-            </Text>
-            <Text className="text-white opacity-90 text-center">
-              Create your own replacement action that works for you
-            </Text>
-          </View>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
