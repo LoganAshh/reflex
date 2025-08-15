@@ -2,8 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, SafeAreaView, ScrollView } from "react-native";
 import UrgeHistory from "../components/UrgeHistory";
 import { useUrgeData } from "../hooks/useUrgeData";
-
-type TabType = "home" | "actions" | "log" | "analytics" | "patterns";
+import { TabType } from "../navigation/AppNavigator";
 
 interface HomeScreenProps {
   setActiveTab: (tab: TabType) => void;
@@ -91,7 +90,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ setActiveTab, setShowDailyCheck
                   backgroundColor: "rgba(255, 255, 255, 0.2)",
                   borderColor: "rgba(255, 255, 255, 0.3)",
                 }}
-                onPress={() => setActiveTab("log" as TabType)}
+                onPress={() => setActiveTab("log")}
               >
                 <Text className="text-white font-semibold text-center text-lg">
                   📝 Log Urge
@@ -104,7 +103,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ setActiveTab, setShowDailyCheck
                   backgroundColor: "rgba(255, 255, 255, 0.2)",
                   borderColor: "rgba(255, 255, 255, 0.3)",
                 }}
-                onPress={() => setActiveTab("actions" as TabType)}
+                onPress={() => setActiveTab("actions")}
               >
                 <Text className="text-white font-semibold text-center text-lg">
                   ⚡ Find Action

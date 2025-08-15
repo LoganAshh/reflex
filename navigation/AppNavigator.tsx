@@ -12,7 +12,7 @@ import DailyCheckIn from "../components/DailyCheckIn";
 import { useUrgeData } from "../hooks/useUrgeData";
 import { useOnboarding } from "../hooks/useOnboarding";
 
-type TabType = "home" | "actions" | "log" | "analytics" | "patterns";
+export type TabType = "home" | "actions" | "log" | "analytics" | "profile";
 
 const AppNavigator: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>("home");
@@ -65,8 +65,8 @@ const AppNavigator: React.FC = () => {
       icon: "pulse-outline" as keyof typeof Ionicons.glyphMap,
     },
     {
-      id: "patterns" as TabType,
-      label: "Patterns",
+      id: "profile" as TabType,
+      label: "Profile",
       icon: "person-outline" as keyof typeof Ionicons.glyphMap,
     },
   ];
@@ -86,7 +86,7 @@ const AppNavigator: React.FC = () => {
         return <QuickLogScreen />;
       case "analytics":
         return <UrgeAnalyticsScreen />;
-      case "patterns":
+      case "profile":
         return <ProfileScreen />;
       default:
         return (
