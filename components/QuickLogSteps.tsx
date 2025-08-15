@@ -614,74 +614,54 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
               transform: [{ translateY: slideAnim }],
             }}
           >
-            <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
+            <Text className="text-4xl font-bold text-white text-center mt-16">
               Did you act on it?
             </Text>
 
-            <View className="space-y-4 mb-8">
+            <View className="flex-1 justify-center space-y-6 pb-8">
               <TouchableOpacity
-                className="p-6 rounded-lg border"
+                className="p-8 rounded-lg border"
                 style={{
                   backgroundColor:
                     actedOn === false ? "#10B981" : "rgba(255, 255, 255, 0.2)",
                   borderColor:
                     actedOn === false ? "#10B981" : "rgba(255, 255, 255, 0.3)",
+                  marginBottom: 12,
+                  height: 120,
+                  justifyContent: 'center',
                 }}
                 onPress={() => setActedOn(false)}
               >
                 <Text
-                  className={`text-center text-2xl font-semibold ${
+                  className={`text-center text-3xl font-semibold ${
                     actedOn === false ? "text-white" : "text-white"
                   }`}
                 >
                   🛡️ I resisted it
                 </Text>
-                <Text
-                  className={`text-center mt-2 ${
-                    actedOn === false ? "text-white" : "text-white opacity-75"
-                  }`}
-                >
-                  Great job building awareness!
-                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                className="p-6 rounded-lg border"
+                className="p-8 rounded-lg border"
                 style={{
                   backgroundColor:
                     actedOn === true ? "#FFFFFF" : "rgba(255, 255, 255, 0.2)",
                   borderColor:
                     actedOn === true ? "#FFFFFF" : "rgba(255, 255, 255, 0.3)",
+                  height: 120,
+                  justifyContent: 'center',
                 }}
                 onPress={() => setActedOn(true)}
               >
                 <Text
-                  className={`text-center text-2xl font-semibold ${
+                  className={`text-center text-3xl font-semibold ${
                     actedOn === true ? "text-gray-800" : "text-white"
                   }`}
                 >
                   ✅ I acted on it
                 </Text>
-                <Text
-                  className={`text-center mt-2 ${
-                    actedOn === true ? "text-gray-600" : "text-white opacity-75"
-                  }`}
-                >
-                  That's okay - awareness is progress
-                </Text>
               </TouchableOpacity>
             </View>
-
-            <TextInput
-              className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
-              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)", minHeight: 80 }}
-              placeholder="Any notes? (optional)"
-              placeholderTextColor="rgba(255, 255, 255, 0.7)"
-              value={notes}
-              onChangeText={setNotes}
-              returnKeyType="done"
-              blurOnSubmit={true}
-            />
           </Animated.View>
         );
 
