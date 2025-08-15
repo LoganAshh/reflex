@@ -148,8 +148,14 @@ const QuickLogScreen: React.FC = () => {
         return !!emotion;
       case 5:
         return actedOn !== null;
-      case 6: // Environment step - only for users who resisted
-        return !!newEnvironment;
+      case 6:
+        if (actedOn === true) {
+          // Congratulations step - always valid (notes are optional)
+          return true;
+        } else {
+          // Environment step - only for users who resisted
+          return !!newEnvironment;
+        }
       case 7: // Replacement action step - only for users who resisted
         return !!replacementAction;
       default:
@@ -158,8 +164,8 @@ const QuickLogScreen: React.FC = () => {
   };
 
   const getTotalSteps = () => {
-    // If user acted on urge, end after step 5 (no environment or replacement actions)
-    if (actedOn === true) return 5;
+    // If user acted on urge, include congratulations step (6) then end
+    if (actedOn === true) return 6;
     // If user resisted, include environment step (6) and replacement actions (7)
     if (actedOn === false) return 7;
     // During form completion before user selects actedOn
@@ -174,10 +180,7 @@ const QuickLogScreen: React.FC = () => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       
       // Handle step transitions
-      if (currentStep === 5 && actedOn === true) {
-        // User acted on urge - submit immediately (no environment or replacement actions)
-        handleSubmit();
-      } else if (currentStep === totalSteps) {
+      if (currentStep === totalSteps) {
         // At final step - submit
         handleSubmit();
       } else {
@@ -659,7 +662,7 @@ const QuickLogScreen: React.FC = () => {
                 : "#10B981",
             }}
             onPress={
-              (currentStep === totalSteps) || (currentStep === 5 && actedOn === true)
+              currentStep === totalSteps
                 ? handleSubmit
                 : handleNext
             }
@@ -671,7 +674,7 @@ const QuickLogScreen: React.FC = () => {
                 color: !isStepValid() ? "rgba(255, 255, 255, 0.7)" : "#FFFFFF",
               }}
             >
-              {(currentStep === totalSteps) || (currentStep === 5 && actedOn === true)
+              {currentStep === totalSteps
                 ? "Save Log"
                 : "Next"}
             </Text>

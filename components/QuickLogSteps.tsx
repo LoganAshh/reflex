@@ -666,12 +666,52 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
         );
 
       case 6:
-        // New environment step - only shown if user resisted the urge
         if (actedOn === true) {
-          // Skip to replacement action step for users who acted on urge
-          return renderReplacementActionStep();
+          // Congratulations step for users who acted on urge
+          return (
+            <Animated.View
+              className="flex-1"
+              style={{
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              }}
+            >
+              <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
+                Progress Made! 🎉
+              </Text>
+
+              <View className="rounded-lg p-6 mb-8" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
+                <Text className="text-xl text-white text-center mb-4 font-semibold">
+                  Great job logging this urge!
+                </Text>
+                <Text className="text-lg text-white text-center opacity-90 leading-6">
+                  You've made real progress by building awareness. 
+                  Recognizing your urges is the first and most important step toward change.
+                </Text>
+              </View>
+
+              <View className="mb-6">
+                <Text className="text-white font-medium mb-3 text-lg">
+                  Any notes about this experience? (optional)
+                </Text>
+                <TextInput
+                  className="border border-white border-opacity-30 rounded-lg p-4 text-xl text-white"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.1)", minHeight: 100 }}
+                  placeholder="Reflect on what happened, how you felt, or what you might try differently next time..."
+                  placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                  value={notes}
+                  onChangeText={setNotes}
+                  returnKeyType="done"
+                  blurOnSubmit={true}
+                  multiline={true}
+                  textAlignVertical="top"
+                />
+              </View>
+            </Animated.View>
+          );
         }
         
+        // Environment step for users who resisted the urge
         const searchFilteredEnvironments = getFilteredEnvironmentsForSearch(newEnvironment);
         const commonEnvironmentsSettings = (settings as any)?.recentEnvironments || getDefaultEnvironments();
         
