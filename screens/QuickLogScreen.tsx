@@ -148,21 +148,21 @@ const QuickLogScreen: React.FC = () => {
         return !!emotion;
       case 5:
         return actedOn !== null;
-      case 6: // New environment step - only required if user resisted the urge
-        return actedOn === true || !!newEnvironment;
-      case 7: // Replacement action step moved to 7
-        return !!replacementAction || actedOn === true;
+      case 6: // Environment step - only for users who resisted
+        return !!newEnvironment;
+      case 7: // Replacement action step - only for users who resisted
+        return !!replacementAction;
       default:
         return false;
     }
   };
 
   const getTotalSteps = () => {
-    // If user acted on urge, skip environment step
-    if (actedOn === true) return 6;
-    // If user resisted, include environment step
+    // If user acted on urge, end after step 5 (no environment or replacement actions)
+    if (actedOn === true) return 5;
+    // If user resisted, include environment step (6) and replacement actions (7)
     if (actedOn === false) return 7;
-    // During form completion
+    // During form completion before user selects actedOn
     return 7;
   };
 
@@ -173,15 +173,15 @@ const QuickLogScreen: React.FC = () => {
       // Add haptic feedback for successful next
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       
-      // Handle different step transitions
+      // Handle step transitions
       if (currentStep === 5 && actedOn === true) {
-        // User acted on urge - skip environment step, go to replacement actions
-        animateTransition(() => setCurrentStep(7));
-      } else if (currentStep === 7 || (currentStep === 6 && actedOn === false && currentStep === totalSteps)) {
-        // Final step - submit
+        // User acted on urge - submit immediately (no environment or replacement actions)
+        handleSubmit();
+      } else if (currentStep === totalSteps) {
+        // At final step - submit
         handleSubmit();
       } else {
-        // Normal progression
+        // Normal progression to next step
         animateTransition(() => setCurrentStep(currentStep + 1));
       }
     }
@@ -192,14 +192,8 @@ const QuickLogScreen: React.FC = () => {
       // Add haptic feedback for back navigation
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       
-      // Handle special cases for back navigation
-      if (currentStep === 7 && actedOn === true) {
-        // User acted on urge - skip environment step when going back
-        animateTransition(() => setCurrentStep(5));
-      } else {
-        // Normal back progression
-        animateTransition(() => setCurrentStep(currentStep - 1));
-      }
+      // Normal back progression
+      animateTransition(() => setCurrentStep(currentStep - 1));
     }
   };
 
@@ -665,7 +659,7 @@ const QuickLogScreen: React.FC = () => {
                 : "#10B981",
             }}
             onPress={
-              currentStep === totalSteps
+              (currentStep === totalSteps) || (currentStep === 5 && actedOn === true)
                 ? handleSubmit
                 : handleNext
             }
@@ -677,7 +671,7 @@ const QuickLogScreen: React.FC = () => {
                 color: !isStepValid() ? "rgba(255, 255, 255, 0.7)" : "#FFFFFF",
               }}
             >
-              {currentStep === totalSteps
+              {(currentStep === totalSteps) || (currentStep === 5 && actedOn === true)
                 ? "Save Log"
                 : "Next"}
             </Text>
