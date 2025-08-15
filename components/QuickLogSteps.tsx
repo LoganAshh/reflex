@@ -14,6 +14,7 @@ import {
   COMMON_LOCATIONS,
   COMMON_TRIGGERS,
   COMMON_EMOTIONS,
+  COMMON_ENVIRONMENTS,
 } from "../types";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -29,6 +30,8 @@ interface QuickLogStepsProps {
   setEmotion: (emotion: string) => void;
   actedOn: boolean | null;
   setActedOn: (actedOn: boolean | null) => void;
+  newEnvironment: string;
+  setNewEnvironment: (environment: string) => void;
   replacementAction: string;
   setReplacementAction: (action: string) => void;
   notes: string;
@@ -38,14 +41,17 @@ interface QuickLogStepsProps {
   customTriggerIcons: { [key: string]: string };
   customLocationIcons: { [key: string]: string };
   customEmotionIcons: { [key: string]: string };
+  customEnvironmentIcons: { [key: string]: string };
   settings: any;
   replacementActions: any[];
   fadeAnim: Animated.Value;
   slideAnim: Animated.Value;
+  commonEnvironments: typeof COMMON_ENVIRONMENTS;
   handleAddUrgePress: (preFilledText?: string) => void;
   handleAddTriggerPress: (preFilledText?: string) => void;
   handleAddLocationPress: (preFilledText?: string) => void;
   handleAddEmotionPress: (preFilledText?: string) => void;
+  handleAddEnvironmentPress: (preFilledText?: string) => void;
 }
 
 const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
@@ -60,6 +66,8 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
   setEmotion,
   actedOn,
   setActedOn,
+  newEnvironment,
+  setNewEnvironment,
   replacementAction,
   setReplacementAction,
   notes,
@@ -69,19 +77,23 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
   customTriggerIcons,
   customLocationIcons,
   customEmotionIcons,
+  customEnvironmentIcons,
   settings,
   replacementActions,
   fadeAnim,
   slideAnim,
+  commonEnvironments,
   handleAddUrgePress,
   handleAddTriggerPress,
   handleAddLocationPress,
   handleAddEmotionPress,
+  handleAddEnvironmentPress,
 }) => {
   // Helper function to get default limited items (first 4 of each type)
   const getDefaultTriggers = () => COMMON_TRIGGERS.slice(0, 4).map((t) => t.text);
   const getDefaultLocations = () => COMMON_LOCATIONS.slice(0, 4).map((l) => l.text);
   const getDefaultEmotions = () => COMMON_EMOTIONS.slice(0, 4).map((e) => e.text);
+  const getDefaultEnvironments = () => commonEnvironments.slice(0, 4).map((e) => e.text);
 
   // Helper functions to get icons for items
   const getIconForTrigger = (triggerText: string) => {
@@ -114,6 +126,14 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
     }
     const urgeObj = COMMON_URGES.find((u) => u.text === urgeText);
     return urgeObj?.icon || "help-circle-outline";
+  };
+
+  const getIconForEnvironment = (environmentText: string) => {
+    if (customEnvironmentIcons[environmentText]) {
+      return customEnvironmentIcons[environmentText];
+    }
+    const environmentObj = commonEnvironments.find((e) => e.text === environmentText);
+    return environmentObj?.icon || "location-outline";
   };
 
   // Helper functions to filter items based on search text
@@ -170,6 +190,21 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
       emotion.toLowerCase() === searchLower
     );
     return exactMatch ? commonEmotions : filtered;
+  };
+
+  const getFilteredEnvironmentsForSearch = (searchText: string) => {
+    const commonEnvironmentsSettings = (settings as any)?.recentEnvironments || getDefaultEnvironments();
+    if (!searchText.trim()) {
+      return commonEnvironmentsSettings;
+    }
+    const searchLower = searchText.toLowerCase();
+    const filtered = commonEnvironmentsSettings.filter((environment: string) => 
+      environment.toLowerCase().includes(searchLower)
+    );
+    const exactMatch = commonEnvironmentsSettings.find((environment: string) => 
+      environment.toLowerCase() === searchLower
+    );
+    return exactMatch ? commonEnvironmentsSettings : filtered;
   };
 
   const renderStep = () => {
@@ -651,11 +686,15 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
         );
 
       case 6:
-        const selectedActions = settings?.selectedReplacementActions || [];
-        const availableActions = replacementActions.filter(action => 
-          selectedActions.includes(action.id)
-        );
-
+        // New environment step - only shown if user resisted the urge
+        if (actedOn === true) {
+          // Skip to replacement action step for users who acted on urge
+          return renderReplacementActionStep();
+        }
+        
+        const searchFilteredEnvironments = getFilteredEnvironmentsForSearch(newEnvironment);
+        const commonEnvironmentsSettings = (settings as any)?.recentEnvironments || getDefaultEnvironments();
+        
         return (
           <Animated.View
             className="flex-1"
@@ -665,86 +704,193 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
             }}
           >
             <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
-              Try a replacement action
+              Where will you go now?
             </Text>
 
-            {availableActions.length > 0 ? (
-              <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
-                {availableActions.map((action, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    className="p-4 rounded-lg mb-3"
-                    style={{
-                      backgroundColor:
-                        replacementAction === action.title
-                          ? "#FFFFFF"
-                          : "rgba(255, 255, 255, 0.2)",
-                    }}
-                    onPress={() => setReplacementAction(action.title)}
-                  >
-                    <View className="flex-row items-center justify-between">
-                      <View className="flex-row items-center flex-1">
-                        <Text className="text-3xl mr-4">{action.icon}</Text>
-                        <View className="flex-1">
-                          <Text
-                            className={`text-xl font-semibold ${
-                              replacementAction === action.title ? "text-gray-800" : "text-white"
-                            }`}
-                          >
-                            {action.title}
-                          </Text>
-                          <Text
-                            className={`text-base ${
-                              replacementAction === action.title ? "text-gray-600" : "text-white opacity-75"
-                            }`}
-                          >
-                            {action.description}
-                          </Text>
-                          <Text
-                            className={`text-sm ${
-                              replacementAction === action.title ? "text-gray-500" : "text-white opacity-60"
-                            }`}
-                          >
-                            ⏱️ {action.duration} • {action.difficulty}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                ))}
+            <Text className="text-lg text-white text-center mb-6 opacity-90">
+              🌟 Great job resisting! Now switch your environment to break the pattern.
+            </Text>
 
+            <TextInput
+              className="border border-white border-opacity-30 rounded-lg p-4 text-xl mb-6 text-white"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              placeholder="Where will you move to?"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={newEnvironment}
+              onChangeText={setNewEnvironment}
+              returnKeyType="done"
+            />
+
+            <Text className="text-white font-medium mb-4 text-lg opacity-90">
+              {newEnvironment.trim() && searchFilteredEnvironments.length !== commonEnvironmentsSettings.length && !commonEnvironmentsSettings.find((e: string) => e.toLowerCase() === newEnvironment.toLowerCase())
+                ? `Matching environments (${searchFilteredEnvironments.length}):` 
+                : "Common environments:"}
+            </Text>
+            <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
+              {searchFilteredEnvironments.map((commonEnvironment: string, index: number) => (
                 <TouchableOpacity
-                  className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
-                  style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
-                  onPress={() => setReplacementAction("skipped")}
+                  key={index}
+                  className="p-4 rounded-lg mb-3"
+                  style={{
+                    backgroundColor:
+                      newEnvironment === commonEnvironment
+                        ? "#FFFFFF"
+                        : "rgba(255, 255, 255, 0.2)",
+                  }}
+                  onPress={() => setNewEnvironment(commonEnvironment)}
                 >
-                  <Text className="text-white text-center opacity-75">
-                    Skip for now
-                  </Text>
+                  <View className="flex-row items-center">
+                    <Ionicons
+                      name={getIconForEnvironment(commonEnvironment) as any}
+                      size={24}
+                      color={newEnvironment === commonEnvironment ? "#374151" : "#FFFFFF"}
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text
+                      className={`text-xl ${
+                        newEnvironment === commonEnvironment
+                          ? "text-gray-800"
+                          : "text-white"
+                      }`}
+                    >
+                      {commonEnvironment}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
-              </ScrollView>
-            ) : (
-              <View className="mb-4 p-6 bg-white bg-opacity-10 rounded-lg">
+              ))}
+              
+              <TouchableOpacity
+                className="p-3 rounded-lg mb-3 border border-white border-opacity-30"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+                onPress={() => handleAddEnvironmentPress()}
+              >
                 <Text className="text-white text-center opacity-75">
-                  No replacement actions selected. Go to Settings to choose your preferred actions.
+                  + Add a different environment
                 </Text>
-                <TouchableOpacity
-                  className="mt-4 p-3 rounded-lg border border-white border-opacity-30"
-                  style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
-                  onPress={() => setReplacementAction("none_selected")}
-                >
-                  <Text className="text-white text-center opacity-75">
-                    Continue without action
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
+              </TouchableOpacity>
+              
+              {searchFilteredEnvironments.length === 0 && newEnvironment.trim() && (
+                <View className="mb-4">
+                  <View className="p-6 bg-white bg-opacity-10 rounded-lg mb-3">
+                    <Text className="text-black text-center opacity-75">
+                      No matching environments found for "{newEnvironment}"
+                    </Text>
+                  </View>
+                  
+                  <TouchableOpacity
+                    className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                    onPress={() => handleAddEnvironmentPress(newEnvironment.trim())}
+                  >
+                    <Text className="text-white text-center">
+                      + Create "{newEnvironment}" as a custom environment
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </ScrollView>
           </Animated.View>
         );
+
+      case 7:
+        return renderReplacementActionStep();
 
       default:
         return null;
     }
+  };
+
+  const renderReplacementActionStep = () => {
+    const selectedActions = settings?.selectedReplacementActions || [];
+    const availableActions = replacementActions.filter(action => 
+      selectedActions.includes(action.id)
+    );
+
+    return (
+      <Animated.View
+        className="flex-1"
+        style={{
+          opacity: fadeAnim,
+          transform: [{ translateY: slideAnim }],
+        }}
+      >
+        <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
+          Try a replacement action
+        </Text>
+
+        {availableActions.length > 0 ? (
+          <ScrollView className="mb-4" showsVerticalScrollIndicator={false}>
+            {availableActions.map((action, index) => (
+              <TouchableOpacity
+                key={index}
+                className="p-4 rounded-lg mb-3"
+                style={{
+                  backgroundColor:
+                    replacementAction === action.title
+                      ? "#FFFFFF"
+                      : "rgba(255, 255, 255, 0.2)",
+                }}
+                onPress={() => setReplacementAction(action.title)}
+              >
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-row items-center flex-1">
+                    <Text className="text-3xl mr-4">{action.icon}</Text>
+                    <View className="flex-1">
+                      <Text
+                        className={`text-xl font-semibold ${
+                          replacementAction === action.title ? "text-gray-800" : "text-white"
+                        }`}
+                      >
+                        {action.title}
+                      </Text>
+                      <Text
+                        className={`text-base ${
+                          replacementAction === action.title ? "text-gray-600" : "text-white opacity-75"
+                        }`}
+                      >
+                        {action.description}
+                      </Text>
+                      <Text
+                        className={`text-sm ${
+                          replacementAction === action.title ? "text-gray-500" : "text-white opacity-60"
+                        }`}
+                      >
+                        ⏱️ {action.duration} • {action.difficulty}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
+
+            <TouchableOpacity
+              className="p-4 rounded-lg mb-3 border border-white border-opacity-30"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+              onPress={() => setReplacementAction("skipped")}
+            >
+              <Text className="text-white text-center opacity-75">
+                Skip for now
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
+        ) : (
+          <View className="mb-4 p-6 bg-white bg-opacity-10 rounded-lg">
+            <Text className="text-white text-center opacity-75">
+              No replacement actions selected. Go to Settings to choose your preferred actions.
+            </Text>
+            <TouchableOpacity
+              className="mt-4 p-3 rounded-lg border border-white border-opacity-30"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+              onPress={() => setReplacementAction("none_selected")}
+            >
+              <Text className="text-white text-center opacity-75">
+                Continue without action
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </Animated.View>
+    );
   };
 
   return renderStep();

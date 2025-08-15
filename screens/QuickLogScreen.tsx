@@ -14,6 +14,7 @@ import {
   COMMON_LOCATIONS,
   COMMON_TRIGGERS,
   COMMON_EMOTIONS,
+  COMMON_ENVIRONMENTS,
 } from "../types";
 import { useSettings } from "../hooks/useSettings";
 import { useReplacementActions } from "../hooks/useReplacementActions";
@@ -21,6 +22,7 @@ import AddUrgeScreen from "./AddUrgeScreen";
 import AddTriggerScreen from "./AddTriggerScreen";
 import AddLocationScreen from "./AddLocationScreen";
 import AddEmotionScreen from "./AddEmotionScreen";
+import AddEnvironmentScreen from "./AddEnvironmentScreen";
 import QuickLogSteps from "../components/QuickLogSteps";
 
 const QuickLogScreen: React.FC = () => {
@@ -30,6 +32,7 @@ const QuickLogScreen: React.FC = () => {
   const [trigger, setTrigger] = useState("");
   const [emotion, setEmotion] = useState("");
   const [actedOn, setActedOn] = useState<boolean | null>(null);
+  const [newEnvironment, setNewEnvironment] = useState(""); // New state for environment
   const [replacementAction, setReplacementAction] = useState("");
   const [notes, setNotes] = useState("");
   const [filteredUrges, setFilteredUrges] = useState<string[]>([]);
@@ -37,10 +40,12 @@ const QuickLogScreen: React.FC = () => {
   const [customTriggerIcons, setCustomTriggerIcons] = useState<{ [key: string]: string }>({});
   const [customLocationIcons, setCustomLocationIcons] = useState<{ [key: string]: string }>({});
   const [customEmotionIcons, setCustomEmotionIcons] = useState<{ [key: string]: string }>({});
+  const [customEnvironmentIcons, setCustomEnvironmentIcons] = useState<{ [key: string]: string }>({});
   const [showAddUrgeScreen, setShowAddUrgeScreen] = useState(false);
   const [showAddTriggerScreen, setShowAddTriggerScreen] = useState(false);
   const [showAddLocationScreen, setShowAddLocationScreen] = useState(false);
   const [showAddEmotionScreen, setShowAddEmotionScreen] = useState(false);
+  const [showAddEnvironmentScreen, setShowAddEnvironmentScreen] = useState(false);
 
   const { settings, updateSettings } = useSettings();
   const { actions: replacementActions } = useReplacementActions();
@@ -51,6 +56,7 @@ const QuickLogScreen: React.FC = () => {
   const getDefaultTriggers = () => COMMON_TRIGGERS.slice(0, 4).map((t) => t.text);
   const getDefaultLocations = () => COMMON_LOCATIONS.slice(0, 4).map((l) => l.text);
   const getDefaultEmotions = () => COMMON_EMOTIONS.slice(0, 4).map((e) => e.text);
+  const getDefaultEnvironments = () => COMMON_ENVIRONMENTS.slice(0, 4).map((e) => e.text);
 
   // Load user's selected urges and custom icons when component mounts or settings change
   useEffect(() => {
@@ -86,10 +92,20 @@ const QuickLogScreen: React.FC = () => {
       if ((settings as any)?.customEmotionIcons) {
         setCustomEmotionIcons((settings as any).customEmotionIcons);
       }
+      if ((settings as any)?.customEnvironmentIcons) {
+        setCustomEnvironmentIcons((settings as any).customEnvironmentIcons);
+      }
     };
 
     loadFilteredUrges();
-  }, [settings?.selectedUrges, (settings as any)?.customUrgeIcons, (settings as any)?.customTriggerIcons, (settings as any)?.customLocationIcons, (settings as any)?.customEmotionIcons]);
+  }, [
+    settings?.selectedUrges, 
+    (settings as any)?.customUrgeIcons, 
+    (settings as any)?.customTriggerIcons, 
+    (settings as any)?.customLocationIcons, 
+    (settings as any)?.customEmotionIcons,
+    (settings as any)?.customEnvironmentIcons
+  ]);
 
   const animateTransition = (callback: () => void) => {
     Animated.sequence([
@@ -132,21 +148,40 @@ const QuickLogScreen: React.FC = () => {
         return !!emotion;
       case 5:
         return actedOn !== null;
-      case 6:
+      case 6: // New environment step - only required if user resisted the urge
+        return actedOn === true || !!newEnvironment;
+      case 7: // Replacement action step moved to 7
         return !!replacementAction || actedOn === true;
       default:
         return false;
     }
   };
 
+  const getTotalSteps = () => {
+    // If user acted on urge, skip environment step
+    if (actedOn === true) return 6;
+    // If user resisted, include environment step
+    if (actedOn === false) return 7;
+    // During form completion
+    return 7;
+  };
+
   const handleNext = () => {
-    if (currentStep < 6 && isStepValid()) {
+    const totalSteps = getTotalSteps();
+    
+    if (currentStep < totalSteps && isStepValid()) {
       // Add haptic feedback for successful next
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       
+      // Handle different step transitions
       if (currentStep === 5 && actedOn === true) {
+        // User acted on urge - skip environment step, go to replacement actions
+        animateTransition(() => setCurrentStep(7));
+      } else if (currentStep === 7 || (currentStep === 6 && actedOn === false && currentStep === totalSteps)) {
+        // Final step - submit
         handleSubmit();
       } else {
+        // Normal progression
         animateTransition(() => setCurrentStep(currentStep + 1));
       }
     }
@@ -157,7 +192,14 @@ const QuickLogScreen: React.FC = () => {
       // Add haptic feedback for back navigation
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       
-      animateTransition(() => setCurrentStep(currentStep - 1));
+      // Handle special cases for back navigation
+      if (currentStep === 7 && actedOn === true) {
+        // User acted on urge - skip environment step when going back
+        animateTransition(() => setCurrentStep(5));
+      } else {
+        // Normal back progression
+        animateTransition(() => setCurrentStep(currentStep - 1));
+      }
     }
   };
 
@@ -173,6 +215,7 @@ const QuickLogScreen: React.FC = () => {
       trigger,
       emotion,
       actedOn,
+      newEnvironment,
       replacementAction,
       notes,
     });
@@ -186,6 +229,7 @@ const QuickLogScreen: React.FC = () => {
     setTrigger("");
     setEmotion("");
     setActedOn(null);
+    setNewEnvironment("");
     setReplacementAction("");
     setNotes("");
   };
@@ -207,6 +251,10 @@ const QuickLogScreen: React.FC = () => {
         recentEmotions: moveToTop(
           emotion,
           (currentSettings as any).recentEmotions || getDefaultEmotions()
+        ),
+        recentEnvironments: moveToTop(
+          newEnvironment,
+          (currentSettings as any).recentEnvironments || getDefaultEnvironments()
         ),
       };
 
@@ -231,6 +279,7 @@ const QuickLogScreen: React.FC = () => {
   const [preFilledTriggerText, setPreFilledTriggerText] = useState<string>("");
   const [preFilledLocationText, setPreFilledLocationText] = useState<string>("");
   const [preFilledEmotionText, setPreFilledEmotionText] = useState<string>("");
+  const [preFilledEnvironmentText, setPreFilledEnvironmentText] = useState<string>("");
 
   const handleAddUrgePress = (preFilledText?: string) => {
     setPreFilledUrgeText(preFilledText || "");
@@ -396,6 +445,48 @@ const QuickLogScreen: React.FC = () => {
     }
   };
 
+  // New environment handlers
+  const handleAddEnvironmentPress = (preFilledText?: string) => {
+    setPreFilledEnvironmentText(preFilledText || "");
+    setShowAddEnvironmentScreen(true);
+  };
+
+  const handleEnvironmentSelected = async (selectedEnvironment: string, selectedIcon?: string) => {
+    if (selectedIcon) {
+      const newCustomIcons = {
+        ...customEnvironmentIcons,
+        [selectedEnvironment]: selectedIcon
+      };
+      
+      setCustomEnvironmentIcons(newCustomIcons);
+      
+      try {
+        await updateSettings({
+          ...settings,
+          customEnvironmentIcons: newCustomIcons,
+        } as any);
+      } catch (error) {
+        console.error("Error saving custom environment icon:", error);
+      }
+    }
+
+    setNewEnvironment(selectedEnvironment);
+    setShowAddEnvironmentScreen(false);
+
+    try {
+      const currentEnvironments = (settings as any)?.recentEnvironments || getDefaultEnvironments();
+      const updatedEnvironments = [selectedEnvironment, ...currentEnvironments.filter((e: string) => e !== selectedEnvironment)];
+      
+      await updateSettings({ 
+        ...settings,
+        recentEnvironments: updatedEnvironments,
+        ...(selectedIcon && { customEnvironmentIcons: { ...customEnvironmentIcons, [selectedEnvironment]: selectedIcon } })
+      } as any);
+    } catch (error) {
+      console.error("Error saving new environment:", error);
+    }
+  };
+
   // Back handlers for add screens
   const handleAddUrgeBack = () => {
     setShowAddUrgeScreen(false);
@@ -415,6 +506,11 @@ const QuickLogScreen: React.FC = () => {
   const handleAddEmotionBack = () => {
     setShowAddEmotionScreen(false);
     setPreFilledEmotionText("");
+  };
+
+  const handleAddEnvironmentBack = () => {
+    setShowAddEnvironmentScreen(false);
+    setPreFilledEnvironmentText("");
   };
 
   // Render add screens
@@ -468,6 +564,21 @@ const QuickLogScreen: React.FC = () => {
     );
   }
 
+  if (showAddEnvironmentScreen) {
+    const currentEnvironments = (settings as any)?.recentEnvironments || getDefaultEnvironments();
+    
+    return (
+      <AddEnvironmentScreen
+        onEnvironmentSelected={handleEnvironmentSelected}
+        onBack={handleAddEnvironmentBack}
+        currentSelectedEnvironments={currentEnvironments}
+        preFilledText={preFilledEnvironmentText}
+      />
+    );
+  }
+
+  const totalSteps = getTotalSteps();
+
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: "#185e66" }}>
       {/* Header */}
@@ -475,7 +586,7 @@ const QuickLogScreen: React.FC = () => {
         <View className="flex-row items-center justify-between">
           <Text className="text-2xl font-semibold text-white">Quick Log</Text>
           <Text className="text-white text-lg opacity-75">
-            {currentStep} of {actedOn === false ? "6" : "5"}
+            {currentStep} of {totalSteps}
           </Text>
         </View>
 
@@ -484,7 +595,7 @@ const QuickLogScreen: React.FC = () => {
           <View
             className="bg-white h-2 rounded-full transition-all duration-300"
             style={{
-              width: `${(currentStep / (actedOn === false ? 6 : 5)) * 100}%`,
+              width: `${(currentStep / totalSteps) * 100}%`,
             }}
           />
         </View>
@@ -504,6 +615,8 @@ const QuickLogScreen: React.FC = () => {
           setEmotion={setEmotion}
           actedOn={actedOn}
           setActedOn={setActedOn}
+          newEnvironment={newEnvironment}
+          setNewEnvironment={setNewEnvironment}
           replacementAction={replacementAction}
           setReplacementAction={setReplacementAction}
           notes={notes}
@@ -513,14 +626,17 @@ const QuickLogScreen: React.FC = () => {
           customTriggerIcons={customTriggerIcons}
           customLocationIcons={customLocationIcons}
           customEmotionIcons={customEmotionIcons}
+          customEnvironmentIcons={customEnvironmentIcons}
           settings={settings}
           replacementActions={replacementActions}
           fadeAnim={fadeAnim}
           slideAnim={slideAnim}
+          commonEnvironments={COMMON_ENVIRONMENTS}
           handleAddUrgePress={handleAddUrgePress}
           handleAddTriggerPress={handleAddTriggerPress}
           handleAddLocationPress={handleAddLocationPress}
           handleAddEmotionPress={handleAddEmotionPress}
+          handleAddEnvironmentPress={handleAddEnvironmentPress}
         />
       </View>
 
@@ -549,7 +665,7 @@ const QuickLogScreen: React.FC = () => {
                 : "#10B981",
             }}
             onPress={
-              currentStep === 6 || (currentStep === 5 && actedOn === true)
+              currentStep === totalSteps
                 ? handleSubmit
                 : handleNext
             }
@@ -561,7 +677,7 @@ const QuickLogScreen: React.FC = () => {
                 color: !isStepValid() ? "rgba(255, 255, 255, 0.7)" : "#FFFFFF",
               }}
             >
-              {currentStep === 6 || (currentStep === 5 && actedOn === true)
+              {currentStep === totalSteps
                 ? "Save Log"
                 : "Next"}
             </Text>

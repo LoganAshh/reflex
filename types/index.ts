@@ -423,6 +423,69 @@ export const COMMON_EMOTIONS = [
   },
 ] as const;
 
+export const COMMON_ENVIRONMENTS = [
+  {
+    text: "Go outside",
+    icon: "sunny-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Different room",
+    icon: "home-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Kitchen",
+    icon: "restaurant-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Bedroom",
+    icon: "bed-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Living room",
+    icon: "tv-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Bathroom",
+    icon: "water-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Office/study",
+    icon: "desktop-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Garden/yard",
+    icon: "leaf-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Balcony/porch",
+    icon: "partly-sunny-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Car",
+    icon: "car-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Walk around block",
+    icon: "walk-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Coffee shop",
+    icon: "cafe-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Library",
+    icon: "library-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Gym",
+    icon: "fitness-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+  {
+    text: "Park",
+    icon: "flower-outline" as keyof typeof import("@expo/vector-icons").Ionicons.glyphMap,
+  },
+] as const;
+
 // Color schemes for charts and UI
 export const COLORS = {
   primary: "#3B82F6", // blue-500
@@ -437,3 +500,4 @@ export type CommonUrge = (typeof COMMON_URGES)[number];
 export type CommonTrigger = (typeof COMMON_TRIGGERS)[number];
 export type CommonLocation = (typeof COMMON_LOCATIONS)[number];
 export type CommonEmotion = (typeof COMMON_EMOTIONS)[number];
+export type CommonEnvironment = (typeof COMMON_ENVIRONMENTS)[number];
