@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, ScrollView, SafeAreaView, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const PatternDashboard: React.FC = () => {
+const ProfileScreen: React.FC = () => {
   const [selectedView, setSelectedView] = useState<string>("overview");
 
   // Mock user's selected urges from onboarding
@@ -642,4 +642,4 @@ const PatternDashboard: React.FC = () => {
   );
 };
 
-export default PatternDashboard;
+export default ProfileScreen;

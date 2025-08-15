@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import QuickLogScreen from "../screens/QuickLogScreen";
-import PatternDashboard from "../screens/PatternDashboard";
+import ProfileScreen from "../screens/ProfileScreen";
 import ReplacementActions from "../screens/ReplacementActions";
 import UrgeAnalyticsScreen from "../screens/UrgeAnalyticsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
@@ -87,7 +87,7 @@ const AppNavigator: React.FC = () => {
       case "analytics":
         return <UrgeAnalyticsScreen />;
       case "patterns":
-        return <PatternDashboard />;
+        return <ProfileScreen />;
       default:
         return (
           <HomeScreen 
