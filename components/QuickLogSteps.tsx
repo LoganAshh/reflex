@@ -8,6 +8,8 @@ import {
   ScrollView,
   TextInput,
   Animated,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import {
   COMMON_URGES,
@@ -669,45 +671,52 @@ const QuickLogSteps: React.FC<QuickLogStepsProps> = ({
         if (actedOn === true) {
           // Congratulations step for users who acted on urge
           return (
-            <Animated.View
-              className="flex-1"
-              style={{
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }],
-              }}
-            >
-              <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
-                Progress Made! 🎉
-              </Text>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <Animated.View
+                className="flex-1"
+                style={{
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
+                }}
+              >
+                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+                  <Text className="text-4xl font-bold text-white text-center mb-8 mt-8">
+                    Progress Made! 🎉
+                  </Text>
 
-              <View className="rounded-lg p-6 mb-8" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
-                <Text className="text-xl text-white text-center mb-4 font-semibold">
-                  Great job logging this urge!
-                </Text>
-                <Text className="text-lg text-white text-center opacity-90 leading-6">
-                  You've made real progress by building awareness. 
-                  Recognizing your urges is the first and most important step toward change.
-                </Text>
-              </View>
+                  <View className="rounded-lg p-6 mb-8" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
+                    <Text className="text-xl text-white text-center mb-4 font-semibold">
+                      Great job logging this urge!
+                    </Text>
+                    <Text className="text-lg text-white text-center opacity-90 leading-6">
+                      You've made real progress by building awareness. 
+                      Recognizing your urges is the first and most important step toward change.
+                    </Text>
+                  </View>
 
-              <View className="mb-6">
-                <Text className="text-white font-medium mb-3 text-lg">
-                  Any notes about this experience? (optional)
-                </Text>
-                <TextInput
-                  className="border border-white border-opacity-30 rounded-lg p-4 text-xl text-white"
-                  style={{ backgroundColor: "rgba(255, 255, 255, 0.1)", minHeight: 100 }}
-                  placeholder="Reflect on what happened, how you felt, or what you might try differently next time..."
-                  placeholderTextColor="rgba(255, 255, 255, 0.7)"
-                  value={notes}
-                  onChangeText={setNotes}
-                  returnKeyType="done"
-                  blurOnSubmit={true}
-                  multiline={true}
-                  textAlignVertical="top"
-                />
-              </View>
-            </Animated.View>
+                  <View className="mb-6">
+                    <Text className="text-white font-medium mb-3 text-lg">
+                      Any notes about this experience? (optional)
+                    </Text>
+                    <TextInput
+                      className="border border-white border-opacity-30 rounded-lg p-4 text-xl text-white"
+                      style={{ backgroundColor: "rgba(255, 255, 255, 0.1)", minHeight: 100 }}
+                      placeholder="Reflect on what happened, how you felt, or what you might try differently next time..."
+                      placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                      value={notes}
+                      onChangeText={setNotes}
+                      returnKeyType="done"
+                      blurOnSubmit={true}
+                      multiline={true}
+                      textAlignVertical="top"
+                      onSubmitEditing={() => {
+                        Keyboard.dismiss();
+                      }}
+                    />
+                  </View>
+                </ScrollView>
+              </Animated.View>
+            </TouchableWithoutFeedback>
           );
         }
         
