@@ -100,26 +100,31 @@ const UrgeHistory: React.FC<UrgeHistoryProps> = ({
     return (
       <TouchableOpacity
         key={log.id}
-        className="bg-white rounded-lg p-4 mb-3 shadow-sm border border-gray-100"
+        className="rounded-lg p-4 mb-3 border"
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          borderColor: "rgba(255, 255, 255, 0.25)",
+        }}
         onPress={() => handleLogPress(log)}
       >
         <View className="flex-row items-start justify-between">
           <View className="flex-1">
             {/* Urge and status */}
             <View className="flex-row items-center mb-2">
-              <Text className="text-lg font-semibold text-gray-800 flex-1">
+              <Text className="text-lg font-semibold text-white flex-1">
                 {log.urge}
               </Text>
               <View
                 className={`px-2 py-1 rounded-full ${
-                  wasResisted ? "bg-green-100" : "bg-red-100"
+                  wasResisted ? "bg-green-500" : "bg-red-500"
                 }`}
+                style={{
+                  backgroundColor: wasResisted 
+                    ? "rgba(34, 197, 94, 0.8)" 
+                    : "rgba(239, 68, 68, 0.8)"
+                }}
               >
-                <Text
-                  className={`text-xs font-medium ${
-                    wasResisted ? "text-green-700" : "text-red-700"
-                  }`}
-                >
+                <Text className="text-xs font-medium text-white">
                   {wasResisted ? "Resisted" : "Acted on"}
                 </Text>
               </View>
@@ -127,21 +132,26 @@ const UrgeHistory: React.FC<UrgeHistoryProps> = ({
 
             {/* Details */}
             <View className="flex-row items-center space-x-4 mb-2">
-              <Text className="text-sm text-gray-600">
+              <Text className="text-sm text-white opacity-75">
                 ⏰ {formatTime(log.timestamp)}
               </Text>
               {log.location && (
-                <Text className="text-sm text-gray-600">📍 {log.location}</Text>
+                <Text className="text-sm text-white opacity-75">📍 {log.location}</Text>
               )}
               {log.trigger && (
-                <Text className="text-sm text-gray-600">⚡ {log.trigger}</Text>
+                <Text className="text-sm text-white opacity-75">⚡ {log.trigger}</Text>
               )}
             </View>
 
             {/* Replacement action */}
             {log.replacementAction && wasResisted && (
-              <View className="bg-green-50 p-2 rounded-lg">
-                <Text className="text-green-700 text-sm">
+              <View 
+                className="p-2 rounded-lg"
+                style={{
+                  backgroundColor: "rgba(34, 197, 94, 0.2)",
+                }}
+              >
+                <Text className="text-green-300 text-sm">
                   ✅ {log.replacementAction}
                 </Text>
               </View>
@@ -149,7 +159,7 @@ const UrgeHistory: React.FC<UrgeHistoryProps> = ({
 
             {/* Notes */}
             {log.notes && (
-              <Text className="text-sm text-gray-500 mt-2 italic">
+              <Text className="text-sm text-white opacity-60 mt-2 italic">
                 "{log.notes}"
               </Text>
             )}
@@ -294,15 +304,21 @@ const UrgeHistory: React.FC<UrgeHistoryProps> = ({
 
   if (displayLogs.length === 0) {
     return (
-      <View className="bg-white rounded-lg p-6 shadow-sm">
+      <View 
+        className="rounded-lg p-6 border"
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          borderColor: "rgba(255, 255, 255, 0.2)",
+        }}
+      >
         {showHeader && (
-          <Text className="text-lg font-bold text-gray-800 mb-4">
+          <Text className="text-lg font-bold text-white mb-4">
             Recent Urges
           </Text>
         )}
         <View className="items-center py-8">
           <Text className="text-4xl mb-3">🌱</Text>
-          <Text className="text-gray-600 text-center">
+          <Text className="text-white opacity-75 text-center">
             No urges logged yet.{"\n"}Start tracking your patterns!
           </Text>
         </View>
@@ -312,9 +328,15 @@ const UrgeHistory: React.FC<UrgeHistoryProps> = ({
 
   return (
     <>
-      <View className="bg-white rounded-lg p-6 shadow-sm">
+      <View 
+        className="rounded-lg p-6 border"
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          borderColor: "rgba(255, 255, 255, 0.2)",
+        }}
+      >
         {showHeader && (
-          <Text className="text-lg font-bold text-gray-800 mb-4">
+          <Text className="text-lg font-bold text-white mb-4">
             Recent Urges
           </Text>
         )}
@@ -322,7 +344,7 @@ const UrgeHistory: React.FC<UrgeHistoryProps> = ({
         <ScrollView showsVerticalScrollIndicator={false}>
           {Object.entries(groupedLogs).map(([dateKey, logs]) => (
             <View key={dateKey} className="mb-6">
-              <Text className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">
+              <Text className="text-sm font-semibold text-white opacity-75 mb-3 uppercase tracking-wide">
                 {dateKey}
               </Text>
               {logs.map(renderLogItem)}
